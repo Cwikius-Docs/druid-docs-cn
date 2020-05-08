@@ -1,29 +1,20 @@
 <!-- toc -->
 ## 基于Hadoop的摄入
 ### 教程
-### 并行任务
-#### 任务符号
-##### `dataSchema`
-##### `ioConfig`
-##### `tuningConfig`
-#### 分割提示规范
-##### `partitionsSpec`
-#### HTTP状态接口
-#### 容量规划
-### 简单任务
-#### 任务符号
-##### `dataSchema`
-##### `ioConfig`
-##### `tuningConfig`
-##### `partitionsSpec`
-##### `segmentWriteOutMediumFactory`
-#### 段推模式
-### 输入源
-#### S3输入源
-#### 谷歌云存储输入源
-#### Azure输入源
-#### HDFS输入源
-#### HTTP输入源
-#### Inline输入源
-#### Local输入源
-#### Druid输入源
+### 任务符号
+#### `dataSchema`
+#### `ioConfig`
+##### `inputSpec`
+#### `tuningConfig`
+##### `jobProperties`
+#### `partitionsSpec`
+##### 基于哈希的分区
+##### 单一维度范围分区
+### 远程Hadoop集群
+### Elastic MapReduce
+### Kerberized Hadoop集群
+#### 从具有EMR的S3加载
+### 使用其他的Hadoop
+### 命令行版本
+#### 可选项
+#### 规范文件
