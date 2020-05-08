@@ -214,14 +214,77 @@ Kafka索引服务同时支持通过 [`inputFormat`](dataformats.md#inputformat) 
 6. 处理失败的任务并清理supervisor的内部状态。
 7. 将正常任务列表与请求的 `taskCount` 和 `replicas` 进行比较，并根据需要创建其他任务。
 
+`detailedState` 字段将在supervisor启动后或从挂起恢复后第一次执行此运行循环时显示附加值（上述表格中那些标记为"仅限第一次迭代"的值）。这是为了解决初始化类型问题，即supervisor无法达到稳定状态（可能是因为它无法连接到Kafka，无法读取Kafka主题，或者无法与现有任务通信）。一旦supervisor稳定（也就是说，一旦完成完整的执行而没有遇到任何问题），`detailedState` 将显示 `RUNNING` 状态，直到它停止、挂起或达到故障阈值并过渡到不正常状态。
 
 #### 获取supervisor摄取状态报告
+
+`GET /druid/indexer/v1/supervisor/<supervisorId>/stats` 返回由supervisor管理的每个任务的当前摄取行计数器的快照，以及行计数器的移动平均值。
+
+可以在 [任务报告：行画像](taskrefer.md#行画像) 中查看详细信息。
+
 #### supervisor健康检测
+
+如果supervisor是健康的，则 `GET /druid/indexer/v1/supervisor/<supervisorId>/health` 返回 `200 OK`, 如果是不健康的，则返回 `503 Service Unavailable` 。 健康状态是根据supervisor的 `state` （通过 `/status` 接口返回） 和 Overlord配置的阈值 `druid.supervisor.*` 来决定的。
+
 #### 更新现有的supervisor
+
+`POST /druid/indexer/v1/supervisor` 可以被用来更新现有的supervisor规范。如果已存在同一数据源的现有supervisor，则调用此接口将导致：
+
+* 正在运行的supervisor对其管理的任务发出停止读取并开始发布的信号
+* 正在运行的supervisor退出
+* 使用请求正文中提供的配置创建新的supervisor。该supervisor将保留现有的发布任务，并将从发布任务结束时的偏移开始创建新任务
+
+因此，只需使用这个接口来提交新的schema，就可以实现无缝的schema迁移。
+
 #### 暂停和恢复supervisors
+
+可以通过 `POST /druid/indexer/v1/supervisor/<supervisorId>/suspend` 和 `POST /druid/indexer/v1/supervisor/<supervisorId>/resume` 来暂停挂起和恢复一个supervisor。 
+
+注意，supervisor本身仍在运行并发出日志和metrics，它只会确保在supervisor恢复之前没有索引任务正在运行。
+
 #### 重置supervisors
+
+`POST/druid/indexer/v1/supervisor/<supervisorId>/reset` 操作清除存储的偏移量，使supervisor开始从Kafka中最早或最新的偏移量读取偏移量（取决于`useEarliestOffset`的值）。清除存储的偏移量后，supervisor将终止并重新创建任务，以便任务开始从有效偏移量读取数据。
+
+**使用此操作时请小心！** 重置supervisor可能会导致跳过或读取Kafka消息两次，从而导致数据丢失或重复。
+
+使用此操作的原因是：从由于缺少偏移而导致supervisor停止操作的状态中恢复。索引服务跟踪最新的持久化Kafka偏移量，以便跨任务提供准确的一次摄取保证。后续任务必须从上一个任务完成的位置开始读取，以便接受生成的段。如果Kafka中不再提供预期起始偏移量的消息（通常是因为消息保留期已过或主题已被删除并重新创建），supervisor将拒绝启动，在运行状态下的任务将失败。此操作使您能够从此情况中恢复。
+
+**请注意，要使此接口可用，必须运行supervisor。**
+
 #### 终止supervisors
+
+`POST /druid/indexer/v1/supervisor/<supervisorId>/terminate` 操作终止一个supervisor，并导致由该supervisor管理的所有关联的索引任务立即停止并开始发布它们的段。此supervisor仍将存在于元数据存储中，可以使用supervisor的历史API检索其历史记录，但不会在 "Get supervisor" API响应中列出，也无法检索其配置或状态报告。这个supervisor可以重新启动的唯一方法是向 "create" API提交一个正常工作的supervisor规范。
+
 #### 容量规划
+
+Kafka索引任务运行在MiddleManager上，因此，其受限于MiddleManager集群的可用资源。 特别是，您应该确保有足够的worker（使用 `druid.worker.capacity` 属性配置）来处理supervisor规范中的配置。请注意，worker是在所有类型的索引任务之间共享的，因此，您应该计划好worker处理索引总负载的能力（例如批处理、实时任务、合并任务等）。如果您的worker不足，Kafka索引任务将排队并等待下一个可用的worker。这可能会导致查询只返回部分结果，但不会导致数据丢失（假设任务在Kafka清除这些偏移之前运行）。
+
+正在运行的任务通常处于两种状态之一：*读取(reading)*或*发布(publishing)*。任务将在 `taskDuration(任务持续时间)` 内保持读取状态，在这时将转换为发布状态。只要生成段、将段推送到深层存储并由Historical进程加载和服务（或直到 `completionTimeout` 结束），任务将保持发布状态。
+
+读取任务的数量由 `replicas` 和 `taskCount` 控制。 一般， 一共有 `replicas * taskCount` 个读取任务， 存在一个例外是当 taskCount > {numKafkaPartitions}, 在这种情况时 {numKafkaPartitions}个任务将被使用。 当 `taskDuration` 结束时，这些任务将被转换为发布状态并创建 `replicas * taskCount` 个新的读取任务。 因此，为了使得读取任务和发布任务可以并发的运行， 最小的容量应该是：
+
+```
+workerCapacity = 2 * replicas * taskCount
+```
+
+此值适用于这样一种理想情况：最多有一组任务正在发布，而另一组任务正在读取。在某些情况下，可以同时发布多组任务。如果发布时间（生成段、推送到深层存储、加载到历史记录中）> `taskDuration`，就会发生这种情况。这是一个有效的场景（正确性方面），但需要额外的worker容量来支持。一般来说，最好将 `taskDuration` 设置得足够大，以便在当前任务集开始之前完成上一个任务集的发布。
+
 #### supervisor持久化
+
+当通过 `POST /druid/indexer/v1/supervisor` 接口提交一个supervisor规范时，它将被持久化在配置的元数据数据库中。每个数据源只能有一个supervisor，为同一数据源提交第二个规范将覆盖前一个规范。
+
+当一个Overlord获得领导地位时，无论是通过启动还是由于另一个Overlord失败，它都将为元数据数据库中的每个supervisor规范生成一个supervisor。然后，supervisor将发现正在运行的Kafka索引任务，如果它们与supervisor的配置兼容，则将尝试采用它们。如果它们不兼容，因为它们具有不同的摄取规范或分区分配，则任务将被终止，supervisor将创建一组新任务。这样，supervisor就可以在Overlord重启和故障转移期间坚持不懈地工作。
+
+supervisor通过 `POST /druid/indexer/v1/supervisor/<supervisorId>/` 终止接口停止。这将在数据库中放置一个逻辑删除标记（以防止重新启动时重新加载supervisor），然后优雅地关闭当前运行的supervisor。当supervisor以这种方式关闭时，它将指示其托管的任务停止读取并立即开始发布其段。对关闭接口的调用将在所有任务发出停止信号后，但在任务完成其段的发布之前返回。
+
 #### schema/配置变更
+
+schema和配置更改是通过最初用于创建supervisor的 `POST /druid/indexer/v1/supervisor` 接口提交新的supervisor规范来处理的。Overlord将当前运行的supervisor优雅地关闭，这将导致由该supervisor管理的任务停止读取并开始发布其段。然后将启动一个新的supervisor，该supervisor将创建一组新的任务，这些任务将从先前发布任务关闭的偏移开始读取，但使用更新的schema。通过这种方式，可以在无需暂停摄取的条件下更新应用配置。
+
 #### 部署注意
+
+每个Kafka索引任务将从分配给它的Kafka分区中消费的事件放在每个段粒度间隔的单个段中，直到达到 `maxRowsPerSegment`、`maxTotalRows` 或 `intermediateHandoffPeriod` 限制，此时将为进一步的事件创建此段粒度的新分区。Kafka索引任务还执行增量移交，这意味着任务创建的所有段在任务持续时间结束之前都不会被延迟。一旦达到 `maxRowsPerSegment`、`maxTotalRows` 或 `intermediateHandoffPeriod` 限制，任务在该时间点持有的所有段都将被传递，并且将为进一步的事件创建新的段集。这意味着任务可以运行更长的时间，而不必在MiddleManager进程的本地累积旧段，因此鼓励这样做。
+
+Kafka索引服务可能仍然会产生一些小片段。假设任务持续时间为4小时，段粒度设置为1小时，supervisor在9:10启动，然后在13:10的4小时后，将启动新的任务集，并且间隔13:00-14:00的事件可以跨以前的和新的任务集拆分。如果您发现这成为一个问题，那么可以调度重新索引任务，以便将段合并到理想大小的新段中（每个段大约500-700 MB）。有关如何优化段大小的详细信息，请参见 ["段大小优化"](../Operations/segmentSizeOpt.md)。还有一些工作正在进行，以支持碎片段的自动段压缩，以及不需要Hadoop的压缩（参见[此处](https://github.com/apache/druid/pull/5102）)。
+
