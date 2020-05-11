@@ -162,7 +162,92 @@ tuningConfig是一个可选项，如果未指定则使用默认的参数。 详�
 | `chatHandlerNumRetries` | 重试报告worker中的推送段 | 5 | 否 |
 
 #### 分割提示规范
+
+分割提示规范用于在supervisor创建输入分割时给出提示。请注意，每个worker处理一个输入拆分。您可以控制每个worker在第一阶段读取的数据量。
+
+**基于大小的分割提示规范**
+除HTTP输入源外，所有可拆分输入源都遵循基于大小的拆分提示规范。
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应当总是 `maxSize` | none | 是 |
+| `maxSplitSize` | 单个任务中要处理的输入文件的最大字节数。如果单个文件大于此数字，则它将在单个任务中自行处理（文件永远不会跨任务拆分）。 | 500MB | 否 |
+
+**段分割提示规范**
+
+段分割提示规范仅仅用在 [`DruidInputSource`](#Druid输入源)(和过时的 [`IngestSegmentFirehose`](#IngestSegmentFirehose))
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应当总是 `segments` | none | 是 |
+| `maxInputSegmentBytesPerTask` | 单个任务中要处理的输入段的最大字节数。如果单个段大于此数字，则它将在单个任务中自行处理（输入段永远不会跨任务拆分）。 | 500MB | 否 |
+
 ##### `partitionsSpec`
+
+PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模式使用不同的partitionsSpec。为了实现 [最佳rollup](ingestion.md#rollup)，您应该使用 `hashed`（基于每行中维度的哈希进行分区）或 `single_dim`（基于单个维度的范围）。对于"尽可能rollup"模式，应使用 `dynamic`。
+
+三种 `partitionsSpec` 类型有着不同的特征。
+
+| PartitionsSpec | 摄入速度 | 分区方式 | 支持的rollup模式 | 查询时的段修剪 |
+|-|-|-|-|-|
+| `dynamic` | 最快 | 基于段中的行数来进行分区 | 尽可能rollup | N/A |
+| `hashed` | 中等 | 基于分区维度的哈希值进行分区。此分区可以通过改进数据位置性来减少数据源大小和查询延迟。有关详细信息，请参见 [分区](ingestion.md#分区)。 | 最佳rollup | N/A |
+| `single_dim` | 最慢 | 基于分区维度值的范围分区。段大小可能会根据分区键分布而倾斜。这可能通过改善数据位置性来减少数据源大小和查询延迟。有关详细信息，请参见 [分区](ingestion.md#分区)。 | 最佳rollup | Broker可以使用分区信息提前修剪段以加快查询速度。由于Broker知道每个段中 `partitionDimension` 值的范围，因此，给定一个包含`partitionDimension` 上的筛选器的查询，Broker只选取包含满足 `partitionDimension` 上的筛选器的行的段进行查询处理。|
+
+对于每一种partitionSpec，推荐的使用场景是：
+
+* 如果数据有一个在查询中经常使用的均匀分布列，请考虑使用 `single_dim` partitionsSpec来最大限度地提高大多数查询的性能。
+* 如果您的数据不是均匀分布的列，但在使用某些维度进行rollup时，需要具有较高的rollup汇总率，请考虑使用 `hashed` partitionsSpec。通过改善数据的局部性，可以减小数据源的大小和查询延迟。
+* 如果以上两个场景不是这样，或者您不需要rollup数据源，请考虑使用 `dynamic` partitionsSpec。
+
+**Dynamic分区**
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `always` | none | 是 |
+| `maxRowsPerSegment` | 用来分片。决定在每一个段中有多少行 | 5000000 | 否 |
+| `maxTotalRows` | 等待推送的所有段的总行数。用于确定中间段推送的发生时间。 | 20000000 | 否 |
+
+使用Dynamic分区，并行索引任务在一个阶段中运行：它将生成多个worker(`single_phase_sub_task` 类型)，每个worker都创建段。worker创建段的方式是：
+
+* 每当当前段中的行数超过 `maxRowsPerSegment` 时，任务将创建一个新段。
+* 一旦所有时间块中所有段中的行总数达到 `maxTotalRows`，任务就会将迄今为止创建的所有段推送到深层存储并创建新段。
+
+**基于哈希的分区**
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `hashed` | none | 是 |
+| `numShards` | 直接指定要创建的分片数。如果该值被指定了，同时在 `granularitySpec` 中指定了 `intervals`，那么索引任务可以跳过确定通过数据的间隔/分区 | null | 是 |
+| `partitionDimensions` | 要分区的维度。留空可选择所有维度。| null | 否 |
+
+基于哈希分区的并行任务类似于 [MapReduce](https://en.wikipedia.org/wiki/MapReduce)。任务分为两个阶段运行，即 `部分段生成` 和 `部分段合并`。
+
+* 在 `部分段生成` 阶段，与MapReduce中的Map阶段一样，并行任务根据分割提示规范分割输入数据，并将每个分割分配给一个worker。每个worker（`partial_index_generate` 类型）从 `granularitySpec` 中的`segmentGranularity（主分区键）` 读取分配的分割，然后按`partitionsSpec` 中 `partitionDimensions（辅助分区键）`的哈希值对行进行分区。分区数据存储在 [MiddleManager](../Design/MiddleManager.md) 或 [Indexer](../Design/Indexer.md) 的本地存储中。
+* `部分段合并` 阶段类似于MapReduce中的Reduce阶段。并行任务生成一组新的worker（`partial_index_merge` 类型）来合并在前一阶段创建的分区数据。这里，分区数据根据要合并的时间块和分区维度的散列值进行洗牌；每个worker从多个MiddleManager/Indexer进程中读取落在同一时间块和同一散列值中的数据，并将其合并以创建最终段。最后，它们将最后的段一次推送到深层存储。
+
+**基于单一维度范围分区**
+
+> [!WARNING]
+> 在并行任务的顺序模式下，当前不支持单一维度范围分区。尝试将`maxNumConcurrentSubTasks` 设置为大于1以使用此分区方式。
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `single_dim` | none | 是 |
+| `partitionDimension` | 要分区的维度。 仅仅允许具有单一维度值的行 | none | 是 |
+| `targetRowsPerSegment` | 在一个分区中包含的目标行数，应当是一个500MB ~ 1GB目标段的数值。 | none | 要么该值被设置，或者 `maxRowsPerSegment`被设置。 |
+| `maxRowsPerSegment` | 分区中要包含的行数的软最大值。| none | 要么该值被设置，或者 `targetRowsPerSegment`被设置。|
+| `assumeGrouped` | 假设输入数据已经按时间和维度分组。摄取将运行得更快，但如果违反此假设，则可能会选择次优分区 | false | 否 |
+
+在 `single-dim` 分区下，并行任务分为3个阶段进行，即 `部分维分布`、`部分段生成` 和 `部分段合并`。第一个阶段是收集一些统计数据以找到最佳分区，另外两个阶段是创建部分段并分别合并它们，就像在基于哈希的分区中那样。
+
+* 在 `部分维度分布` 阶段，并行任务分割输入数据，并根据分割提示规范将其分配给worker。每个worker任务（`partial_dimension_distribution` 类型）读取分配的分割并为 `partitionDimension` 构建直方图。并行任务从worker任务收集这些直方图，并根据 `partitionDimension` 找到最佳范围分区，以便在分区之间均匀分布行。请注意，`targetRowsPerSegment` 或 `maxRowsPerSegment` 将用于查找最佳分区。
+* 在 `部分段生成` 阶段，并行任务生成新的worker任务（`partial_range_index_generate` 类型）以创建分区数据。每个worker任务都读取在前一阶段中创建的分割，根据 `granularitySpec` 中的`segmentGranularity（主分区键）`的时间块对行进行分区，然后根据在前一阶段中找到的范围分区对行进行分区。分区数据存储在 [MiddleManager](../Design/MiddleManager.md) 或 [Indexer](../Design/Indexer.md)的本地存储中。
+* 在 `部分段合并` 阶段，并行索引任务生成一组新的worker任务（`partial_index_generic_merge`类型）来合并在上一阶段创建的分区数据。这里，分区数据根据时间块和 `partitionDimension` 的值进行洗牌；每个工作任务从多个MiddleManager/Indexer进程中读取属于同一范围的同一分区中的段，并将它们合并以创建最后的段。最后，它们将最后的段推到深层存储。
+
+> [!WARNING]
+> 由于单一维度范围分区的任务在 `部分维度分布` 和 `部分段生成` 阶段对输入进行两次传递，因此如果输入在两次传递之间发生变化，任务可能会失败
+
 #### HTTP状态接口
 #### 容量规划
 ### 简单任务
