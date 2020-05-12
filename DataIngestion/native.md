@@ -626,8 +626,104 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 | `type` | String | 配置解释和可选项可以参见 [额外的Peon配置：SegmentWriteOutMediumFactory](../Configuration/configuration.md#SegmentWriteOutMediumFactory) | 是 |
 
 #### 分段推送模式
+
+当使用简单任务摄取数据时，它从输入数据创建段并推送它们。对于分段推送，索引任务支持两种分段推送模式，分别是*批量推送模式*和*增量推送模式*，以实现 [最佳rollup和尽可能rollup](ingestion.md#rollup)。
+
+在批量推送模式下，在索引任务的最末端推送每个段。在此之前，创建的段存储在运行索引任务的进程的内存和本地存储中。因此，此模式可能由于存储容量有限而导致问题，建议不要在生产中使用。
+
+相反，在增量推送模式下，分段是增量推送的，即可以在索引任务的中间推送。更准确地说，索引任务收集数据并将创建的段存储在运行该任务的进程的内存和磁盘中，直到收集的行总数超过 `maxTotalRows`。一旦超过，索引任务将立即推送创建的所有段，直到此时为止，清除所有推送的段，并继续接收剩余的数据。
+
+要启用批量推送模式，应在 `TuningConfig` 中设置`forceGuaranteedRollup`。请注意，此选项不能与 `IOConfig` 的`appendToExisting`一起使用。
+
 ### 输入源
+
+输入源是定义索引任务读取数据的位置。只有本地并行任务和简单任务支持输入源。
+
 #### S3输入源
+
+> [!WARNING]
+> 您需要添加 [`druid-s3-extensions`](../Development/S3-compatible.md) 扩展以便使用S3输入源。
+
+S3输入源支持直接从S3读取对象。可以通过S3 URI字符串列表或S3位置前缀列表指定对象，该列表将尝试列出内容并摄取位置中包含的所有对象。S3输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "s3",
+        "uris": ["s3://foo/bar/file.json", "s3://bar/foo/file2.json"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "s3",
+        "prefixes": ["s3://foo/bar", "s3://bar/foo"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "s3",
+        "objects": [
+          { "bucket": "foo", "path": "bar/file1.json"},
+          { "bucket": "bar", "path": "foo/file2.json"}
+        ]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该是 `s3` | None | 是 |
+| `uris` | 指定被摄取的S3对象位置的URI JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+| `prefixes` | 指定被摄取的S3对象所在的路径前缀的URI JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。 |
+| `objects` | 指定被摄取的S3对象的JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+| `properties` | 指定用来覆盖默认S3配置的对象属性，详情见下边 | None | 否（未指定则使用默认）|
+
+注意：只有当 `prefixes` 被指定时，S3输入源将略过空的对象。
+
+S3对象：
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `bucket` | S3 Bucket的名称 | None | 是 |
+| `path` | 数据路径 | None | 是 |
+
+属性对象：
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `accessKeyId` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `secretAccessKey` 被提供的话，则为必须 |
+| `secretAccessKey` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `accessKeyId` 被提供的话，则为必须 |
+
+**注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../Development/S3-compatible.md#S3认证方式]*
+
 #### 谷歌云存储输入源
 #### Azure输入源
 #### HDFS输入源
