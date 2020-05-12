@@ -204,7 +204,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 
 | 属性 | 描述 | 默认值 | 是否必须 |
 |-|-|-|-|
-| `type` | 应该总是 `always` | none | 是 |
+| `type` | 应该总是 `dynamic` | none | 是 |
 | `maxRowsPerSegment` | 用来分片。决定在每一个段中有多少行 | 5000000 | 否 |
 | `maxTotalRows` | 等待推送的所有段的总行数。用于确定中间段推送的发生时间。 | 20000000 | 否 |
 
@@ -475,13 +475,156 @@ supervisor任务提供了一些HTTP接口来获取任务状态。
 返回被指定ID的worker任务规范的任务尝试历史记录，如果该supervisor任务以序列模式运行则返回一个HTTP 404
 
 #### 容量规划
+
+不管当前有多少任务槽可用，supervisor任务最多可以创建 `maxNumConcurrentSubTasks` worker任务, 因此，可以同时运行的任务总数为 `(maxNumConcurrentSubTasks+1)(包括supervisor任务)`。请注意，这甚至可以大于任务槽的总数（所有worker的容量之和）。如果`maxNumConcurrentSubTasks` 大于 `n（可用任务槽）`，则`maxNumConcurrentSubTasks` 任务由supervisor任务创建，但只有 `n` 个任务将启动, 其他人将在挂起状态下等待，直到任何正在运行的任务完成。
+
+如果将并行索引任务与流摄取一起使用，我们建议**限制批摄取的最大容量**，以防止流摄取被批摄取阻止。假设您同时有 `t` 个并行索引任务要运行， 但是想将批摄取的最大任务数限制在 `b`。 那么， 所有并行索引任务的 `maxNumConcurrentSubTasks` 之和 + `t`(supervisor任务数) 必须小于 `b`。
+
+如果某些任务的优先级高于其他任务，则可以将其`maxNumConcurrentSubTasks` 设置为高于低优先级任务的值。这可能有助于高优先级任务比低优先级任务提前完成，方法是为它们分配更多的任务槽。
+
 ### 简单任务
+
+简单任务（`index`类型）设计用于较小的数据集。任务在索引服务中执行。
+
 #### 任务符号
+
+一个示例任务如下：
+
+```
+{
+  "type" : "index",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "wikipedia",
+      "timestampSpec" : {
+        "column" : "timestamp",
+        "format" : "auto"
+      },
+      "dimensionsSpec" : {
+        "dimensions": ["page","language","user","unpatrolled","newPage","robot","anonymous","namespace","continent","country","region","city"],
+        "dimensionExclusions" : []
+      },
+      "metricsSpec" : [
+        {
+          "type" : "count",
+          "name" : "count"
+        },
+        {
+          "type" : "doubleSum",
+          "name" : "added",
+          "fieldName" : "added"
+        },
+        {
+          "type" : "doubleSum",
+          "name" : "deleted",
+          "fieldName" : "deleted"
+        },
+        {
+          "type" : "doubleSum",
+          "name" : "delta",
+          "fieldName" : "delta"
+        }
+      ],
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "DAY",
+        "queryGranularity" : "NONE",
+        "intervals" : [ "2013-08-31/2013-09-01" ]
+      }
+    },
+    "ioConfig" : {
+      "type" : "index",
+      "inputSource" : {
+        "type" : "local",
+        "baseDir" : "examples/indexing/",
+        "filter" : "wikipedia_data.json"
+       },
+       "inputFormat": {
+         "type": "json"
+       }
+    },
+    "tuningConfig" : {
+      "type" : "index",
+      "maxRowsPerSegment" : 5000000,
+      "maxRowsInMemory" : 1000000
+    }
+  }
+}
+```
+
+| 属性 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 任务类型， 应该总是 `index` | 是 |
+| `id` | 任务ID。如果该值为显式的指定，Druid将会使用任务类型、数据源名称、时间间隔以及日期时间戳生成一个任务ID | 否 |
+| `spec` | 摄入规范，包括dataSchema、IOConfig 和 TuningConfig。 详情见下边的描述 | 是 |
+| `context` | 包含多个任务配置参数的上下文。 详情见下边的描述 | 否 |
+
 ##### `dataSchema`
+
+**该字段为必须字段。**
+
+详情可以见摄取文档中的 [`dataSchema`](ingestion.md#dataSchema) 部分。
+
+如果没有在 `dataSchema` 的 `granularitySpec` 中显式指定 `intervals`，本地索引任务将对数据执行额外的传递，以确定启动时要锁定的范围。如果显式指定 `intervals`，则指定间隔之外的任何行都将被丢弃。如果您知道数据的时间范围，我们建议显式设置 `intervals`，因为它允许任务跳过额外的过程，并且如果有一些带有意外时间戳的杂散数据，您不会意外地替换该范围之外的数据。
+
 ##### `ioConfig`
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 任务类型，应该总是 `index` | none | 是 |
+| `inputFormat` | [`inputFormat`](dataformats.md#InputFormat) 指定如何解析输入数据 | none | 是 |
+| `appendToExisting` | 创建段作为最新版本的附加分片，有效地附加到段集而不是替换它。仅当现有段集具有可扩展类型 `shardSpec`时，此操作才有效。 | false | 否 |
+
 ##### `tuningConfig`
+
+tuningConfig是一个可选项，如果未指定则使用默认的参数。 详情如下：
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 任务类型，应当总是 `index` | none | 是 |
+| `maxRowsPerSegment` | 已废弃。使用 `partitionsSpec` 替代，被用来分片。 决定在每个段中有多少行。 | 5000000 | 否 |
+| `maxRowsInMemory` | 用于确定何时应该从中间层持久化到磁盘。通常用户不需要设置此值，但根据数据的性质，如果行的字节数较短，则用户可能不希望在内存中存储一百万行，应设置此值。 | 1000000 | 否 |
+| `maxBytesInMemory` | 用于确定何时应该从中间层持久化到磁盘。通常这是在内部计算的，用户不需要设置它。此值表示在持久化之前要在堆内存中聚合的字节数。这是基于对内存使用量的粗略估计，而不是实际使用量。用于索引的最大堆内存使用量为 `maxBytesInMemory *（2 + maxPendingResistent）` | 最大JVM内存的1/6 | 否 |
+| `maxTotalRows` | 已废弃。使用 `partitionsSpec` 替代。等待推送的段中的总行数。用于确定何时应进行中间推送。| 20000000 | 否 |
+| `numShards` | 已废弃。使用 `partitionsSpec` 替代。当使用 `hashed` `partitionsSpec`时直接指定要创建的分片数。如果该值被指定了且在 `granularitySpec`中指定了 `intervals`，那么索引任务可以跳过确定间隔/分区传递数据。如果设置了 `maxRowsPerSegment`，则无法指定 `numShards`。 | null | 否 |
+| `partitionsSpec` | 定义在每个时间块中如何分区数据。 参见 [partitionsSpec](#partitionsspec) | 如果 `forceGuaranteedRollup` = false, 则为 `dynamic`; 如果 `forceGuaranteedRollup` = true, 则为 `hashed` 或者 `single_dim` | 否 |
+| `indexSpec` | 定义段在索引阶段的存储格式相关选项，参见 [IndexSpec](ingestion.md#tuningConfig) | null | 否 |
+| `indexSpecForIntermediatePersists` | 定义要在索引时用于中间持久化临时段的段存储格式选项。这可用于禁用中间段上的维度/度量压缩，以减少最终合并所需的内存。但是，在中间段上禁用压缩可能会增加页缓存的使用，而在它们被合并到发布的最终段之前使用它们，有关可能的值，请参阅 [IndexSpec](ingestion.md#tuningConfig)。 | 与 `indexSpec` 相同 | 否 |
+| `maxPendingPersists` | 可挂起但未启动的最大持久化任务数。如果新的中间持久化将超过此限制，则在当前运行的持久化完成之前，摄取将被阻止。使用`maxRowsInMemory * (2 + maxPendingResistents)` 索引扩展的最大堆内存使用量。 | 0 (这意味着一个持久化任务只可以与摄取同时运行，而没有一个可以排队) | 否 |
+| `forceGuaranteedRollup` | 强制保证 [最佳Rollup](ingestion.md#Rollup)。最佳rollup优化了生成的段的总大小和查询时间，同时索引时间将增加。如果设置为true，则必须设置 `granularitySpec` 中的 `intervals` ，同时必须对 `partitionsSpec` 使用 `single_dim` 或者 `hashed` 。此标志不能与 `IOConfig` 的 `appendToExisting` 一起使用。有关更多详细信息，请参见下面的 ["分段推送模式"](#分段推送模式) 部分。 | false | 否 |
+| `reportParseExceptions` | 已废弃。如果为true，则将引发解析期间遇到的异常并停止摄取；如果为false，则将跳过不可解析的行和字段。将 `reportParseExceptions` 设置为true将覆盖`maxParseExceptions` 和 `maxSavedParseExceptions` 的现有配置，将 `maxParseExceptions` 设置为0并将 `maxSavedParseExceptions` 限制为不超过1。 | false | 否 |
+| `pushTimeout` | 段推送的超时毫秒时间。 该值必须设置为 >= 0, 0意味着永不超时 | 0 | 否 |
+| `segmentWriteOutMediumFactory` | 创建段时使用的段写入介质。 参见 [segmentWriteOutMediumFactory](#segmentWriteOutMediumFactory) | 未指定， 值来源于 `druid.peon.defaultSegmentWriteOutMediumFactory.type` | 否 |
+| `logParseExceptions` | 如果为true，则在发生解析异常时记录错误消息，其中包含有关发生错误的行的信息。 | false | 否 |
+| `maxParseExceptions` | 任务停止接收并失败之前可能发生的最大分析异常数。如果设置了`reportParseExceptions`，则该配置被覆盖。 | unlimited | 否 |
+| `maxSavedParseExceptions` | 当出现解析异常时，Druid可以跟踪最新的解析异常。"maxSavedParseExceptions" 限制将保存多少个异常实例。这些保存的异常将在任务完成报告中的任务完成后可用。如果设置了 `reportParseExceptions` ，则该配置被覆盖。 | 0 | 否 |
+
+
 ##### `partitionsSpec`
+
+PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模式使用不同的partitionsSpec。为了实现 [最佳rollup](ingestion.md#rollup)，您应该使用 `hashed`（基于每行中维度的哈希进行分区）
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `hashed` | none | 是 |
+| `maxRowsPerSegment` | 用在分片中，决定在每个段中有多少行 | 5000000 | 否 |
+| `numShards` | 直接指定要创建的分片数。如果该值被指定了，同时在 `granularitySpec` 中指定了 `intervals`，那么索引任务可以跳过确定通过数据的间隔/分区 | null | 是 |
+| `partitionDimensions` | 要分区的维度。留空可选择所有维度。| null | 否 |
+
+对于尽可能rollup模式，您应该使用 `dynamic` 
+
+| 属性 | 描述 | 默认值 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `dynamic` | none | 是 |
+| `maxRowsPerSegment` | 用来分片。决定在每一个段中有多少行 | 5000000 | 否 |
+| `maxTotalRows` | 等待推送的所有段的总行数。用于确定中间段推送的发生时间。 | 20000000 | 否 |
+
 ##### `segmentWriteOutMediumFactory`
+
+| 字段 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `type` | String | 配置解释和可选项可以参见 [额外的Peon配置：SegmentWriteOutMediumFactory](../Configuration/configuration.md#SegmentWriteOutMediumFactory) | 是 |
+
 #### 分段推送模式
 ### 输入源
 #### S3输入源
