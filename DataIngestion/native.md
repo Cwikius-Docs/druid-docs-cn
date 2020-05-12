@@ -249,6 +249,231 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 > 由于单一维度范围分区的任务在 `部分维度分布` 和 `部分段生成` 阶段对输入进行两次传递，因此如果输入在两次传递之间发生变化，任务可能会失败
 
 #### HTTP状态接口
+
+supervisor任务提供了一些HTTP接口来获取任务状态。
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/mode`
+
+如果索引任务以并行的方式运行，则返回 "parallel", 否则返回 "sequential"
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/phase`
+
+如果任务以并行的方式运行，则返回当前阶段的名称
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/progress`
+
+如果supervisor任务以并行的方式运行，则返回当前阶段的预估进度
+
+一个示例结果如下：
+```
+{
+  "running":10,
+  "succeeded":0,
+  "failed":0,
+  "complete":0,
+  "total":10,
+  "estimatedExpectedSucceeded":10
+}
+```
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtasks/running`
+
+返回正在运行的worker任务的任务IDs，如果该supervisor任务以序列模式运行则返回一个空的列表
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspecs`
+
+返回所有的worker任务规范，如果该supervisor任务以序列模式运行则返回一个空的列表
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspecs/running`
+
+返回正在运行的worker任务规范，如果该supervisor任务以序列模式运行则返回一个空的列表
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspecs/complete`
+
+返回已经完成的worker任务规范，如果该supervisor任务以序列模式运行则返回一个空的列表
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspec/{SUB_TASK_SPEC_ID}`
+
+返回指定ID的worker任务规范，如果该supervisor任务以序列模式运行则返回一个HTTP 404
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspec/{SUB_TASK_SPEC_ID}/state`
+
+返回指定ID的worker任务规范的状态，如果该supervisor任务以序列模式运行则返回一个HTTP 404。 返回的结果集中包括worker任务规范，当前任务状态(如果存在的话) 以及任务尝试历史记录。
+
+一个示例结果如下：
+```
+{
+  "spec": {
+    "id": "index_parallel_lineitem_2018-04-20T22:12:43.610Z_2",
+    "groupId": "index_parallel_lineitem_2018-04-20T22:12:43.610Z",
+    "supervisorTaskId": "index_parallel_lineitem_2018-04-20T22:12:43.610Z",
+    "context": null,
+    "inputSplit": {
+      "split": "/path/to/data/lineitem.tbl.5"
+    },
+    "ingestionSpec": {
+      "dataSchema": {
+        "dataSource": "lineitem",
+        "timestampSpec": {
+          "column": "l_shipdate",
+          "format": "yyyy-MM-dd"
+        },
+        "dimensionsSpec": {
+          "dimensions": [
+            "l_orderkey",
+            "l_partkey",
+            "l_suppkey",
+            "l_linenumber",
+            "l_returnflag",
+            "l_linestatus",
+            "l_shipdate",
+            "l_commitdate",
+            "l_receiptdate",
+            "l_shipinstruct",
+            "l_shipmode",
+            "l_comment"
+          ]
+        },
+        "metricsSpec": [
+          {
+            "type": "count",
+            "name": "count"
+          },
+          {
+            "type": "longSum",
+            "name": "l_quantity",
+            "fieldName": "l_quantity",
+            "expression": null
+          },
+          {
+            "type": "doubleSum",
+            "name": "l_extendedprice",
+            "fieldName": "l_extendedprice",
+            "expression": null
+          },
+          {
+            "type": "doubleSum",
+            "name": "l_discount",
+            "fieldName": "l_discount",
+            "expression": null
+          },
+          {
+            "type": "doubleSum",
+            "name": "l_tax",
+            "fieldName": "l_tax",
+            "expression": null
+          }
+        ],
+        "granularitySpec": {
+          "type": "uniform",
+          "segmentGranularity": "YEAR",
+          "queryGranularity": {
+            "type": "none"
+          },
+          "rollup": true,
+          "intervals": [
+            "1980-01-01T00:00:00.000Z/2020-01-01T00:00:00.000Z"
+          ]
+        },
+        "transformSpec": {
+          "filter": null,
+          "transforms": []
+        }
+      },
+      "ioConfig": {
+        "type": "index_parallel",
+        "inputSource": {
+          "type": "local",
+          "baseDir": "/path/to/data/",
+          "filter": "lineitem.tbl.5"
+        },
+        "inputFormat": {
+          "format": "tsv",
+          "delimiter": "|",
+          "columns": [
+            "l_orderkey",
+            "l_partkey",
+            "l_suppkey",
+            "l_linenumber",
+            "l_quantity",
+            "l_extendedprice",
+            "l_discount",
+            "l_tax",
+            "l_returnflag",
+            "l_linestatus",
+            "l_shipdate",
+            "l_commitdate",
+            "l_receiptdate",
+            "l_shipinstruct",
+            "l_shipmode",
+            "l_comment"
+          ]
+        },
+        "appendToExisting": false
+      },
+      "tuningConfig": {
+        "type": "index_parallel",
+        "maxRowsPerSegment": 5000000,
+        "maxRowsInMemory": 1000000,
+        "maxTotalRows": 20000000,
+        "numShards": null,
+        "indexSpec": {
+          "bitmap": {
+            "type": "roaring"
+          },
+          "dimensionCompression": "lz4",
+          "metricCompression": "lz4",
+          "longEncoding": "longs"
+        },
+        "indexSpecForIntermediatePersists": {
+          "bitmap": {
+            "type": "roaring"
+          },
+          "dimensionCompression": "lz4",
+          "metricCompression": "lz4",
+          "longEncoding": "longs"
+        },
+        "maxPendingPersists": 0,
+        "reportParseExceptions": false,
+        "pushTimeout": 0,
+        "segmentWriteOutMediumFactory": null,
+        "maxNumConcurrentSubTasks": 4,
+        "maxRetry": 3,
+        "taskStatusCheckPeriodMs": 1000,
+        "chatHandlerTimeout": "PT10S",
+        "chatHandlerNumRetries": 5,
+        "logParseExceptions": false,
+        "maxParseExceptions": 2147483647,
+        "maxSavedParseExceptions": 0,
+        "forceGuaranteedRollup": false,
+        "buildV9Directly": true
+      }
+    }
+  },
+  "currentStatus": {
+    "id": "index_sub_lineitem_2018-04-20T22:16:29.922Z",
+    "type": "index_sub",
+    "createdTime": "2018-04-20T22:16:29.925Z",
+    "queueInsertionTime": "2018-04-20T22:16:29.929Z",
+    "statusCode": "RUNNING",
+    "duration": -1,
+    "location": {
+      "host": null,
+      "port": -1,
+      "tlsPort": -1
+    },
+    "dataSource": "lineitem",
+    "errorMsg": null
+  },
+  "taskHistory": []
+}
+```
+
+* `http://{PEON_IP}:{PEON_PORT}/druid/worker/v1/chat/{SUPERVISOR_TASK_ID}/subtaskspec/{SUB_TASK_SPEC_ID}/history
+`
+
+返回被指定ID的worker任务规范的任务尝试历史记录，如果该supervisor任务以序列模式运行则返回一个HTTP 404
+
 #### 容量规划
 ### 简单任务
 #### 任务符号
