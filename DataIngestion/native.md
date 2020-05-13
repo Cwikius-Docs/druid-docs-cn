@@ -722,10 +722,154 @@ S3对象：
 | `accessKeyId` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `secretAccessKey` 被提供的话，则为必须 |
 | `secretAccessKey` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `accessKeyId` 被提供的话，则为必须 |
 
-**注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../Development/S3-compatible.md#S3认证方式]*
+**注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../Development/S3-compatible.md#S3认证方式)*
 
 #### 谷歌云存储输入源
+
+> [!WARNING]
+> 您需要添加 [`druid-google-extensions`](../Configuration/core-ext/google-cloud-storage.md) 扩展以便使用谷歌云存储输入源。
+
+谷歌云存储输入源支持直接从谷歌云存储读取对象，可以通过谷歌云存储URI字符串列表指定对象。谷歌云存储输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "google",
+        "uris": ["gs://foo/bar/file.json", "gs://bar/foo/file2.json"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "google",
+        "prefixes": ["gs://foo/bar", "gs://bar/foo"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "google",
+        "objects": [
+          { "bucket": "foo", "path": "bar/file1.json"},
+          { "bucket": "bar", "path": "foo/file2.json"}
+        ]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该是 `google` | None | 是 |
+| `uris` | 指定被摄取的谷歌云存储对象位置的URI JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+| `prefixes` | 指定被摄取的谷歌云存储对象所在的路径前缀的URI JSON数组。 以被给定的前缀开头的空对象将被略过 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。 |
+| `objects` | 指定被摄取的谷歌云存储对象的JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+
+注意：只有当 `prefixes` 被指定时，谷歌云存储输入源将略过空的对象。
+
+谷歌云存储对象：
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `bucket` | 谷歌云存储 Bucket的名称 | None | 是 |
+| `path` | 数据路径 | None | 是 |
+
 #### Azure输入源
+
+> [!WARNING]
+> 您需要添加 [`druid-azure-extensions`](../Configuration/core-ext/microsoft-azure.md) 扩展以便使用Azure输入源。
+
+Azure输入源支持直接从Azure读取对象，可以通过Azure URI字符串列表指定对象。Azure输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "azure",
+        "uris": ["azure://container/prefix1/file.json", "azure://container/prefix2/file2.json"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "azure",
+        "prefixes": ["azure://container/prefix1", "azure://container/prefix2"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "azure",
+        "objects": [
+          { "bucket": "container", "path": "prefix1/file1.json"},
+          { "bucket": "container", "path": "prefix2/file2.json"}
+        ]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该是 `azure` | None | 是 |
+| `uris` | 指定被摄取的azure对象位置的URI JSON数组, 格式必须为 `azure://<container>/<path-to-file>` | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+| `prefixes` | 指定被摄取的azure对象所在的路径前缀的URI JSON数组, 格式必须为 `azure://<container>/<prefix>`, 以被给定的前缀开头的空对象将被略过 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。 |
+| `objects` | 指定被摄取的azure对象的JSON数组 | None | `uris` 或者 `prefixes` 或者 `objects` 必须被设置。|
+
+注意：只有当 `prefixes` 被指定时，azure输入源将略过空的对象。
+
+azure对象：
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `bucket` | azure Bucket的名称 | None | 是 |
+| `path` | 数据路径 | None | 是 |
+
 #### HDFS输入源
 #### HTTP输入源
 #### Inline输入源
