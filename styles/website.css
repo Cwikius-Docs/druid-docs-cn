@@ -19,7 +19,7 @@ pre[class*="language-"] {
 .gitbook-donate{
     width: 0% !important;
     position: fixed;
-    right: 20px;
+    right: 150px;
     bottom: 10px;
 }
 
@@ -28,4 +28,18 @@ pre[class*="language-"] {
     position: fixed;
     bottom: 100px;
     right: 10px;
+}
+
+.gitbook-donate #wechat, .gitbook-donate #alipay {
+    display: inline-block;
+    width: 100px;
+    margin-right: 25px;
+}
+
+.gitbook-donate p{
+    text-align: right;
+}
+
+.gitbook-donate div:first{
+    display: none;
 }
