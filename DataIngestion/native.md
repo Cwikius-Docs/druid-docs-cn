@@ -871,9 +871,207 @@ azure对象：
 | `path` | 数据路径 | None | 是 |
 
 #### HDFS输入源
+
+> [!WARNING]
+> 您需要添加 [`druid-hdfs-extensions`](../Configuration/core-ext/hdfs.md) 扩展以便使用HDFS输入源。
+
+HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定为HDFS URI字符串或者HDFS URI字符串列表。HDFS输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个文件。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "hdfs",
+        "paths": "hdfs://foo/bar/", "hdfs://bar/foo"
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "hdfs",
+        "paths": ["hdfs://foo/bar", "hdfs://bar/foo"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "hdfs",
+        "paths": "hdfs://foo/bar/file.json", "hdfs://bar/foo/file2.json"
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "hdfs",
+        "paths": ["hdfs://foo/bar/file.json", "hdfs://bar/foo/file2.json"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该总是 `hdfs` | None | 是 |
+| `paths` | HDFS路径。可以是JSON数组或逗号分隔的路径字符串，这些路径支持类似*的通配符。给定路径之下的空文件将会被跳过。 | None | 是 |
+
+您还可以使用HDFS输入源从云存储摄取数据。但是，如果您想从AWS S3或谷歌云存储读取数据，可以考虑使用 [S3输入源](../Configuration/core-ext/s3.md) 或 [谷歌云存储输入源](../Configuration/core-ext/google-cloud-storage.md)。
+
 #### HTTP输入源
+
+HTTP输入源支持直接通过HTTP从远程站点直接读取文件。 HTTP输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务只能读取一个文件。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "http",
+        "uris": ["http://example.com/uri1", "http://example2.com/uri2"]
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+使用DefaultPassword Provider的身份验证字段示例（这要求密码位于摄取规范中）：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "http",
+        "uris": ["http://example.com/uri1", "http://example2.com/uri2"],
+        "httpAuthenticationUsername": "username",
+        "httpAuthenticationPassword": "password123"
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+```
+
+您还可以使用其他现有的Druid PasswordProvider。下面是使用EnvironmentVariablePasswordProvider的示例：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "http",
+        "uris": ["http://example.com/uri1", "http://example2.com/uri2"],
+        "httpAuthenticationUsername": "username",
+        "httpAuthenticationPassword": {
+          "type": "environment",
+          "variable": "HTTP_INPUT_SOURCE_PW"
+        }
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      ...
+    },
+...
+}
+```
+
+| 属性 | 描述 | 默认 | 是否必须 |
+|-|-|-|-|
+| `type` | 应该是 `http` | None | 是 |
+| `uris` | 输入文件的uris | None | 是 |
+| `httpAuthenticationUsername` | 用于指定uri的身份验证的用户名。如果规范中指定的uri需要基本身份验证头，则改属性是可选的。 | None | 否 |
+| `httpAuthenticationPassword` | 用于指定uri的身份验证的密码。如果规范中指定的uri需要基本身份验证头，则改属性是可选的。 | None | 否 |
+
 #### Inline输入源
+
+Inline输入源可用于读取其规范内联的数据。它可用于演示或用于快速测试数据解析和schema。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "inline",
+        "data": "0,values,formatted\n1,as,CSV"
+      },
+      "inputFormat": {
+        "type": "csv"
+      },
+      ...
+    },
+...
+```
+| 属性 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 应该是 `inline` | 是 |
+| `data` | 要摄入的内联数据 | 是
+
+
 #### Local输入源
+
+Local输入源支持直接从本地存储中读取文件，主要目的用于PoC测试。 Local输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务读取一个或者多个文件。
+
+样例规范：
+```
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "local",
+        "filter" : "*.csv",
+        "baseDir": "/data/directory",
+        "files": ["/bar/foo", "/foo/bar"]
+      },
+      "inputFormat": {
+        "type": "csv"
+      },
+      ...
+    },
+...
+```
+
+| 属性 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 应该是 `local` | 是 |
+| `filter` | 文件的通配符筛选器, 详细信息 [点击此处](http://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/filefilter/WildcardFileFilter.html) 查看 | 如果 `baseDir` 指定了，则为必须 |
+| `baseDir` | 递归搜索要接收的文件的目录, 将跳过 `baseDir` 下的空文件。 | `baseDir` 或者 `files` 至少需要被指定一个 |
+| `files` | 要摄取的文件路径。如果某些文件位于指定的 `baseDir` 下，则可以忽略它们以避免摄取重复文件。该选项会跳过空文件。| `baseDir` 或者 `files` 至少需要被指定一个 |
+
 #### Druid输入源
 ### Firehoses(已废弃)
 #### StaticS3Firehose
