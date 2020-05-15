@@ -40,6 +40,6 @@ pre[class*="language-"] {
     text-align: right;
 }
 
-.gitbook-donate div:first{
+.gitbook-donate:first-child{
     display: none;
 }
