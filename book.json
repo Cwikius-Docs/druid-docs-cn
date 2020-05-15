@@ -49,12 +49,12 @@
             "modify_format": "YYYY-MM-DD HH:mm:ss"
         },
         "donate": {
-            "wechat": "./img/wechat.png",
-            "alipay": "./img/alipay.png",
-            "title": "默认空",
-            "button": "友情支持赞助",
-            "alipayText": "支付宝赞助",
-            "wechatText": "微信赞助"
+            "wechat": "../img/wechat.png",
+            "alipay": "../img/alipay.png",
+            "title": "每一天都要开心与奋斗~",
+            "button": "友情赞助",
+            "alipayText": "支付宝",
+            "wechatText": "微信"
         }
     }
 }
