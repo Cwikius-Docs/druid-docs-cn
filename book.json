@@ -24,7 +24,8 @@
         "atoc",
         "edit-link",
         "copy-code-button",
-        "tbfed-pagefooter"
+        "tbfed-pagefooter",
+        "donate"
     ],
     "pluginsConfig": {
         "edit-link": {
@@ -46,6 +47,14 @@
             "copyright": "<a href=\"http://www.beian.miit.gov.cn/\">渝ICP备16001958号</a> | Copyright © 2020 apache-druid.cn",
             "modify_label": "最近一次修改时间：",
             "modify_format": "YYYY-MM-DD HH:mm:ss"
+        },
+        "donate": {
+            "wechat": "./img/wechat.png",
+            "alipay": "./img/alipay.png",
+            "title": "默认空",
+            "button": "友情支持赞助",
+            "alipayText": "支付宝赞助",
+            "wechatText": "微信赞助"
         }
     }
 }
