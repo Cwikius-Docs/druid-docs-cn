@@ -43,3 +43,7 @@ pre[class*="language-"] {
 .gitbook-donate div:first-child{
     display: none;
 }
+#wechat:hover p, #alipay:hover p{
+    animation: none !important;
+    -webkit-animation: none !important;
+}
