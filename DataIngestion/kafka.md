@@ -16,12 +16,12 @@ Kafka索引服务支持在Overlord上配置*supervisors*，supervisors通过管�
 
 Kafka索引服务需要同时在Overlord和MiddleManagers中加载 `druid-kafka-indexing-service` 扩展。 用于一个数据源的supervisor通过向 `http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor` 发送一个HTTP POST请求来启动，例如：
 
-```
+```json
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://localhost:8090/druid/indexer/v1/supervisor
 ```
 
 一个示例supervisor规范如下：
-```
+```json
 {
   "type": "kafka",
   "dataSchema": {
@@ -264,7 +264,7 @@ Kafka索引任务运行在MiddleManager上，因此，其受限于MiddleManager�
 
 读取任务的数量由 `replicas` 和 `taskCount` 控制。 一般， 一共有 `replicas * taskCount` 个读取任务， 存在一个例外是当 taskCount > {numKafkaPartitions}, 在这种情况时 {numKafkaPartitions}个任务将被使用。 当 `taskDuration` 结束时，这些任务将被转换为发布状态并创建 `replicas * taskCount` 个新的读取任务。 因此，为了使得读取任务和发布任务可以并发的运行， 最小的容量应该是：
 
-```
+```json
 workerCapacity = 2 * replicas * taskCount
 ```
 

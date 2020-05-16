@@ -28,7 +28,7 @@ Druid安装包提供了几个[单服务器配置](./chapter-3.md)的示例，以
 
 在终端中运行以下命令来提取Druid
 
-```
+```json
 tar -xzf apache-druid-0.17.0-bin.tar.gz
 cd apache-druid-0.17.0
 ```
@@ -49,12 +49,12 @@ cd apache-druid-0.17.0
 
 在`apache-druid-0.17.0`安装包的根目录下执行命令：
 
-```
+```json
 ./bin/start-micro-quickstart
 ```
 然后将在本地计算机上启动Zookeeper和Druid服务实例，例如：
 
-```
+```json
 $ ./bin/start-micro-quickstart
 [Fri May  3 11:40:50 2019] Running command[zk], logging to[/apache-druid-0.17.0/var/sv/zk.log]: bin/run-zk conf
 [Fri May  3 11:40:50 2019] Running command[coordinator-overlord], logging to[/apache-druid-0.17.0/var/sv/coordinator-overlord.log]: bin/run-druid coordinator-overlord conf/druid/single-server/micro-quickstart
@@ -103,7 +103,7 @@ $ ./bin/start-micro-quickstart
 * regionName
 * user
 
-```
+```json
 {
   "timestamp":"2015-09-12T20:03:45.018Z",
   "channel":"#en.wikipedia",

@@ -9,7 +9,7 @@ Apache Druid可以接收JSON、CSV或TSV等分隔格式或任何自定义格式�
 下面的示例显示了在Druid中原生支持的数据格式：
 
 *JSON*
-```
+```json
 {"timestamp": "2013-08-31T01:02:33Z", "page": "Gypsy Danger", "language" : "en", "user" : "nuclear", "unpatrolled" : "true", "newPage" : "true", "robot": "false", "anonymous": "false", "namespace":"article", "continent":"North America", "country":"United States", "region":"Bay Area", "city":"San Francisco", "added": 57, "deleted": 200, "delta": -143}
 {"timestamp": "2013-08-31T03:32:45Z", "page": "Striker Eureka", "language" : "en", "user" : "speed", "unpatrolled" : "false", "newPage" : "true", "robot": "true", "anonymous": "false", "namespace":"wikipedia", "continent":"Australia", "country":"Australia", "region":"Cantebury", "city":"Syndey", "added": 459, "deleted": 129, "delta": 330}
 {"timestamp": "2013-08-31T07:11:21Z", "page": "Cherno Alpha", "language" : "ru", "user" : "masterYi", "unpatrolled" : "false", "newPage" : "true", "robot": "true", "anonymous": "false", "namespace":"article", "continent":"Asia", "country":"Russia", "region":"Oblast", "city":"Moscow", "added": 123, "deleted": 12, "delta": 111}
@@ -18,7 +18,7 @@ Apache Druid可以接收JSON、CSV或TSV等分隔格式或任何自定义格式�
 ```
 
 *CSV*
-```
+```json
 2013-08-31T01:02:33Z,"Gypsy Danger","en","nuclear","true","true","false","false","article","North America","United States","Bay Area","San Francisco",57,200,-143
 2013-08-31T03:32:45Z,"Striker Eureka","en","speed","false","true","true","false","wikipedia","Australia","Australia","Cantebury","Syndey",459,129,330
 2013-08-31T07:11:21Z,"Cherno Alpha","ru","masterYi","false","true","true","false","article","Asia","Russia","Oblast","Moscow",123,12,111
@@ -27,7 +27,7 @@ Apache Druid可以接收JSON、CSV或TSV等分隔格式或任何自定义格式�
 ```
 
 *TSV(Delimited)*
-```
+```json
 2013-08-31T01:02:33Z  "Gypsy Danger"  "en"  "nuclear" "true"  "true"  "false" "false" "article" "North America" "United States" "Bay Area"  "San Francisco" 57  200 -143
 2013-08-31T03:32:45Z  "Striker Eureka"  "en"  "speed" "false" "true"  "true"  "false" "wikipedia" "Australia" "Australia" "Cantebury" "Syndey"  459 129 330
 2013-08-31T07:11:21Z  "Cherno Alpha"  "ru"  "masterYi"  "false" "true"  "true"  "false" "article" "Asia"  "Russia"  "Oblast"  "Moscow"  123 12  111
@@ -54,7 +54,7 @@ Druid支持自定义数据格式，可以使用 `Regex` 解析器或 `JavaScript
 
 **JSON**
 一个加载JSON格式数据的 `inputFormat` 示例：
-```
+```json
 "ioConfig": {
   "inputFormat": {
     "type": "json"
@@ -73,7 +73,7 @@ JSON `inputFormat` 有以下组件：
 
 #### CSV
 一个加载CSV格式数据的 `inputFormat` 示例：
-```
+```json
 "ioConfig": {
   "inputFormat": {
     "type": "csv",
@@ -94,7 +94,7 @@ CSV `inputFormat` 有以下组件：
 | skipHeaderRows | 整型数值 | 该项如果设置，任务将略过 `skipHeaderRows`配置的行数 | 否（默认为0） |
 
 #### TSV(Delimited)
-```
+```json
 "ioConfig": {
   "inputFormat": {
     "type": "tsv",
@@ -126,7 +126,7 @@ TSV `inputFormat` 有以下组件：
 > 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../Development/orc-extensions.md#从contrib扩展迁移)。
 
 一个加载ORC格式数据的 `inputFormat` 示例：
-```
+```json
 "ioConfig": {
   "inputFormat": {
     "type": "orc",
@@ -160,7 +160,7 @@ ORC `inputFormat` 有以下组件：
 > 使用Parquet输入格式之前，首先需要包含 [druid-parquet-extensions](../Development/parquet-extensions.md) 
 
 一个加载Parquet格式数据的 `inputFormat` 示例：
-```
+```json
 "ioConfig": {
   "inputFormat": {
     "type": "parquet",
@@ -191,7 +191,7 @@ Parquet `inputFormat` 有以下组件：
 #### FlattenSpec
 
 `flattenSpec` 位于 `inputFormat` -> `flattenSpec` 中，负责将潜在的嵌套输入数据（如JSON、Avro等）和Druid的平面数据模型之间架起桥梁。 `flattenSpec` 示例如下：
-```
+```json
 "flattenSpec": {
   "useFieldDiscovery": true,
   "fields": [
@@ -291,7 +291,7 @@ Parquet `inputFormat` 有以下组件：
 Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#flattenspec)，这些字段类型可用于读取嵌套的Avro记录。Avro当前不支持“jq”字段类型。
 
 例如，使用带有自定义读取器schema文件的Avro Hadoop解析器：
-```
+```json
 {
   "type" : "index_hadoop",
   "spec" : {
@@ -351,7 +351,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 
 像大多数Hadoop作业，最佳结果是在 `tuningConfig` 中的 `jobProperties` 中添加 `"mapreduce.job.user.classpath.first": "true"` 或者 `"mapreduce.job.classloader": "true"`。 注意，如果使用了 `"mapreduce.job.classloader": "true"`, 需要设置 `mapreduce.job.classloader.system.classes` 包含 `-org.apache.hadoop.hive.` 来让Hadoop从应用jars包中加载 `org.apache.hadoop.hive` 而非从系统jar中，例如：
 
-```
+```json
 ...
     "mapreduce.job.classloader": "true",
     "mapreduce.job.classloader.system.classes" : "java., javax.accessibility., javax.activation., javax.activity., javax.annotation., javax.annotation.processing., javax.crypto., javax.imageio., javax.jws., javax.lang.model., -javax.management.j2ee., javax.management., javax.naming., javax.net., javax.print., javax.rmi., javax.script., -javax.security.auth.message., javax.security.auth., javax.security.cert., javax.security.sasl., javax.sound., javax.sql., javax.swing., javax.tools., javax.transaction., -javax.xml.registry., -javax.xml.rpc., javax.xml., org.w3c.dom., org.xml.sax., org.apache.commons.logging., org.apache.log4j., -org.apache.hadoop.hbase., -org.apache.hadoop.hive., org.apache.hadoop., core-default.xml, hdfs-default.xml, mapred-default.xml, yarn-default.xml",
@@ -363,7 +363,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 **示例**
 
 **`orc` parser, `orc` parseSpec, 自动字段发现, 展平表达式**
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -413,7 +413,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 
 **`orc` parser, `orc` parseSpec, 不具有 `flattenSpec` 或者 `dimensionSpec`的字段发现**
 
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -447,7 +447,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 ```
 **`orc` parser, `orc` parseSpec, 非自动发现**
 
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -507,7 +507,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 
 **`orc` parser, `timeAndDims` parseSpec**
 
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -577,7 +577,7 @@ Parquet Hadoop 解析器支持自动字段发现，如果提供了一个带有 `
 **示例**
 
 `parquet` parser, `parquet` parseSpec
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -630,7 +630,7 @@ Parquet Hadoop 解析器支持自动字段发现，如果提供了一个带有 `
 }
 ```
 `parquet` parser, `timeAndDims` parseSpec
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -695,7 +695,7 @@ Parquet Avro Hadoop 解析器支持自动字段发现，如果提供了一个带
 当时间维度是一个 [date类型的列](https://github.com/apache/parquet-format/blob/master/LogicalTypes.md), 则无需指定一个格式。 当格式为UTF8的String， 则要么指定为 `auto`，或者显式的指定一个 [时间格式](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html)。
 
 **示例**
-```
+```json
 {
   "type": "index_hadoop",
   "spec": {
@@ -764,7 +764,7 @@ Parquet Avro Hadoop 解析器支持自动字段发现，如果提供了一个带
 Avro parseSpec包含一个使用"root"或者"path"类型的 [`flattenSpec`](ingestion.md#flattenspec.md), 以便可以用来读取嵌套的avro数据。 "jq"类型在Avro中目前还不支持。
 
 以下示例展示了一个具有**schema repo**avro解码器的 `Avro stream parser`:
-```
+```json
 "parser" : {
   "type" : "avro_stream",
   "avroBytesDecoder" : {
@@ -797,7 +797,7 @@ Avro parseSpec包含一个使用"root"或者"path"类型的 [`flattenSpec`](inge
 > "schema_inline"解码器使用固定schema读取Avro记录，不支持schema迁移。如果将来可能需要迁移schema，请考虑其他解码器之一，所有解码器都使用一个消息头，该消息头允许解析器识别正确的Avro schema以读取记录。
 
 如果可以使用同一schema读取所有输入事件，则可以使用此解码器。在这种情况下，在输入任务JSON本身中指定schema，如下所述:
-```
+```json
 ...
 "avroBytesDecoder": {
   "type": "schema_inline",
@@ -817,7 +817,7 @@ Avro parseSpec包含一个使用"root"或者"path"类型的 [`flattenSpec`](inge
 **基于Avro Bytes Decoder的 `multiple inline schemas`**
 
 如果不同的输入事件可以有不同的读取schema，请使用此解码器。在这种情况下，在输入任务JSON本身中指定schema，如下所述:
-```
+```json
 ...
 "avroBytesDecoder": {
   "type": "multiple_schemas_inline",
@@ -885,7 +885,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 | url | String | 指定架构注册表的url | 是 |
 | capacity | 整型数字 | 指定缓存的最大值（默认为 Integer.MAX_VALUE）| 否 |
 
-```
+```json
 ...
 "avroBytesDecoder" : {
    "type" : "schema_registry",
@@ -909,7 +909,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 | parseSpec | JSON对象 | 指定数据的时间戳和维度。格式必须为JSON。有关更多配置选项，请参阅 [JSON ParseSpec](#json)。请注意，不再支持timeAndDims parseSpec | 是 |
 
 样例规范：
-```
+```json
 "parser": {
   "type": "protobuf",
   "descriptor": "file:///tmp/metrics.desc",
@@ -961,7 +961,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 | flattenSpec | JSON对象 | 指定嵌套的JSON数据的展平配置，详情可见 [flattenSpec](#flattenspec) | 否 |
 
 示例规范：
-```
+```json
 "parseSpec": {
   "format" : "json",
   "timestampSpec" : {
@@ -999,7 +999,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 | columns | JSON数组 | 指定数据的列 | 是 |
 
 示例规范：
-```
+```json
 "parseSpec": {
   "format" : "csv",
   "timestampSpec" : {
@@ -1038,7 +1038,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 | columns | JSON数组 | 指定数据的列 | 是 |
 
 示例规范：
-```
+```json
 "parseSpec": {
   "format" : "tsv",
   "timestampSpec" : {
@@ -1072,7 +1072,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 JSON数据也可以包含多值维度。维度的多个值必须在接收的数据中格式化为 `JSON数组`，不需要额外的 `parseSpec` 配置。
 
 #### 正则解析规范
-```
+```json
 "parseSpec":{
   "format" : "regex",
   "timestampSpec" : {
@@ -1089,7 +1089,7 @@ JSON数据也可以包含多值维度。维度的多个值必须在接收的数�
 `columns` 字段必须以相同的顺序与regex匹配组的列匹配。如果未提供列，则默认列名称（“column_1”、“column2”、…”列“）将被分配, 确保列名包含所有维度
 
 #### JavaScript解析规范
-```
+```json
 "parseSpec":{
   "format" : "javascript",
   "timestampSpec" : {

@@ -14,7 +14,7 @@ Druid Coordinator定期运行，每次运行之间的时间是一个可配置的
 在Historical进程为任何未分配的段提供服务之前，首先按容量对每个层的可用Historical进程进行排序，最小容量的服务器具有最高优先级。未分配的段总是分配给具有最小能力的进程，以保持进程之间的平衡级别。在为Historical进程分配新段时，Coordinator不直接与该进程通信；而是在ZK中的Historical进程加载队列路径下创建有关该新段的一些临时信息。一旦看到此请求，Historical进程将加载段并开始为其提供服务。
 
 ### 运行
-```
+```json
 org.apache.druid.cli.Main server coordinator
 ```
 ### 规则

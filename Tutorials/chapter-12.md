@@ -18,7 +18,7 @@ Druid创建了必要的子文件夹，以便在这个新创建的文件夹下存
 在 `conf/druid/common/common.runtime.properties` 中编辑`common.runtime.properties` 以包含HDFS属性,用于该位置的文件夹与上面示例中使用的文件夹相同
 
 #### common.runtime.properties
-```
+```json
 # Deep storage
 #
 # For HDFS:
@@ -41,7 +41,7 @@ druid.indexer.logs.directory=/druid/indexing-logs
 
 同时，需要在 `conf/druid/_common/common/common.runtime.properties` 中增加hdfs-storage核心扩展：
 
-```
+```json
 #
 # Extensions
 #
@@ -65,12 +65,12 @@ druid.extensions.loadList=["mysql-metadata-storage", "druid-hdfs-storage", "drui
 
 编辑 `conf/druid/_common/common.runtime.properties` 增加下列属性：
 
-```
+```json
 druid.hadoop.security.kerberos.principal
 druid.hadoop.security.kerberos.keytab
 ```
 例如：
-```
+```json
 druid.hadoop.security.kerberos.principal=hdfs-test@EXAMPLE.IO
 druid.hadoop.security.kerberos.keytab=/etc/security/keytabs/hdfs.headless.keytab
 ```

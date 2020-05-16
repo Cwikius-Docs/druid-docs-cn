@@ -17,7 +17,7 @@ Druid Overlord公开了一个web GUI，用于管理任务和worker。有关详�
 如果一个MiddleManager的任务失败超过阈值，Overlord会将这些MiddleManager列入黑名单。不超过20%的MiddleManager可以被列入黑名单，被列入黑名单的MiddleManager将定期被列入白名单。
 
 以下变量可用于设置阈值和黑名单超时：
-```
+```json
 druid.indexer.runner.maxRetriesBeforeBlacklist
 druid.indexer.runner.workerBlackListBackoffTime
 druid.indexer.runner.workerBlackListCleanupPeriod

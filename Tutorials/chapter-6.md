@@ -14,7 +14,7 @@
 
 数据摄取规范位于 `quickstart/tutorial/retention-index.json`, 提交这个规范，将创建一个名称为 `retention-tutorial` 的数据源
 
-```
+```json
 bin/post-index-task --file quickstart/tutorial/retention-index.json --url http://localhost:8081
 ```
 

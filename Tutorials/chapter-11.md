@@ -12,7 +12,7 @@
 
 我们在 `quickstart/tutorial/transform-data.json` 中包括了样例数据，为了方便我们展示一下：
 
-```
+```json
 {"timestamp":"2018-01-01T07:01:35Z","animal":"octopus",  "location":1, "number":100}
 {"timestamp":"2018-01-01T05:01:35Z","animal":"mongoose", "location":2,"number":200}
 {"timestamp":"2018-01-01T06:01:35Z","animal":"snake", "location":3, "number":300}
@@ -21,7 +21,7 @@
 
 ### 使用转换规范加载数据
 我们将使用以下规范摄取示例数据，该规范演示了转换规范的使用：
-```
+```json
 {
   "type" : "index_parallel",
   "spec" : {
@@ -104,14 +104,14 @@
 这个过滤器选择前3行，它将排除输入数据中的最后一个"lion"行。请注意，过滤器是在转换之后应用的。
 
 现在提交位于 `quickstart/tutorial/transform-index.json` 的任务：
-```
+```json
 bin/post-index-task --file quickstart/tutorial/transform-index.json --url http://localhost:8081
 ```
 
 ### 查询已转换的数据
 
 运行 `bin/dsql` 提交 `select * from "transform-tutorial"` 查询来看摄入的数据：
-```
+```json
 dsql> select * from "transform-tutorial";
 ┌──────────────────────────┬────────────────┬───────┬──────────┬────────┬───────────────┐
 │ __time                   │ animal         │ count │ location │ number │ triple-number │

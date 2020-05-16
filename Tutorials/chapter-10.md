@@ -20,7 +20,7 @@
 * `bytes`: 传输的字节数
 * `cost`: 发送流量的成本
 
-```
+```json
 {"ts":"2018-01-01T01:01:35Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2", "srcPort":2000, "dstPort":3000, "protocol": 6, "packets":10, "bytes":1000, "cost": 1.4}
 {"ts":"2018-01-01T01:01:51Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2", "srcPort":2000, "dstPort":3000, "protocol": 6, "packets":20, "bytes":2000, "cost": 3.1}
 {"ts":"2018-01-01T01:01:59Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2", "srcPort":2000, "dstPort":3000, "protocol": 6, "packets":30, "bytes":3000, "cost": 0.4}
@@ -46,7 +46,7 @@ Druid摄取规范中最核心的元素是 `dataSchema`。 `dataSchema` 定义了
 
 在 `quickstart/` 中创建一个名为 `insertion-tutorial-index.json` 的新文件，其中包含以下内容：
 
-```
+```json
 "dataSchema" : {}
 ```
 
@@ -55,7 +55,7 @@ Druid摄取规范中最核心的元素是 `dataSchema`。 `dataSchema` 定义了
 #### 数据源名称
 
 数据源的名称通过 `dataSource` 字段来在 `dataSchema` 中被指定：
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
 }
@@ -68,7 +68,7 @@ Druid摄取规范中最核心的元素是 `dataSchema`。 `dataSchema` 定义了
 `dataSchema` 需要知道如何从输入数据中提取主时间戳字段。
 
 输入数据中的timestamp列名为"ts"，包含ISO 8601时间戳，因此让我们将包含该信息的 `timestampSpec` 添加到 `dataSchema`：
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -95,7 +95,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
   
 对于本教程，让我们启用rollup。这是用 `dataSchema` 上`granularitySpec` 指定的。
 
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -122,7 +122,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 在 `dataSchema` 中使用 `dimensionSpec` 指定维度。
 
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -163,7 +163,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 在 `dataSchema` 中使用 `metricsSpec` 来指定metrics
 
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -201,7 +201,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 #### No Rollup
 
 如果我们没使用rollup，所有的列都将在 `dimensionsSpec` 中指定：
-```
+```json
       "dimensionsSpec" : {
         "dimensions": [
           "srcIP",
@@ -228,7 +228,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 **段粒度**
 
 段粒度由 `granularitySpec` 中的 `SegmentGranularity` 属性配置。对于本教程，我们将创建小时段：
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -261,7 +261,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 **查询粒度**
 查询粒度由 `granularitySpec` 中的 `queryGranularity` 属性配置。对于本教程，我们使用分钟粒度：
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -292,11 +292,11 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 }
 ```
 要查看查询粒度的影响，让我们从原始输入数据中查看这一行
-```
+```json
 {"ts":"2018-01-01T01:03:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2", "srcPort":5000, "dstPort":7000, "protocol": 6, "packets":60, "bytes":6000, "cost": 4.3}
 ```
 当这一行以分钟查询粒度摄取时，Druid会将该行的时间戳设置为分钟桶：
-```
+```json
 {"ts":"2018-01-01T01:03:00Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2", "srcPort":5000, "dstPort":7000, "protocol": 6, "packets":60, "bytes":6000, "cost": 4.3}
 ```
 
@@ -305,7 +305,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 对于批处理任务，需要定义时间间隔。时间戳超出时间间隔的输入行将不会被接收。
 
 时间间隔指定在 `granularitySpec` 配置项中：
-```
+```json
 "dataSchema" : {
   "dataSource" : "ingestion-tutorial",
   "timestampSpec" : {
@@ -342,7 +342,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 我们现在已经完成了 `dataSchema` 的定义。剩下的步骤是将我们创建的数据模式放入一个摄取任务规范中，并指定输入源。
 
 `dataSchema` 在所有任务类型之间共享，但每个任务类型都有自己的规范格式。对于本教程，我们将使用本机批处理摄取任务：
-```
+```json
 {
   "type" : "index_parallel",
   "spec" : {
@@ -382,7 +382,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 现在让我们定义输入源，它在 `ioConfig` 对象中指定。每个任务类型都有自己的 `ioConfig` 类型。要读取输入数据，我们需要指定一个`inputSource`。我们前面保存的示例网络流数据需要从本地文件中读取，该文件配置如下：
 
-```
+```json
     "ioConfig" : {
       "type" : "index_parallel",
       "inputSource" : {
@@ -395,7 +395,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 #### 定义数据格式
 因为我们的输入数据为JSON字符串，我们使用json的 `inputFormat`:
-```
+```json
     "ioConfig" : {
       "type" : "index_parallel",
       "inputSource" : {
@@ -408,7 +408,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
       }
     }
 ```
-```
+```json
 {
   "type" : "index_parallel",
   "spec" : {
@@ -460,7 +460,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 每一个摄入任务都有一个 `tuningConfig` 部分，该部分允许用户可以调整不同的摄入参数
 
 例如，我们添加一个 `tuningConfig`，它为本地批处理摄取任务设置目标段大小：
-```
+```json
     "tuningConfig" : {
       "type" : "index_parallel",
       "maxRowsPerSegment" : 5000000
@@ -470,7 +470,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 ### 最终形成的规范
 我们已经定义了摄取规范，现在应该如下所示：
-```
+```json
 {
   "type" : "index_parallel",
   "spec" : {
@@ -524,7 +524,7 @@ Druid支持以下列类型：String、Long、Float和Double。我们将在下面
 
 ### 提交任务和查询数据
 在根目录运行以下命令：
-```
+```json
 bin/post-index-task --file quickstart/ingestion-tutorial-index.json --url http://localhost:8081
 ```
 
@@ -532,7 +532,7 @@ bin/post-index-task --file quickstart/ingestion-tutorial-index.json --url http:/
 
 运行 `bin/dsql` 中运行 `select * from "ingestion-tutorial"` 查询我们摄入什么样的数据
 
-```
+```json
 $ bin/dsql
 Welcome to dsql, the command-line client for Druid SQL.
 Type "\h" for help.

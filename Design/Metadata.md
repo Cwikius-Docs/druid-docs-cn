@@ -13,7 +13,7 @@ Derby是Druid的默认元数据存储，但是它不适合生产环境。[MySQL]
 
 将以下内容添加到您的Druid配置中：
 
-```
+```json
 druid.metadata.storage.type=derby
 druid.metadata.storage.connector.connectURI=jdbc:derby://localhost:1527//opt/var/druid_state/derby;create=true
 ```
@@ -32,7 +32,7 @@ druid.metadata.storage.connector.connectURI=jdbc:derby://localhost:1527//opt/var
 
 支持的属性示例：
 
-```
+```json
 druid.metadata.storage.connector.dbcp.maxConnLifetimeMillis=1200000
 druid.metadata.storage.connector.dbcp.defaultQueryTimeout=30000
 ```
@@ -50,7 +50,7 @@ druid.metadata.storage.connector.dbcp.defaultQueryTimeout=30000
 
 `payload` 列存储一个JSON blob，该blob包含该段的所有元数据（存储在该payload中的某些数据与表中的某些列是冗余的，这是有意的）, 信息如下：
 
-```
+```json
 {
  "dataSource":"wikipedia",
  "interval":"2012-05-23T00:00:00.000Z/2012-05-24T00:00:00.000Z",

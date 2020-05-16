@@ -19,7 +19,7 @@ Docker安装完成后，请继续执行本教程中的后续步骤
 
 从apache-druid-0.17.0软件包根目录中，运行以下命令以构建名为"druid-hadoop-demo"的Docker镜像，其版本标签为"2.8.5"：
 
-```
+```json
 cd quickstart/tutorial/hadoop/docker
 docker build -t druid-hadoop-demo:2.8.5 .
 ```
@@ -32,7 +32,7 @@ docker build -t druid-hadoop-demo:2.8.5 .
 
 我们在 `/tmp` 下创建一些文件夹，稍后我们在启动Hadoop容器时会使用到它们：
 
-```
+```json
 mkdir -p /tmp/shared
 mkdir -p /tmp/shared/hadoop_xml
 ```
@@ -40,19 +40,19 @@ mkdir -p /tmp/shared/hadoop_xml
 #### 配置 /etc/hosts
 
 在主机的 `/etc/hosts` 中增加以下入口：
-```
+```json
 127.0.0.1 druid-hadoop-demo
 ```
 #### 启动Hadoop容器
 在 `/tmp/shared` 文件夹被创建和 `/etc/hosts` 入口被添加后，运行以下命令来启动Hadoop容器：
 
-```
+```json
 docker run -it  -h druid-hadoop-demo --name druid-hadoop-demo -p 2049:2049 -p 2122:2122 -p 8020:8020 -p 8021:8021 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 8040:8040 -p 8042:8042 -p 8088:8088 -p 8443:8443 -p 9000:9000 -p 10020:10020 -p 19888:19888 -p 34455:34455 -p 49707:49707 -p 50010:50010 -p 50020:50020 -p 50030:50030 -p 50060:50060 -p 50070:50070 -p 50075:50075 -p 50090:50090 -p 51111:51111 -v /tmp/shared:/shared druid-hadoop-demo:2.8.5 /etc/bootstrap.sh -bash
 ```
 
 容器启动后，您的终端将连接到容器内运行的bash shell：
 
-```
+```json
 Starting sshd:                                             [  OK  ]
 18/07/26 17:27:15 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Starting namenodes on [druid-hadoop-demo]
@@ -72,7 +72,7 @@ bash-4.1#
 ##### 进入Hadoop容器shell
 
 运行下边命令打开Hadoop容器的另一个shell：
-```
+```json
 docker exec -it druid-hadoop-demo bash
 ```
 
@@ -80,7 +80,7 @@ docker exec -it druid-hadoop-demo bash
 
 从apache-druid-0.17.0安装包的根目录拷贝 `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` 样例数据到共享文件夹
 
-```
+```json
 cp quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz /tmp/shared/wikiticker-2015-09-12-sampled.json.gz
 ```
 
@@ -88,7 +88,7 @@ cp quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz /tmp/shared/wikitic
 
 在Hadoop容器shell中，运行以下命令来设置本次教程需要的HDFS目录，同时拷贝输入数据到HDFS上：
 
-```
+```json
 cd /usr/local/hadoop/bin
 ./hdfs dfs -mkdir /druid
 ./hdfs dfs -mkdir /druid/segments
@@ -109,13 +109,13 @@ cd /usr/local/hadoop/bin
 #### 拷贝Hadoop配置到Druid classpath
 
 从Hadoop容器shell中，运行以下命令将Hadoop.xml配置文件拷贝到共享文件夹中：
-```
+```json
 cp /usr/local/hadoop/etc/hadoop/*.xml /shared/hadoop_xml
 ```
 
 在宿主机上运行下边命令，其中{PATH_TO_DRUID}替换为Druid软件包的路径：
 
-```
+```json
 mkdir -p {PATH_TO_DRUID}/conf/druid/single-server/micro-quickstart/_common/hadoop-xml
 cp /tmp/shared/hadoop_xml/*.xml {PATH_TO_DRUID}/conf/druid/single-server/micro-quickstart/_common/hadoop-xml/
 ```
@@ -124,7 +124,7 @@ cp /tmp/shared/hadoop_xml/*.xml {PATH_TO_DRUID}/conf/druid/single-server/micro-q
 在常用的文本编辑器中，打开 `conf/druid/single-server/micro-quickstart/_common/common.runtime.properties` 文件做如下修改：
 
 **禁用本地深度存储，启用HDFS深度存储**
-```
+```json
 #
 # Deep storage
 #
@@ -138,7 +138,7 @@ druid.storage.type=hdfs
 druid.storage.storageDirectory=/druid/segments
 ```
 **禁用本地日志存储，启动HDFS日志存储**
-```
+```json
 #
 # Indexing service logs
 #
@@ -164,7 +164,7 @@ Hadoop.xml文件拷贝到Druid集群、段和日志存储配置更新为HDFS后�
 要将数据加载到Druid中，可以提交指向该文件的*摄取任务*。我们已经包含了一个任务，该任务会加载存档中包含 `wikiticker-2015-09-12-sampled.json.gz`文件。
 
 通过以下命令进行提交 `wikipedia-index-hadoop.json` 任务：
-```
+```json
 bin/post-index-task --file quickstart/tutorial/wikipedia-index-hadoop.json --url http://localhost:8081
 ```
 
@@ -184,7 +184,7 @@ bin/post-index-task --file quickstart/tutorial/wikipedia-index-hadoop.json --url
 这是必需的，因为其他摄取教程将写入相同的"wikipedia"数据源，并且以后的教程希望集群使用本地深度存储。
 
 恢复配置示例：
-```
+```json
 #
 # Deep storage
 #

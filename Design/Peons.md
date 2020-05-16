@@ -11,7 +11,7 @@ Peon在单个JVM中运行单个任务。MiddleManager负责创建运行任务的
 ### 运行
 Peon应该很少独立于MiddleManager，除非出于开发目的。
 
-```
+```json
 org.apache.druid.cli.Main internal peon <task_file> <status_file>
 ```
 

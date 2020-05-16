@@ -18,7 +18,7 @@ Druid支持SQL查询。
 
 该查询检索了2015年9月12日被编辑最多的10个维基百科页面
 
-```
+```json
 SELECT page, COUNT(*) AS Edits
 FROM wikipedia
 WHERE TIMESTAMP '2015-09-12 00:00:00' <= "__time" AND "__time" < TIMESTAMP '2015-09-13 00:00:00'
@@ -52,14 +52,14 @@ LIMIT 10
 为方便起见，Druid软件包中包括了一个SQL命令行客户端，位于Druid根目录中的 `bin/dsql`
 
 运行 `bin/dsql`, 可以看到如下：
-```
+```json
 Welcome to dsql, the command-line client for Druid SQL.
 Type "\h" for help.
 dsql>
 ```
 将SQl粘贴到 `dsql` 中提交查询：
 
-```
+```json
 dsql> SELECT page, COUNT(*) AS Edits FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 00:00:00' AND TIMESTAMP '2015-09-13 00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 10;
 ┌──────────────────────────────────────────────────────────┬───────┐
 │ page                                                     │ Edits │
@@ -84,12 +84,12 @@ SQL查询作为JSON通过HTTP提交
 
 教程包括一个示例文件, 该文件`quickstart/tutorial/wikipedia-top-pages-sql.json`包含上面显示的SQL查询, 我们将该查询提交给Druid Broker。
 
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipedia-top-pages-sql.json http://localhost:8888/druid/v2/sql
 ```
 结果返回如下：
 
-```
+```json
 [
   {
     "page": "Wikipedia:Vandalismusmeldung",
@@ -140,7 +140,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipe
 
 **时间查询**
 
-```
+```json
 SELECT FLOOR(__time to HOUR) AS HourTime, SUM(deleted) AS LinesDeleted
 FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 00:00:00' AND TIMESTAMP '2015-09-13 00:00:00'
 GROUP BY 1
@@ -150,7 +150,7 @@ GROUP BY 1
 
 **聚合查询**
 
-```
+```json
 SELECT channel, page, SUM(added)
 FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 00:00:00' AND TIMESTAMP '2015-09-13 00:00:00'
 GROUP BY channel, page
@@ -161,7 +161,7 @@ ORDER BY SUM(added) DESC
 
 **查询原始数据**
 
-```
+```json
 SELECT user, page
 FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 02:00:00' AND TIMESTAMP '2015-09-12 03:00:00'
 LIMIT 5
@@ -181,7 +181,7 @@ Druid SQL能够解释给定查询的查询计划, 在控制台中，可以通过
 
 `EXPLAIN PLAN FOR SELECT page, COUNT(*) AS Edits FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 00:00:00' AND TIMESTAMP '2015-09-13 00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 10;`
 
-```
+```json
 dsql> EXPLAIN PLAN FOR SELECT page, COUNT(*) AS Edits FROM wikipedia WHERE "__time" BETWEEN TIMESTAMP '2015-09-12 00:00:00' AND TIMESTAMP '2015-09-13 00:00:00' GROUP BY page ORDER BY Edits DESC LIMIT 10;
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ PLAN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    │
@@ -201,7 +201,7 @@ Druid的原生查询格式以JSON表示。
 
 这是一个查询，可检索2015-09-12上具有最多页面编辑量的10个wikipedia页面。
 
-```
+```json
 {
   "queryType" : "topN",
   "dataSource" : "wikipedia",
@@ -228,13 +228,13 @@ Druid的原生查询格式以JSON表示。
 
 提交该查询到Druid：
 
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipedia-top-pages.json http://localhost:8888/druid/v2?pretty
 ```
 
 您可以看到如下的查询结果：
 
-```
+```json
 [ {
   "timestamp" : "2015-09-12T00:46:58.771Z",
   "result" : [ {

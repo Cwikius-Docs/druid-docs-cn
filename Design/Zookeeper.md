@@ -12,7 +12,7 @@ Apache Druid使用[Apache ZooKeeper](http://zookeeper.apache.org/) 来管理整�
 ### Coordinator Leader选举
 
 我们使用 **Curator LeadershipLatch** 进行Leader选举：
-```
+```json
 ${druid.zk.paths.coordinatorPath}/_COORDINATOR
 ```
 
@@ -21,17 +21,17 @@ ${druid.zk.paths.coordinatorPath}/_COORDINATOR
 `announcementsPath` 和 `servedSegmentsPath` 这两个参数用于这个功能。
 
 所有的 [Historical](Historical.md) 进程都将它们自身发布到 `announcementsPath`, 具体来说它们将在以下路径创建一个临时的ZNODE：
-```
+```json
 ${druid.zk.paths.announcementsPath}/${druid.host}
 ```
 
 这意味着Historical节点可用。它们也将随后创建一个ZNODE:
-```
+```json
 ${druid.zk.paths.servedSegmentsPath}/${druid.host}
 ```
 
 当它们加载段时，它们将在以下路径附着的一个临时的ZNODE：
-```
+```json
 ${druid.zk.paths.servedSegmentsPath}/${druid.host}/_segment_identifier_
 ```
 
@@ -42,7 +42,7 @@ ${druid.zk.paths.servedSegmentsPath}/${druid.host}/_segment_identifier_
 
 当 [Coordiantor](Coordinator.md) 决定一个 [Historical](Historical.md) 进程应该加载或删除一个段时，它会将一个临时znode写到:
 
-```
+```json
 ${druid.zk.paths.loadQueuePath}/_host_of_historical_process/_segment_identifier
 ```
 

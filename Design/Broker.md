@@ -12,7 +12,7 @@
 在分布式的Druid集群中，Broker是一个查询的路由进程。Broker了解所有已经发布到ZooKeeper的元数据，了解在哪些进程存在哪些段，然后将查询路由到以便它们可以正确命中的进程。Broker还将来自所有单个进程的结果集合并在一起。在启动时，Historical会在Zookeeper中注册它们自身以及它们所服务的段。
 
 ### 运行
-```
+```json
 org.apache.druid.cli.Main server broker
 ```
 

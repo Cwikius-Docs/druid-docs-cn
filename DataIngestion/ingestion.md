@@ -92,7 +92,7 @@ Rollup由 `granularitySpec` 中的 `rollup` 配置项控制。 默认情况下�
 
 #### 最大化rollup比率
 通过比较Druid中的行数和接收的事件数，可以测量数据源的汇总率。这个数字越高，从汇总中获得的好处就越多。一种方法是使用[Druid SQL](../Querying/druidsql.md)查询，比如：
-```
+```json
 SELECT SUM("cnt") / COUNT(*) * 1.0 FROM datasource
 ```
 
@@ -163,7 +163,7 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 * [`tuningConfig`](#tuningconfig), 该部分控制着每一种[摄入方法](#摄入方式)的不同的特定调整参数
 
 一个 `index_parallel` 类型任务的示例摄入规范如下：
-```
+```json
 {
   "type": "index_parallel",
   "spec": {
@@ -230,7 +230,7 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 * [`数据源名称`](#datasource), [`主时间戳列`](#timestampspec), [`维度`](#dimensionspec), [`指标`](#metricsspec) 和 [`转换与过滤`](#transformspec)
 
 一个 `dataSchema` 如下：
-```
+```json
 "dataSchema": {
   "dataSource": "wikipedia",
   "timestampSpec": {
@@ -261,12 +261,12 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 
 ##### `dataSource`
 `dataSource` 位于 `dataSchema` -> `dataSource` 中，简单的标识了数据将被写入的数据源的名称，示例如下：
-```
+```json
 "dataSource": "my-first-datasource"
 ```
 ##### `timestampSpec`
 `timestampSpec` 位于 `dataSchema` -> `timestampSpec` 中，用来配置 [主时间戳](#timestampspec), 示例如下：
-```
+```json
 "timestampSpec": {
   "column": "timestamp",
   "format": "auto"
@@ -315,7 +315,7 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 
 ##### `dimensionSpec`
 `dimensionsSpec` 位于 `dataSchema` -> `dimensionsSpec`, 用来配置维度。示例如下：
-```
+```json
 "dimensionsSpec" : {
   "dimensions": [
     "page",
@@ -370,7 +370,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 `metricsSpec` 位于 `dataSchema` -> `metricsSpec` 中，是一个在摄入阶段要应用的 [聚合器](../Querying/Aggregations.md) 列表。 在启用了 [rollup](#rollup) 时是很有用的，因为它将配置如何在摄入阶段进行聚合。
 
 一个 `metricsSpec` 实例如下：
-```
+```json
 "metricsSpec": [
   { "type": "count", "name": "count" },
   { "type": "doubleSum", "name": "bytes_added_sum", "fieldName": "bytes_added" },
@@ -391,7 +391,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 除了 `rollup`, 这些操作都是基于 [主时间戳列](#主时间戳列)
 
 一个 `granularitySpec` 实例如下：
-```
+```json
 "granularitySpec": {
   "segmentGranularity": "day",
   "queryGranularity": "none",
@@ -414,7 +414,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 
 ##### `transformSpec`
 `transformSpec` 位于 `dataSchema` -> `transformSpec`，用来摄取时转换和过滤输入数据。 一个 `transformSpec` 实例如下：
-```
+```json
 "transformSpec": {
   "transforms": [
     { "type": "expression", "name": "countryUpper", "expression": "upper(country)" }
@@ -448,7 +448,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 
 一个 `parser` 实例如下：
 
-```
+```json
 "parser": {
   "type": "string",
   "parseSpec": {
@@ -479,7 +479,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 #### `ioConfig`
 
 `ioConfig` 影响从源系统（如Apache Kafka、Amazon S3、挂载的文件系统或任何其他受支持的源系统）读取数据的方式。`inputFormat` 属性适用于除Hadoop摄取之外的[所有摄取方法](#摄入方式)。Hadoop摄取仍然使用过时的 `dataSchema` 中的 [parser]。`ioConfig` 的其余部分特定于每个单独的摄取方法。读取JSON数据的 `ioConfig` 示例如下：
-```
+```json
 "ioConfig": {
     "type": "<ingestion-method-specific type code>",
     "inputFormat": {
@@ -493,7 +493,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 #### `tuningConfig`
 
 优化属性在 `tuningConfig` 中指定，`tuningConfig` 位于摄取规范的顶层。有些属性适用于所有摄取方法，但大多数属性特定于每个单独的摄取方法。`tuningConfig` 将所有共享的公共属性设置为默认值的示例如下：
-```
+```json
 "tuningConfig": {
   "type": "<ingestion-method-specific type code>",
   "maxRowsInMemory": 1000000,

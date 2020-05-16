@@ -16,7 +16,7 @@
 
 数据摄取规范位于 `quickstart/tutorial/compaction-init-index.json` ,提交这个任务规范将创建一个名称为 `compaction-tutorial` 的数据源：
 
-```
+```json
 bin/post-index-task --file quickstart/tutorial/compaction-init-index.json --url http://localhost:8081
 ```
 
@@ -35,7 +35,7 @@ bin/post-index-task --file quickstart/tutorial/compaction-init-index.json --url 
 
 对该数据源执行一个 `COUNT(*)` 查询可以看到39244行数据：
 
-```
+```json
 dsql> select count(*) from "compaction-tutorial";
 ┌────────┐
 │ EXPR$0 │
@@ -51,7 +51,7 @@ Retrieved 1 row in 1.38s.
 
 在 `quickstart/tutorial/compaction-keep-granularity.json` 文件中我们包含了一个本教程数据源的合并任务规范。
 
-```
+```json
 {
   "type": "compact",
   "dataSource": "compaction-tutorial",
@@ -71,7 +71,7 @@ Retrieved 1 row in 1.38s.
 在本教程示例中，每小时只创建一个合并段，因为每小时的行数少于5000000 `maxRowsPerSegment`（请注意，行总数为39244）。
 
 现在提交这个任务：
-```
+```json
 bin/post-index-task --file quickstart/tutorial/compaction-keep-granularity.json --url http://localhost:8081
 ```
 
@@ -87,7 +87,7 @@ bin/post-index-task --file quickstart/tutorial/compaction-keep-granularity.json 
 新的合并段比原来的段有一个更新的版本，所以即使两组段都显示在Druid控制台中，查询也只能从新的合并段中读取。
 
 我们再次在 `compaction-tutorial` 数据源执行 `COUNT(*)` 查询可以看到，行数仍然是39244:
-```
+```json
 dsql> select count(*) from "compaction-tutorial";
 ┌────────┐
 │ EXPR$0 │
@@ -108,7 +108,7 @@ Coordinator运行至少15分钟后，"Segments"视图应显示有24个分段，�
 
 我们在 `quickstart/tutorial/compaction-day-granularity.json` 文件中包含了一个可以创建 `DAY` 粒度的合并任务摄取规范：
 
-```
+```json
 {
   "type": "compact",
   "dataSource": "compaction-tutorial",
@@ -126,7 +126,7 @@ Coordinator运行至少15分钟后，"Segments"视图应显示有24个分段，�
 请注意这个合并任务规范中 `segmentGranularity` 配置项设置为了 `DAY`
 
 现在提交这个任务：
-```
+```json
 bin/post-index-task --file quickstart/tutorial/compaction-day-granularity.json --url http://localhost:8081
 ```
 

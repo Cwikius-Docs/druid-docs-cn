@@ -86,7 +86,7 @@ Druid的体系结构需要一个主时间列（内部存储为名为__time的列
 
 Druid的安装包中在 `quickstart/tutorial/wikipedia-index.json` 文件中包含了一个本地批摄入任务规范的示例。 为了方便我们在这里展示出来，该规范已经配置好读取 `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` 输入文件。
 
-```
+```json
 {
   "type" : "index_parallel",
   "spec" : {
@@ -168,12 +168,12 @@ Druid的安装包中在 `quickstart/tutorial/wikipedia-index.json` 文件中包�
 
 在Druid根目录运行以下命令：
 
-```
+```json
 bin/post-index-task --file quickstart/tutorial/wikipedia-index.json --url http://localhost:8081
 ```
 可以看到以下的输出：
 
-```
+```json
 Beginning indexing data for wikipedia
 Task started: index_wikipedia_2018-07-27T06:37:44.323Z
 Task log:     http://localhost:8081/druid/indexer/v1/task/index_wikipedia_2018-07-27T06:37:44.323Z/log
@@ -192,11 +192,11 @@ wikipedia loading complete! You may now query your data
 
 要提交任务，可以在一个新的终端中通过以下方式提交任务到Druid：
 
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipedia-index.json http://localhost:8081/druid/indexer/v1/task
 ```
 当任务提交成功后会打印出来任务的ID
-```
+```json
 {"task":"index_wikipedia_2018-06-09T21:30:32.802Z"}
 ```
 您可以如上所述从控制台监视此任务的状态

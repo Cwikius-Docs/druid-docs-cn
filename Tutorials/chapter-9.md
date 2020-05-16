@@ -12,7 +12,7 @@
 这份规范位于 `quickstart/tutorial/deletion-index.json`, 它将创建一个名称为 `deletion-tutorial` 的数据源
 
 现在加载这份初始数据：
-```
+```json
 bin/post-index-task --file quickstart/tutorial/deletion-index.json --url http://localhost:8081
 ```
 当加载完成后，在浏览器中访问[http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources)
@@ -29,7 +29,7 @@ bin/post-index-task --file quickstart/tutorial/deletion-index.json --url http://
 
 让我们在指定的时间间隔内禁用段。这会将间隔中的所有段标记为"未使用"，但不会将它们从深层存储中移除。让我们禁用间隔  `2015-09-12T18:00:00.000Z/2015-09-12T20:00:00.000Z`中的段，即在18到20小时之间
 
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d '{ "interval" : "2015-09-12T18:00:00.000Z/2015-09-12T20:00:00.000Z" }' http://localhost:8081/druid/coordinator/v1/datasources/deletion-tutorial/markUnused
 ```
 
@@ -38,7 +38,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d '{ "interval" : "2015-09-12
 
 请注意，第18小时和第19小时的数据段仍在深层存储中:
 
-```
+```json
 $ ls -l1 var/druid/segments/deletion-tutorial/
 2015-09-12T00:00:00.000Z_2015-09-12T01:00:00.000Z
 2015-09-12T01:00:00.000Z_2015-09-12T02:00:00.000Z
@@ -76,7 +76,7 @@ $ ls -l1 var/druid/segments/deletion-tutorial/
 信息框的顶部显示完整的段ID，例如 `deletion-tutorial_2015-09-12T14:00:00.000Z_2015-09-12T15:00:00.000Z_2019-02-28T01:11:51.606Z`，第14小时的段。
 
 让我们向Coordinator发送一个POST请求来禁用13点和14点的段
-```
+```json
 {
   "segmentIds":
   [
@@ -88,7 +88,7 @@ $ ls -l1 var/druid/segments/deletion-tutorial/
 
 json文件位于 `curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/deletion-disable-segments.json http://localhost:8081/druid/coordinator/v1/datasources/deletion-tutorial/markUnused` , 如下向Coordinator提交一个POST请求：
 
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/deletion-disable-segments.json http://localhost:8081/druid/coordinator/v1/datasources/deletion-tutorial/markUnused
 ```
 
@@ -97,7 +97,7 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/deleti
 
 注意到这时13时和14时的段仍然在深度存储中：
 
-```
+```json
 $ ls -l1 var/druid/segments/deletion-tutorial/
 2015-09-12T00:00:00.000Z_2015-09-12T01:00:00.000Z
 2015-09-12T01:00:00.000Z_2015-09-12T02:00:00.000Z
@@ -130,12 +130,12 @@ $ ls -l1 var/druid/segments/deletion-tutorial/
 现在我们已经禁用了一些段，我们可以提交一个Kill任务，它将从元数据和深层存储中删除禁用的段。
 
 在 `quickstart/tutorial/deletion-kill.json` 提供了一个Kill任务的规范，通过以下的命令将任务提交到Overlord：
-```
+```json
 curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/deletion-kill.json http://localhost:8081/druid/indexer/v1/task
 ```
 任务执行完成后，可以看到已经禁用的段已经被从深度存储中移除了：
 
-```
+```json
 $ ls -l1 var/druid/segments/deletion-tutorial/
 2015-09-12T12:00:00.000Z_2015-09-12T13:00:00.000Z
 2015-09-12T15:00:00.000Z_2015-09-12T16:00:00.000Z

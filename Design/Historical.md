@@ -8,7 +8,7 @@
 Historical的API列表，请参见 [Historical API](../Operations/api.md#Historical)
 
 ### 运行
-```
+```json
 org.apache.druid.cli.Main server historical
 ```
 

@@ -20,7 +20,7 @@ Apache Druid Router用于将查询路由到不同的Broker。默认情况下，B
 
 ### 运行
 
-```
+```json
 org.apache.druid.cli.Main server router
 ```
 
@@ -32,7 +32,7 @@ Router可以配置为将转发请求到活跃的Coordinator和Overlord。 该功
 
 要启用此功能，请在Router的 `runtime.properties` 中设置以下内容：
 
-```
+```json
 druid.router.managementProxy.enabled=true
 ```
 
@@ -55,7 +55,7 @@ druid.router.managementProxy.enabled=true
 Router有一个可配置的策略列表，用于选择将查询路由到哪个Broker。策略的顺序很重要，因为一旦策略条件匹配，就会选择一个Broker。
 
 **timeBoundary**
-```
+```json
 {
   "type":"timeBoundary"
 }
@@ -64,7 +64,7 @@ Router有一个可配置的策略列表，用于选择将查询路由到哪个Br
 包含这个策略的话意味着所有的 **timeRange** 查询将全部路由到高优先级的Broker
 
 **priority**
-```
+```json
 {
   "type":"priority",
   "minPriority":0,
@@ -78,7 +78,7 @@ Router有一个可配置的策略列表，用于选择将查询路由到哪个Br
 允许使用JavaScript函数定义任意路由规则。将配置和要执行的查询传递给函数，并返回它应该路由到的层（tier），或者对于默认层返回null。
 
 示例：将包含三个以上聚合器的查询发送到最低优先级Broker的函数：
-```
+```json
 {
   "type" : "javascript",
   "function" : "function (config, query) { if (query.getAggregatorSpecs && query.getAggregatorSpecs().size() >= 3) { var size = config.getTierToBrokerMap().values().size(); if (size > 0) { return config.getTierToBrokerMap().values().toArray()[size-1] } else { return config.getDefaultBrokerServiceName() } } else { return null } }"
@@ -122,7 +122,7 @@ druid.router.avatica.balancer.type=consistentHash
 
 JVM设置：
 
-```
+```json
 -server
 -Xmx13g
 -Xms13g
@@ -144,7 +144,7 @@ JVM设置：
 ```
 
 Runtime.properties:
-```
+```json
 druid.host=#{IP_ADDR}:8080
 druid.plaintextPort=8080
 druid.service=druid/router

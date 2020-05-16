@@ -11,20 +11,20 @@
 
 [Apache Kafka](http://kafka.apache.org/)是一种高吞吐量消息总线，可与Druid很好地配合使用。在本教程中，我们将使用Kafka2.1.0。要下载Kafka，请在终端中执行以下命令：
 
-```
+```json
 curl -O https://archive.apache.org/dist/kafka/2.1.0/kafka_2.12-2.1.0.tgz
 tar -xzf kafka_2.12-2.1.0.tgz
 cd kafka_2.12-2.1.0
 ```
 通过在终端中运行以下命令来启动一个Kafka Broker：
 
-```
+```json
 ./bin/kafka-server-start.sh config/server.properties
 ```
 
 执行以下命令来创建一个我们用来发送数据的Kafka主题，称为"*wikipedia*":
 
-```
+```json
 ./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic wikipedia
 ```
 
@@ -33,13 +33,13 @@ cd kafka_2.12-2.1.0
 让我们为该主题启动一个生产者并发送一些数据
 
 在Druid目录下，运行下边的命令：
-```
+```json
 cd quickstart/tutorial
 gunzip -c wikiticker-2015-09-12-sampled.json.gz > wikiticker-2015-09-12-sampled.json
 ```
 
 在Kafka目录下，运行以下命令，{PATH_TO_DRUID}替换为Druid目录的路径：
-```
+```json
 export KAFKA_OPTS="-Dfile.encoding=UTF-8"
 ./bin/kafka-console-producer.sh --broker-list localhost:9092 --topic wikipedia < {PATH_TO_DRUID}/quickstart/tutorial/wikiticker-2015-09-12-sampled.json
 ```
@@ -131,7 +131,7 @@ Druid的体系结构需要一个主时间列（内部存储为名为__time的列
 
 粘贴以下规范后点击 `Submit`
 
-```
+```json
 {
   "type": "kafka",
   "spec" : {
@@ -198,7 +198,7 @@ Druid的体系结构需要一个主时间列（内部存储为名为__time的列
 
 为了直接启动服务，我们可以在Druid的根目录下运行以下命令来提交一个supervisor规范到Druid Overlord中
 
-```
+```json
 curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia-kafka-supervisor.json http://localhost:8081/druid/indexer/v1/supervisor
 ```
 如果supervisor被成功创建后，将会返回一个supervisor的ID，在本例中看到的是 `{"id":"wikipedia"}`

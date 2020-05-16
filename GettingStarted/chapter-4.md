@@ -173,7 +173,7 @@ Druid依赖于分布式文件系统或大对象（blob）存储来存储数据�
 
 上述操作之后，您将看到以下的变化：
 
-```
+```json
 druid.extensions.loadList=["druid-s3-extensions"]
 
 #druid.storage.type=local
@@ -204,7 +204,7 @@ druid.indexer.logs.s3Prefix=druid/indexing-logs
 
 上述操作之后，您将看到以下的变化：
 
-```
+```json
 druid.extensions.loadList=["druid-hdfs-storage"]
 
 #druid.storage.type=local
@@ -261,7 +261,7 @@ druid.indexer.logs.directory=/druid/indexing-logs
 
 Historical（单服务器）
 
-```
+```json
 druid.processing.buffer.sizeBytes=500000000
 druid.processing.numMergeBuffers=8
 druid.processing.numThreads=31
@@ -269,7 +269,7 @@ druid.processing.numThreads=31
 
 MiddleManager（单服务器）
 
-```
+```json
 druid.worker.capacity=8
 druid.indexer.fork.property.druid.processing.numMergeBuffers=2
 druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
@@ -295,7 +295,7 @@ MiddleManager:
 
 新的Historical(2 Data服务器)
 
-```
+```json
  druid.processing.buffer.sizeBytes=500000000
  druid.processing.numMergeBuffers=8
  druid.processing.numThreads=31
@@ -303,7 +303,7 @@ MiddleManager:
 
 新的MiddleManager（2 Data服务器）
 
-```
+```json
 druid.worker.capacity=4
 druid.indexer.fork.property.druid.processing.numMergeBuffers=2
 druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
@@ -356,21 +356,21 @@ druid.indexer.fork.property.druid.processing.numThreads=1
 
 如果您一直在本地计算机上编辑配置，则可以使用rsync复制它们：
 
-```
+```json
 rsync -az apache-druid-0.17.0/ MASTER_SERVER:apache-druid-0.17.0/
 ```
 
 #### 不带Zookeeper启动
 
 在发行版根目录中，运行以下命令以启动Master服务：
-```
+```json
 bin/start-cluster-master-no-zk-server
 ```
 
 #### 带Zookeeper启动
 
 如果计划在Master服务器上运行ZK，请首先更新`conf/zoo.cfg`以标识您计划如何运行ZK，然后，您可以使用以下命令与ZK一起启动Master服务进程：
-```
+```json
 bin/start-cluster-master-with-zk-server
 ```
 
@@ -382,7 +382,7 @@ bin/start-cluster-master-with-zk-server
 将Druid发行版和您编辑的配置文件复制到您的Data服务器。
 
 在发行版根目录中，运行以下命令以启动Data服务：
-```
+```json
 bin/start-cluster-data-server
 ```
 
@@ -396,7 +396,7 @@ bin/start-cluster-data-server
 
 在发行版根目录中，运行以下命令以启动Query服务：
 
-```
+```json
 bin/start-cluster-query-server
 ```
 

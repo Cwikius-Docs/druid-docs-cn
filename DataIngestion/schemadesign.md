@@ -97,12 +97,12 @@ Druid schema必须始终包含一个主时间戳, 主时间戳用于对数据进
 #### 嵌套维度
 
 在编写本文时，Druid不支持嵌套维度。嵌套维度需要展平，例如，如果您有以下数据：
-```
+```json
 {"foo":{"bar": 3}}
 ```
 
 然后在编制索引之前，应将其转换为：
-```
+```json
 {"foo_bar": 3}
 ```
 
@@ -115,7 +115,7 @@ Druid能够将JSON、Avro或Parquet输入数据展平化。请阅读 [展平规�
 在这种情况下，可以使用*摄取时*的计数聚合器来计算事件数。但是，需要注意的是，在查询此Metrics时，应该使用 `longSum` 聚合器。查询时的 `count` 聚合器将返回时间间隔的Druid行数，该行数可用于确定rollup比率。
 
 为了举例说明，如果摄取规范包含：
-```
+```json
 ...
 "metricsSpec" : [
       {
@@ -126,7 +126,7 @@ Druid能够将JSON、Avro或Parquet输入数据展平化。请阅读 [展平规�
 ```
 
 您应该使用查询:
-```
+```json
 ...
 "aggregations": [
     { "type": "longSum", "name": "numIngestedEvents", "fieldName": "count" },
@@ -144,11 +144,11 @@ Druid能够将JSON、Avro或Parquet输入数据展平化。请阅读 [展平规�
 一个具有唯一ID的工作流能够对特定ID进行过滤，同时仍然能够对ID列进行快速的唯一计数。如果不使用无schema维度，则通过将Metric的 `name` 设置为与维度不同的值来支持此场景。如果使用无schema维度，这里的最佳实践是将同一列包含两次，一次作为维度，一次作为 `hyperUnique` Metric。这可能涉及到ETL时的一些工作。
 
 例如，对于无schema维度，请重复同一列：
-```
+```json
 {"device_id_dim":123, "device_id_met":123}
 ```
 同时在 `metricsSpec` 中包含：
-```
+```json
 { "type" : "hyperUnique", "name" : "devices", "fieldName" : "device_id_met" }
 ```
 `device_id_dim` 将自动作为维度来被选取
