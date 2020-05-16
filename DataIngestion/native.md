@@ -38,7 +38,7 @@ Apache Druid当前支持两种类型的本地批量索引任务， `index_parall
 
 一个简易的任务如下所示：
 
-```
+```json
 {
   "type": "index_parallel",
   "spec": {
@@ -265,7 +265,7 @@ supervisor任务提供了一些HTTP接口来获取任务状态。
 如果supervisor任务以并行的方式运行，则返回当前阶段的预估进度
 
 一个示例结果如下：
-```
+```json
 {
   "running":10,
   "succeeded":0,
@@ -301,7 +301,7 @@ supervisor任务提供了一些HTTP接口来获取任务状态。
 返回指定ID的worker任务规范的状态，如果该supervisor任务以序列模式运行则返回一个HTTP 404。 返回的结果集中包括worker任务规范，当前任务状态(如果存在的话) 以及任务尝试历史记录。
 
 一个示例结果如下：
-```
+```json
 {
   "spec": {
     "id": "index_parallel_lineitem_2018-04-20T22:12:43.610Z_2",
@@ -490,7 +490,7 @@ supervisor任务提供了一些HTTP接口来获取任务状态。
 
 一个示例任务如下：
 
-```
+```json
 {
   "type" : "index",
   "spec" : {
@@ -647,7 +647,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 S3输入源支持直接从S3读取对象。可以通过S3 URI字符串列表或S3位置前缀列表指定对象，该列表将尝试列出内容并摄取位置中包含的所有对象。S3输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -663,7 +663,7 @@ S3输入源支持直接从S3读取对象。可以通过S3 URI字符串列表或S
 ...
 ```
 
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -679,7 +679,7 @@ S3输入源支持直接从S3读取对象。可以通过S3 URI字符串列表或S
 ...
 ```
 
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -732,7 +732,7 @@ S3对象：
 谷歌云存储输入源支持直接从谷歌云存储读取对象，可以通过谷歌云存储URI字符串列表指定对象。谷歌云存储输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -747,7 +747,7 @@ S3对象：
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -762,7 +762,7 @@ S3对象：
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -805,7 +805,7 @@ S3对象：
 Azure输入源支持直接从Azure读取对象，可以通过Azure URI字符串列表指定对象。Azure输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -820,7 +820,7 @@ Azure输入源支持直接从Azure读取对象，可以通过Azure URI字符串�
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -835,7 +835,7 @@ Azure输入源支持直接从Azure读取对象，可以通过Azure URI字符串�
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -878,7 +878,7 @@ azure对象：
 HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定为HDFS URI字符串或者HDFS URI字符串列表。HDFS输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个文件。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -893,7 +893,7 @@ HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -908,7 +908,7 @@ HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -923,7 +923,7 @@ HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定
     },
 ...
 ```
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -951,7 +951,7 @@ HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定
 HTTP输入源支持直接通过HTTP从远程站点直接读取文件。 HTTP输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务只能读取一个文件。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -968,7 +968,7 @@ HTTP输入源支持直接通过HTTP从远程站点直接读取文件。 HTTP输�
 ```
 
 使用DefaultPassword Provider的身份验证字段示例（这要求密码位于摄取规范中）：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -987,7 +987,7 @@ HTTP输入源支持直接通过HTTP从远程站点直接读取文件。 HTTP输�
 ```
 
 您还可以使用其他现有的Druid PasswordProvider。下面是使用EnvironmentVariablePasswordProvider的示例：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -1021,7 +1021,7 @@ HTTP输入源支持直接通过HTTP从远程站点直接读取文件。 HTTP输�
 Inline输入源可用于读取其规范内联的数据。它可用于演示或用于快速测试数据解析和schema。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -1047,7 +1047,7 @@ Inline输入源可用于读取其规范内联的数据。它可用于演示或�
 Local输入源支持直接从本地存储中读取文件，主要目的用于PoC测试。 Local输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务读取一个或者多个文件。
 
 样例规范：
-```
+```json
 ...
     "ioConfig": {
       "type": "index_parallel",
@@ -1073,6 +1073,32 @@ Local输入源支持直接从本地存储中读取文件，主要目的用于PoC
 | `files` | 要摄取的文件路径。如果某些文件位于指定的 `baseDir` 下，则可以忽略它们以避免摄取重复文件。该选项会跳过空文件。| `baseDir` 或者 `files` 至少需要被指定一个 |
 
 #### Druid输入源
+
+Druid输入源支持直接从现有的Druid段读取数据，可能使用新的模式，并更改段的名称、维度、Metrics、Rollup等。Druid输入源是可拆分的，可以由 [并行任务](#并行任务) 使用。这个输入源有一个固定的从Druid段读取的输入格式；当使用这个输入源时，不需要在摄取规范中指定输入格式字段。
+
+| 属性 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 应该是 `druid` | 是 |
+| `dataSource` | 定义要从中获取行的Druid数据源 | 是 |
+| `interval` | ISO-8601时间间隔的字符串，它定义了获取数据的时间范围。 | 是 |
+| `dimensions` | 包含要从Druid数据源中选择的维度列名称的字符串列表。如果列表为空，则不返回维度。如果为空，则返回所有维度。 | 否 |
+| `metrics` | 包含要选择的Metric列名称的字符串列表。如果列表为空，则不返回任何度量。如果为空，则返回所有Metric。 | 否 |
+| `filter` | 详情请查看 [filters](../Querying/filters.html) 如果指定，则只返回与筛选器匹配的行。 | 否 |
+
+DruidInputSource规范的最小示例如下所示：
+```json
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "druid",
+        "dataSource": "wikipedia",
+        "interval": "2013-01-01/2013-01-02"
+      }
+      ...
+    },
+...
+```
 ### Firehoses(已废弃)
 #### StaticS3Firehose
 #### HDFSFirehose
