@@ -1099,6 +1099,38 @@ DruidInputSource规范的最小示例如下所示：
     },
 ...
 ```
+
+上面的规范将从 `wikipedia` 数据源中读取所有现有dimension和metric列，包括 `2013-01-01/2013-01-02` 时间间隔内带有时间戳（ `__time` 列）的所有行。
+
+以下规范使用了筛选器并读取原始数据源列子集：
+```json
+...
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "druid",
+        "dataSource": "wikipedia",
+        "interval": "2013-01-01/2013-01-02",
+        "dimensions": [
+          "page",
+          "user"
+        ],
+        "metrics": [
+          "added"
+        ],
+        "filter": {
+          "type": "selector",
+          "dimension": "page",
+          "value": "Druid"
+        }
+      }
+      ...
+    },
+...
+```
+
+上面的规范只返回 `page`、`user` 维度和 `added` 的Metric。只返回`page` = `Druid` 的行。
+
 ### Firehoses(已废弃)
 #### StaticS3Firehose
 #### HDFSFirehose
