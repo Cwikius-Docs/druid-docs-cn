@@ -267,6 +267,32 @@ s3n://billy-bucket/the/data/is/here/y=2012/m=06/d=01/H=23
 **强烈建议显式**地在 `dataSource` 中的 `inputSpec` 中提供段列表，以便增量摄取任务是幂等的。您可以通过对Coordinator进行以下调用来获取该段列表，POST `/druid/coordinator/v1/metadata/datasources/{dataSourceName}/segments?full`, 请求体：[interval1，interval2，…]， 例如["2012-01-01T00:00:00.000/2012-01-03T00:00:00.000"，"2012-01-05T00:00:00.000/2012-01-07T00:00:00.000"]
 
 #### `tuningConfig`
+
+`tuningConfig` 是一个可选项，如果未指定的话，则使用默认的参数。
+
+| 字段 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `workingPath` | String | 用于存储中间结果（Hadoop作业之间的结果）的工作路径 | 该配置仅仅使用在 [命令行Hadoop索引](#命令行版本) ，默认值为： `/tmp/druid-indexing`, 否则该值必须设置为null |
+| `version` | String | 创建的段的版本。 对于Hadoop索引任务一般是忽略的，除非 `useExplicitVersion` 被设置为 `true` | 否（默认为索引任务开始的时间） |
+| `partitionsSpec` | Object | 指定如何将时间块内的分区为段。缺少此属性意味着不会发生分区。 详情可见 [`partitionsSpec`](#partitionsspec) | 否（默认为 `hashed`） |
+| `maxRowsInMemory` | Integer | 在持久化之前在堆内存中聚合的行数。注意：由于rollup操作，该值是聚合后的行数，可能不等于输入的行数。 该值常用来管理需要的JVM堆内存大小。通常情况下，用户并不需要设置该值，而是依赖数据自身。 如果数据是非常小的，用户希望在内存存储上百万行数据的话，则需要设置该值。 | 否（默认为：1000000）|
+| `maxBytesInMemory` | Long | 在持久化之前在堆内存中聚合的字节数。通常这是在内部计算的，用户不需要设置它。此值表示在持久化之前要在堆内存中聚合的字节数。这是基于对内存使用量的粗略估计，而不是实际使用量。用于索引的最大堆内存使用量为 `maxBytesInMemory *（2 + maxPendingResistent）` | 否（默认为：最大JVM内存的1/6）|
+| `leaveIntermediate` | Boolean | 作业完成时，不管通过还是失败，都在工作路径中留下中间文件（用于调试）。 | 否（默认为false）|
+| `cleanupOnFailure` | Boolean | 当任务失败时清理中间文件（除非 `leaveIntermediate` 设置为true） | 否（默认为true）|
+| `overwriteFiles` | Boolean | 在索引过程中覆盖找到的现存文件 | 否（默认为false）|
+| `ignoreInvalidRows` | Boolean | **已废弃**。忽略发现有问题的行。如果为false，解析过程中遇到的任何异常都将引发并停止摄取；如果为true，将跳过不可解析的行和字段。如果定义了 `maxParseExceptions`，则忽略此属性。 | 否（默认为false）|
+| `combineText` | Boolean | 使用CombineTextInputFormat将多个文件合并为一个文件拆分。这可以在处理大量小文件时加快Hadoop作业的速度。 | 否（默认为false）|
+| `useCombiner` | Boolean | 如果可能的话，使用Hadoop Combiner在mapper阶段合并行 | 否（默认为false）|
+| `jobProperties` | Object | 增加到Hadoop作业配置的属性map，详情见下边。 | 否（默认为null）|
+| `indexSpec` | Object | 调整数据如何被索引。 详细信息可以见位于摄取页的 [`indexSpec`](ingestion.md#tuningConfig) | 否 |
+| `indexSpecForIntermediatePersists` | Object | 定义要在索引时用于中间持久化临时段的段存储格式选项。这可用于禁用中间段上的dimension/metric压缩，以减少最终合并所需的内存。但是，在中间段上禁用压缩可能会增加页缓存的使用，因为可能在它们被合并到发布的最终段之前使用它们，有关可能的值，请参阅 [`indexSpec`](ingestion.md#tuningConfig)。 | 否（默认与indexSpec一样）|
+| `numBackgroundPersistThreads` | Integer | 用于增量持久化的新后台线程数。使用此功能会显著增加内存压力和CPU使用率，但会使任务更快完成。如果从默认值0（对持久性使用当前线程）更改，建议将其设置为1。 | 否（默认为0）|
+| `forceExtendableShardSpecs` | Boolean | 强制使用可扩展的shardSpec。基于哈希的分区总是使用可扩展的shardSpec。对于单维分区，此选项应设置为true以使用可扩展shardSpec。对于分区，请检查 [分区规范](#partitionsspec) | 否（默认为false）|
+| `useExplicitVersion` | Boolean | 强制HadoopIndexTask使用version | 否（默认为false）|
+| `logParseExceptions` | Boolean | 如果为true，则在发生解析异常时记录错误消息，其中包含有关发生错误的行的信息。| 否（默认为false）|
+| `maxParseExceptions` | Integer | 任务停止接收并失败之前可能发生的最大分析异常数。如果设置了`reportParseExceptions`，则该配置被覆盖。 | 否（默认为unlimited）|
+| `useYarnRMJobStatusFallback` | Boolean | 如果索引任务创建的Hadoop作业无法从JobHistory服务器检索其完成状态，并且此参数为true，则索引任务将尝试从 `http://<yarn rm address>/ws/v1/cluster/apps/<application id>` 获取应用程序状态，其中 `<yarn rm address>` 是Hadoop配置中 `yarn.resourcemanager.webapp.address` 的地址。此标志用于索引任务的作业成功但JobHistory服务器不可用的情况下的回退，从而导致索引任务失败，因为它无法确定作业状态。 | 否（默认为true）|
+
 ##### `jobProperties`
 #### `partitionsSpec`
 ##### 基于哈希的分区
