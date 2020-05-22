@@ -294,14 +294,184 @@ s3n://billy-bucket/the/data/is/here/y=2012/m=06/d=01/H=23
 | `useYarnRMJobStatusFallback` | Boolean | 如果索引任务创建的Hadoop作业无法从JobHistory服务器检索其完成状态，并且此参数为true，则索引任务将尝试从 `http://<yarn rm address>/ws/v1/cluster/apps/<application id>` 获取应用程序状态，其中 `<yarn rm address>` 是Hadoop配置中 `yarn.resourcemanager.webapp.address` 的地址。此标志用于索引任务的作业成功但JobHistory服务器不可用的情况下的回退，从而导致索引任务失败，因为它无法确定作业状态。 | 否（默认为true）|
 
 ##### `jobProperties`
+
+```json
+   "tuningConfig" : {
+     "type": "hadoop",
+     "jobProperties": {
+       "<hadoop-property-a>": "<value-a>",
+       "<hadoop-property-b>": "<value-b>"
+     }
+   }
+```
+Hadoop的 [MapReduce文档](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml) 列出来了所有可能的配置参数。
+
+在一些Hadoop分布式环境中，可能需要设置 `mapreduce.job.classpath` 或者 `mapreduce.job.user.classpath.first` 来避免类加载相关的问题。 更多详细信息可以参见 [使用不同Hadoop版本的文档](../Operations/other-hadoop.md) 
+
 #### `partitionsSpec`
+
+段总是基于时间戳进行分区（根据 `granularitySpec`），并且可以根据分区类型以其他方式进一步分区。Druid支持两种类型的分区策略：`hashed`（基于每行中所有维度的hash）和 `single_dim`（基于单个维度的范围）。
+
+在大多数情况下，建议使用哈希分区，因为相对于单一维度分区，哈希分区将提高索引性能并创建更统一大小的数据段。
+
 ##### 基于哈希的分区
+
+```json
+  "partitionsSpec": {
+     "type": "hashed",
+     "targetRowsPerSegment": 5000000
+   }
+```
+
+哈希分区的工作原理是首先选择多个段，然后根据每一行中所有维度的哈希对这些段中的行进行分区。段的数量是根据输入集的基数和目标分区大小自动确定的。
+
+配置项为：
+
+| 字段 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 使用的partitionsSpec的类型 | "hashed" |
+| `targetRowsPerSegment` | 要包含在分区中的目标行数，应为500MB~1GB段的数。如果未设置 `numShards` ，则默认为5000000。 | 为该配置或者 `numShards` |
+| `targetPartitionSize` | 已弃用。重命名为`targetRowsPerSegment`。要包含在分区中的目标行数，应为500MB~1GB段的数。 | 为该配置或者 `numShards` |
+| `maxRowsPerSegment` | 已弃用。重命名为`targetRowsPerSegment`。要包含在分区中的目标行数，应为500MB~1GB段的数。 | 为该配置或者 `numShards` | 为该配置或者 `numShards` |
+| `numShards` | 直接指定分区数，而不是目标分区大小。摄取将运行得更快，因为它可以跳过自动选择多个分区所需的步骤。| 为该配置或者 `maxRowsPerSegment` |
+| `partitionDimensions` | 要划分的维度。留空可选择所有维度。仅与`numShard` 一起使用，在设置 `targetRowsPerSegment` 时将被忽略。| 否 |
+
+
 ##### 单一维度范围分区
+
+```json
+  "partitionsSpec": {
+     "type": "single_dim",
+     "targetRowsPerSegment": 5000000
+   }
+```
+
+单一维度范围分区的工作原理是首先选择要分区的维度，然后将该维度分隔成连续的范围，每个段将包含该维度值在该范围内的所有行。例如，可以在维度"host"上对段进行分区,范围为"a.example.com"到"f.example.com"和"f.example.com"到"z.example.com"。 默认情况下，将自动确定要使用的维度，但可以使用特定维度替代它。
+
+配置项为：
+
+| 字段 | 描述 | 是否必须 |
+|-|-|-|
+| `type` | 使用的partitionsSpec的类型 | "single_dim" |
+| `targetRowsPerSegment` | 要包含在分区中的目标行数，应为500MB~1GB段的数。 | 是 |
+| `targetPartitionSize` | 已弃用。重命名为`targetRowsPerSegment`。要包含在分区中的目标行数，应为500MB~1GB段的数。 | 否 |
+| `maxRowsPerSegment` | 要包含在分区中的最大行数。默认值为比`targetRowsPerSegment` 大50%。 | 否 |
+| `maxPartitionSize` | 已弃用。请改用 `maxRowsPerSegment`。要包含在分区中的最大行数, 默认为比 `targetPartitionSize` 大50%。 | 否 |
+| `partitionDimension` | 要分区的维度。留空可自动选择维度。 | 否 |
+| `assumeGrouped` | 假设输入数据已经按时间和维度分组。摄取将运行得更快，但如果违反此假设，则可能会选择次优分区。 | 否 |
+
 ### 远程Hadoop集群
+
+如果已经有了一个远程的Hadoop集群，确保在Druid的 `_common` 配置目录中包含 `*.xml` 文件。
+
+如果Hadoop与Druid的版本存在依赖等问题，请查看 [这些文档](../Operations/other-hadoop.md)
+
 ### Elastic MapReduce
+
+如果集群运行在AWS上，可以使用Elastic MapReduce(EMR)来从S3中索引数据。需要以下几步：
+
+* 创建一个 [持续运行的集群](https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-plan-longrunning-transient.html)
+* 创建集群时，请输入以下配置。如果使用向导，则应在"编辑软件设置"下处于高级模式：
+
+```json
+classification=yarn-site,properties=[mapreduce.reduce.memory.mb=6144,mapreduce.reduce.java.opts=-server -Xms2g -Xmx2g -Duser.timezone=UTC -Dfile.encoding=UTF-8 -XX:+PrintGCDetails -XX:+PrintGCTimeStamps,mapreduce.map.java.opts=758,mapreduce.map.java.opts=-server -Xms512m -Xmx512m -Duser.timezone=UTC -Dfile.encoding=UTF-8 -XX:+PrintGCDetails -XX:+PrintGCTimeStamps,mapreduce.task.timeout=1800000]
+```
+* 按照 [Hadoop连接配置](../GettingStarted/chapter-4.md#Hadoop连接配置) 指导，使用EMR master中 `/etc/hadoop/conf` 的XML文件。
+
 ### Kerberized Hadoop集群
+
+默认情况下，druid可以使用本地kerberos密钥缓存中现有的TGT kerberos票证。虽然TGT票证的生命周期有限，但您需要定期调用 `kinit` 命令以确保TGT票证的有效性。为了避免这个额外的外部cron作业脚本周期性地调用 `kinit`，您可以提供主体名称和keytab位置，druid将在启动和作业启动时透明地执行身份验证。
+
+| 属性 | 可能的值 |
+|-|-|
+| `druid.hadoop.security.kerberos.principal` | `druid@EXAMPLE.COM` |
+| `druid.hadoop.security.kerberos.keytab` | `/etc/security/keytabs/druid.headlessUser.keytab` |
+
 #### 从具有EMR的S3加载
+
+* 在Hadoop索引任务中 `tuningConfig` 部分的 `jobProperties` 字段中添加一下内容：
+  
+```json
+"jobProperties" : {
+   "fs.s3.awsAccessKeyId" : "YOUR_ACCESS_KEY",
+   "fs.s3.awsSecretAccessKey" : "YOUR_SECRET_KEY",
+   "fs.s3.impl" : "org.apache.hadoop.fs.s3native.NativeS3FileSystem",
+   "fs.s3n.awsAccessKeyId" : "YOUR_ACCESS_KEY",
+   "fs.s3n.awsSecretAccessKey" : "YOUR_SECRET_KEY",
+   "fs.s3n.impl" : "org.apache.hadoop.fs.s3native.NativeS3FileSystem",
+   "io.compression.codecs" : "org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.SnappyCodec"
+}
+```
+注意，此方法使用Hadoop的内置S3文件系统，而不是Amazon的EMRFS，并且与Amazon的特定功能（如S3加密和一致视图）不兼容。如果您需要使用这些特性，那么您将需要通过 [其他Hadoop发行版](#使用其他的Hadoop) 一节中描述的机制之一，使Amazon EMR Hadoop JARs对Druid可用。
+
 ### 使用其他的Hadoop
+
+Druid在许多Hadoop发行版中都是开箱即用的。
+
+如果Druid与您当前使用的Hadoop版本发生依赖冲突时，您可以尝试在 [Druid用户组](https://groups.google.com/forum/#!forum/druid-user) 中搜索解决方案， 或者阅读 [Druid不同版本Hadoop文档](../Operations/other-hadoop.md)
+
 ### 命令行版本
+
+运行：
+
+```json
+java -Xmx256m -Duser.timezone=UTC -Dfile.encoding=UTF-8 -classpath lib/*:<hadoop_config_dir> org.apache.druid.cli.Main index hadoop <spec_file>
+```
 #### 可选项
+
+* "--coordinate" - 提供要使用的Apache Hadoop版本。此属性将覆盖默认的Hadoop。一旦指定，Apache Druid将从 `druid.extensions.hadoopDependenciesDir` 位置寻找Hadoop依赖。
+* "--no-default-hadoop" - 不要下拉默认的hadoop版本
+
 #### 规范文件
+
+spec文件需要包含一个JSON对象，其中的内容与Hadoop索引任务中的"spec"字段相同。有关规范格式的详细信息，请参见 [Hadoop批处理摄取](hadoopbased.md)。
+
+另外， `metadataUpdateSpec` 和 `segmentOutputPath` 字段需要被添加到ioConfig中：
+```json
+      "ioConfig" : {
+        ...
+        "metadataUpdateSpec" : {
+          "type":"mysql",
+          "connectURI" : "jdbc:mysql://localhost:3306/druid",
+          "password" : "druid",
+          "segmentTable" : "druid_segments",
+          "user" : "druid"
+        },
+        "segmentOutputPath" : "/MyDirectory/data/index/output"
+      },
+```
+同时， `workingPath` 字段需要被添加到tuningConfig：
+```json
+  "tuningConfig" : {
+   ...
+    "workingPath": "/tmp",
+    ...
+  }
+```
+**Metadata Update Job Spec**
+
+这是一个属性规范，告诉作业如何更新元数据，以便Druid集群能够看到输出段并加载它们。
+
+| 字段 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `type` | String | "metadata"是唯一可用的值 | 是 |
+| `connectURI` | String | 连接元数据存储的可用的JDBC | 是 |
+| `user` | String | DB的用户名 | 是 |
+| `password` | String | DB的密码 | 是 |
+| `segmentTable` | String | DB中使用的表 | 是 |
+
+这些属性应该模仿您为 [Coordinator](../Design/Coordinator.md) 配置的内容。
+
+**segmentOutputPath配置**
+
+| 字段 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `segmentOutputPath` | String | 将段转储到的路径 | 是 |
+
+**workingPath配置**
+
+| 字段 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `workingPath` | String | 用于中间结果（Hadoop作业之间的结果）的工作路径。 | 否（默认为 `/tmp/druid-indexing` ）|
+
+请注意，命令行Hadoop indexer不具备索引服务的锁定功能，因此如果选择使用它，则必须注意不要覆盖由实时处理创建的段（如果设置了实时管道）。
