@@ -4,8 +4,25 @@
 > [!WARNING]
 > Apache Druid支持两种查询语言： Druid SQL和 [原生查询](makeNativeQueries.md)。本文档讲述SQL查询。
 
+Druid SQL是一个内置的SQL层，是Druid基于JSON的本地查询语言的替代品，它由基于 [Apache Calcite](https://calcite.apache.org/) 的解析器和规划器提供支持。Druid SQL将SQL转换为查询Broker(查询的第一个进程)上的原生Druid查询，然后作为原生Druid查询传递给数据进程。除了在Broker上 [转换SQL](查询翻译) 的（轻微）开销之外，与原生查询相比，没有额外的性能损失。
 
 ### 查询符号
+
+Druid SQL支持如下结构的SELECT查询：
+
+```
+[ EXPLAIN PLAN FOR ]
+[ WITH tableName [ ( column1, column2, ... ) ] AS ( query ) ]
+SELECT [ ALL | DISTINCT ] { * | exprs }
+FROM { <table> | (<subquery>) | <o1> [ INNER | LEFT ] JOIN <o2> ON condition }
+[ WHERE expr ]
+[ GROUP BY [ exprs | GROUPING SETS ( (exprs), ... ) | ROLLUP (exprs) | CUBE (exprs) ] ]
+[ HAVING expr ]
+[ ORDER BY expr [ ASC | DESC ], expr [ ASC | DESC ], ... ]
+[ LIMIT limit ]
+[ UNION ALL <another query> ]
+```
+
 #### FROM
 #### WHERE
 #### GROUP BY
