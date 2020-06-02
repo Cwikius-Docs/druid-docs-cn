@@ -1,5 +1,10 @@
 <!-- toc -->
 ## SQL
+
+> [!WARNING]
+> Apache Druid支持两种查询语言： Druid SQL和 [原生查询](makeNativeQueries.md)。本文档讲述SQL查询。
+
+
 ### 查询符号
 #### FROM
 #### WHERE

@@ -56,7 +56,8 @@
 
 ### 数据查询
 
-* [数据查询](Querying/index.md)
+* [Druid SQL](Querying/druidsql.md)
+* [原生查询](Querying/makeNativeQueries.md)
 
 ### 配置列表
 
