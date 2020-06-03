@@ -58,6 +58,12 @@
 
 * [Druid SQL](Querying/druidsql.md)
 * [原生查询](Querying/makeNativeQueries.md)
+* [查询执行](Querying/queryexecution.md)
+* [一些概念](Querying/datasource.md)
+  * [数据源](Querying/datasource.md)
+* [原生查询类型]
+* [原生查询组件]
+  * [过滤器](Querying/filters.md)
 
 ### 配置列表
 
