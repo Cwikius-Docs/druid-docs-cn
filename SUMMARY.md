@@ -61,6 +61,7 @@
 * [查询执行](Querying/queryexecution.md)
 * [一些概念](Querying/datasource.md)
   * [数据源](Querying/datasource.md)
+  * [多值维度](Querying/multi-value-dimensions.md)
 * [原生查询类型]
 * [原生查询组件]
   * [过滤器](Querying/filters.md)

@@ -81,8 +81,44 @@ Druid SQL支持使用问号 `(?)` 的动态参数语法，动态参数在执行�
 
 ### 数据类型
 #### 标准类型
+
+Druid原生支持五种列类型："long"(64位有符号整型),"float"(32位浮点型),"double"(64位浮点型),"string"(UTF-8编码的字符串或者字符串数组)和"complex"(获取更多奇异的数据类型，如hyperUnique列和approxHistogram列)
+
+时间戳（包括 `__time` 列）被Druid视为long，其值是1970-01-01T00:00:00 UTC以来的毫秒数，不包括闰秒。因此，Druid中的时间戳不携带任何时区信息，而只携带关于它们所代表的确切时间的信息。有关时间戳处理的更多信息，请参阅 [时间函数部分](#时间函数)。
+
+下表描述了Druid如何在查询运行时将SQL类型映射到原生类型。在具有相同Druid运行时类型的两个SQL类型之间进行强制转换不会产生任何影响，除非表中指出了异常。两个具有不同Druid运行时类型的SQL类型之间的转换将在Druid中生成一个运行时转换。如果一个值不能正确地转换为另一个值，如 `CAST('foo' AS BIGINT)`，则运行时将替换默认值。 NULL转换为不可为空类型时将替换为默认值（例如，NULL转为数字将转换为零）。
+
+| SQL类型 | Druid运行时类型 | 默认值 | 注意事项 |
+|-|-|-|-|
+| CHAR | STRING | `''` | |
+| VARCHAR | STRING | `''` | Druid STRING列报告为VARCHAR，包括 [多值字符串](#多值字符串) |
+| DECIMAL | DOUBLE | `0.0` | DECIMAL使用浮点，非定点 |
+| FLOAT | FLOAT | `0.0` | Druid FLOAT列报告为FLOAT |
+| REAL | DOUBLE | `0.0` | |
+| DOUBLE | DOUBLE | `0.0` | Druid DOUBLE列报告为DOUBLE |
+| BOOLEAN | LONG | `false` | |
+| TINYINT | LONG | `0` | |
+| SMALLINT | LONG | `0` | |
+| INTEGER | LONG | `0` | |
+| BIGINT | LONG | `0` | Druid LONG列(除了 `__time` 报告为BIGINT |
+| TIMESTAMP | LONG | `0`, 意思是1970-01-01 00:00:00 UTC | Druid的`__time`列被报告为TIMESTAMP。 string和timestamp类型的转换都是假定为标准格式，例如 `2000-01-02 03:04:05`, 而非ISO8601格式。 有关时间戳处理的更多信息，请参阅 [时间函数部分](#时间函数)。 |
+| DATE | LONG | `0`, 意思是1970-01-01 | 转换TIMESTAMP为DATE 时间戳将时间戳舍入到最近的一天。string和date类型的转换都是假定为标准格式，例如 `2000-01-02`。 有关时间戳处理的更多信息，请参阅 [时间函数部分](#时间函数)。|
+| OTHER | COMPLEX | none | 可以表示各种Druid列类型，如hyperUnique、approxHistogram等 |
+
 #### 多值字符串
+
+Druid的原生类型系统允许字符串可能有多个值。这些 [多值维度](multi-value-dimensions.md) 将被报告为SQL中的 `VARCHAR` 类型，可以像任何其他VARCHAR一样在语法上使用。引用多值字符串维度的常规字符串函数将分别应用于每行的所有值，多值字符串维度也可以通过特殊的 [多值字符串函数](#多值字符串函数) 作为数组处理，该函数可以执行强大的数组操作。
+
+按多值表达式分组将observe原生Druid多值聚合行为，这与某些其他SQL语法中 `UNNEST` 的功能类似。有关更多详细信息，请参阅有关 [多值字符串维度](multi-value-dimensions.md) 的文档。
+
 #### NULL
+
+[runtime property](../Configuration/configuration.md#SQL兼容的空值处理) 中的 `druid.generic.useDefaultValueForNull` 配置控制着Druid的NULL处理模式。
+
+在默认模式(`true`)下，Druid将NULL和空字符串互换处理，而不是根据SQL标准。在这种模式下，Druid SQL只部分支持NULL。例如，表达式 `col IS NULL` 和 `col = ''` 等效，如果 `col` 包含空字符串，则两者的计算结果都为true。类似地，如果`col1`是空字符串，则表达式 `COALESCE(col1，col2)` 将返回 `col2`。当 `COUNT(*)` 聚合器计算所有行时，`COUNT(expr)` 聚合器将计算expr既不为空也不为空字符串的行数。此模式中的数值列不可为空；任何空值或缺少的值都将被视为零。
+
+在SQL兼容模式(`false`)中，NULL的处理更接近SQL标准，该属性同时影响存储和查询，因此为了获得最佳行为，应该在接收时和查询时同时设置该属性。处理空值的能力会带来一些开销；有关更多详细信息，请参阅 [段文档](../Design/Segments.md#SQL兼容的空值处理)。
+
 ### 聚合函数
 ### 扩展函数
 #### 数值函数
