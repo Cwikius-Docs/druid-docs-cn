@@ -162,7 +162,72 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 ### 扩展函数
 #### 数值函数
+
+对于数学运算，如果表达式中涉及的所有操作数都是整数，Druid SQL将使用整数数学。否则，Druid将切换到浮点数学，通过将一个操作数转换为浮点，可以强制执行此操作。在运行时，对于大多数表达式，Druid将把32位浮点扩展到64位。
+
+| 函数 | 描述 |
+|-|-|
+| `ABS(expr)` | 绝对值 |
+| `CEIL(expr)` | 向上取整 |
+| `EXP(expr)` | 次方 |
+| `FLOOR(expr)` | 向下取整 |
+| `LN(expr)` | 对数（以e为底）|
+| `LOG10(expr)` | 对数（以10为底） |
+| `POWER(expr,power)` | 次方 |
+| `SQRT(expr)` | 开方 |
+| `TRUNCATE(expr[, digits])` | 将`expr`截断为指定的小数位数。如果数字为负数，则此操作会截断小数点左侧的许多位置。如果未指定，则数字默认为零。|
+| `ROUND(expr[, digits])` | `ROUND（x，y）` 将返回x的值，并四舍五入到y小数位。虽然x可以是整数或浮点数，但y必须是整数。返回值的类型由x的类型指定。如果省略，则默认为0。当y为负时，x在y小数点的左侧四舍五入。|
+| `x + y` | 加 |
+| `x - y` | 减 |
+| `x * y` | 乘 |
+| `x / y` | 除 |
+| `MOD(x, y)` | 模除 |
+| `SIN(expr)` | 正弦 |
+| `COS(expr)` | 余弦 |
+| `TAN(expr)` | 正切 |
+| `COT(expr)` | 余切 |
+| `ASIN(expr)` | 反正弦 |
+| `ACOS(expr)` | 反余弦 |
+| `ATAN(expr)` | 反正切 |
+| `ATAN2(y, x)` | 从直角坐标（x，y）到极坐标（r，θ）的转换角度θ。|
+| `DEGREES(expr)` | 将以弧度测量的角度转换为以度测量的近似等效角度 |
+| `RADIANS(expr)` | 将以度为单位测量的角度转换为以弧度为单位测量的近似等效角度 |
+
 #### 字符串函数
+
+字符串函数接受字符串，并返回与该函数相应的类型。
+
+| 函数 | 描述 |
+|-|-|
+| `x || y` | 拼接字符串 |
+| `CONCAT(expr, expr, ...)` | 拼接一系列表达式 |
+| `TEXTCAT(expr, expr)` | 两个参数版本的CONCAT |
+| `STRING_FORMAT(pattern[, args...])` | 返回以Java的 [方式格式化](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format-java.lang.String-java.lang.Object...-) 的字符串字符串格式 | 
+| `LENGTH(expr)` | UTF-16代码单位的长度或表达式 |
+| `CHAR_LENGTH(expr)` | `LENGTH` 的同义词 |
+| `CHARACTER_LENGTH(expr)` | `LENGTH` 的同义词 |
+| `STRLEN(expr)` | `LENGTH` 的同义词 | 
+| `LOOKUP(expr, lookupName)` | 已注册的 [查询时Lookup表](lookups.md)的Lookup表达式。 注意：lookups也可以直接使用 [`lookup schema`](#from)来查询 |
+| `LOWER(expr)` | 返回的expr的全小写 |
+| `PARSE_LONG(string[, radix])` | 将字符串解析为具有给定基数的长字符串（BIGINT），如果未提供基数，则解析为10（十进制）。|
+| `POSITION(needle IN haystack [FROM fromIndex])` | 返回haystack中指针的索引，索引从1开始。搜索将从fromIndex开始，如果未指定fromIndex，则从1开始。如果找不到针，则返回0。 |
+| `REGEXP_EXTRACT(expr, pattern, [index])` | 应用正则表达式模式并提取捕获组，如果没有匹配，则为空。如果index未指定或为零，则返回与模式匹配的子字符串。|
+| `REPLACE(expr, pattern, replacement)` | 在expr中用replacement替换pattern，并返回结果。|
+| `STRPOS(haystack, needle)` | 返回haystack中指针的索引，索引从1开始。如果找不到针，则返回0。|
+| `SUBSTRING(expr, index, [length])` | 返回从索引开始的expr子字符串，最大长度均以UTF-16代码单位度量。|
+| `RIGHT(expr, [length])` | 从expr返回最右边的长度字符。|
+| `LEFT(expr, [length])` | 返回expr中最左边的长度字符。|
+| `SUBSTR(expr, index, [length])` | SUBSTRING的同义词 |
+| `TRIM([BOTH | LEADING | TRAILING] [ FROM] expr)` | 返回expr, 如果字符在"chars"中，则从"expr"的开头、结尾或两端删除字符。如果未提供"chars"，则默认为""（空格）。如果未提供方向参数，则默认为"BOTH"。 |
+| `BTRIM(expr[, chars])` | `TRIM(BOTH <chars> FROM <expr>)`的替代格式 |
+| `LTRIM(expr[, chars])` | `TRIM(LEADING <chars> FROM <expr>)`的替代格式 |
+| `RTRIM(expr[, chars])` | `TRIM(TRAILING <chars> FROM <expr>)`的替代格式 |
+| `UPPER(expr)` | 返回全大写的expr |
+| `REVERSE(expr)` | 反转expr |
+| `REPEAT(expr, [N])` | 将expr重复N次 |
+| `LPAD(expr, length[, chars])` | 从"expr"中返回一个用"chars"填充的"length"字符串。如果"length"小于"expr"的长度，则结果为"expr"，并被截断为"length"。如果"expr"或"chars"为空，则结果为空。 |
+| `RPAD(expr, length[, chars])` | 从"expr"返回一个用"chars"填充的"length"字符串。如果"length"小于"expr"的长度，则结果为"expr"，并被截断为"length"。如果"expr"或"chars"为空，则结果为空。 |
+
 #### 时间函数
 #### 约化函数
 #### IP地址函数
