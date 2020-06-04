@@ -120,6 +120,46 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 在SQL兼容模式(`false`)中，NULL的处理更接近SQL标准，该属性同时影响存储和查询，因此为了获得最佳行为，应该在接收时和查询时同时设置该属性。处理空值的能力会带来一些开销；有关更多详细信息，请参阅 [段文档](../Design/Segments.md#SQL兼容的空值处理)。
 
 ### 聚合函数
+
+聚合函数可以出现在任务查询的SELECT子句中，任何聚合器都可以使用 `AGG(expr) FILTER(WHERE whereExpr)` 这样的表达式进行过滤。 被过滤的聚合器仅仅聚合那些匹配了过滤器的行。 同一个SQL查询中的两个聚合器可能有不同的过滤器。
+
+只有COUNT聚合支持使用DISTINCT
+
+| 函数 | 描述 |
+|-|-|
+| `COUNT(*)` | 计算行数 |
+| `COUNT( DISTINCT expr)` | 唯一值的计数，表达式可以是string、numeric或者hyperUnique。默认情况下，这是近似值，使用[HyperLogLog](http://algo.inria.fr/flajolet/Publications/FlFuGaMe07.pdf) 的变体。若要获取精确计数，请将"useApproximateCountDistinct"设置为"false"。如果这样做，expr必须是字符串或数字，因为使用hyperUnique列不可能精确计数。另请参见 `APPROX_COUNT_DISTINCT(expr)` 。在精确模式下，每个查询只允许一个不同的计数。|
+| `SUM(expr)` | 求和 |
+| `MIN(expr)` | 取数字的最小值 |
+| `MAX(expr)` | 取数字的最大值 |
+| `AVG(expr)` | 取平均值 |
+| `APPROX_COUNT_DISTINCT(expr)` | 唯一值的计数，该值可以是常规列或hyperUnique。这始终是近似值，而不考虑"useApproximateCountDistinct"的值。该函数使用了Druid内置的"cardinality"或"hyperUnique"聚合器。另请参见 `COUNT(DISTINCT expr)` |
+| `APPROX_COUNT_DISTINCT_DS_HLL(expr, [lgK, tgtHllType])` | 唯一值的计数，该值可以是常规列或[HLL sketch](../Configuration/core-ext/datasketches-hll.md)。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `APPROX_COUNT_DISTINCT_DS_THETA(expr, [size])` | 唯一值的计数，该值可以是常规列或[Theta sketch](../Configuration/core-ext/datasketches-theta.md)。`size` 参数在Theta Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `DS_HLL(expr, [lgK, tgtHllType])` | 在表达式的值上创建一个 [`HLL sketch`](../Configuration/core-ext/datasketches-hll.md), 该值可以是常规列或者包括HLL Sketch的列。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `DS_THETA(expr, [size])` | 在表达式的值上创建一个[`Theta sketch`](../Configuration/core-ext/datasketches-theta.md)，该值可以是常规列或者包括Theta Sketch的列。`size` 参数在Theta Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `APPROX_QUANTILE(expr, probability, [resolution])` | 在数值表达式或者[近似图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1），"resolution"是用于计算的centroids，更高的resolution将会获得更精确的结果，默认值为50。使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
+| `APPROX_QUANTILE_DS(expr, probability, [k])` | 在数值表达式或者 [Quantiles sketch](../Configuration/core-ext/datasketches-quantiles.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `APPROX_QUANTILE_FIXED_BUCKETS(expr, probability, numBuckets, lowerLimit, upperLimit, [outlierHandlingMode])` | 在数值表达式或者[fixed buckets直方图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `numBuckets`, `lowerLimit`, `upperLimit` 和 `outlierHandlingMode` 参数在fixed buckets直方图文档中做了描述。 使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
+| `DS_QUANTILES_SKETCH(expr, [k])` | 在表达式的值上创建一个[`Quantiles sketch`](../Configuration/core-ext/datasketches-quantiles.md)，该值可以是常规列或者包括Quantiles Sketch的列。`k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `BLOOM_FILTER(expr, numEntries)` | 根据`expr`生成的值计算bloom筛选器，其中`numEntries`在假阳性率增加之前具有最大数量的不同值。详细可以参见 [Bloom过滤器扩展](../Configuration/core-ext/bloom-filter.md) |
+| `TDIGEST_QUANTILE(expr, quantileFraction, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch，并返回分位数的值。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
+| `TDIGEST_GENERATE_SKETCH(expr, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
+| `VAR_POP(expr)` | 计算`expr`的总体方差, 额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `VAR_SAMP(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `VARIANCE(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `STDDEV_POP(expr)` | 计算`expr`的总体标准差, 额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `STDDEV_SAMP(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `STDDEV(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `EARLIEST(expr)` | 返回`expr`的最早值，该值必须是数字。如果`expr`来自一个与timestamp列（如Druid数据源）的关系，那么"earliest"是所有被聚合值的最小总时间戳最先遇到的值。如果`expr`不是来自带有时间戳的关系，那么它只是遇到的第一个值。 |
+| `ARLIEST(expr, maxBytesPerString) ` | 与`EARLIEST(expr)`相似，但是面向string。`maxBytesPerString` 参数确定每个字符串要分配多少聚合空间, 超过此限制的字符串将被截断。这个参数应该设置得尽可能低，因为高值会导致内存浪费。 |
+| `LATEST(expr)` | 返回 `expr` 的最新值，该值必须是数字。如果 `expr` 来自一个与timestamp列（如Druid数据源）的关系，那么"latest"是最后一次遇到的值，它是所有被聚合的值的最大总时间戳。如果`expr`不是来自带有时间戳的关系，那么它只是遇到的最后一个值。 |
+| `LATEST(expr, maxBytesPerString)` | 与 `LATEST(expr)` 类似，但是面向string。`maxBytesPerString` 参数确定每个字符串要分配多少聚合空间, 超过此限制的字符串将被截断。这个参数应该设置得尽可能低，因为高值会导致内存浪费。 |
+| `ANY_VALUE(expr)` | 返回 `expr` 的任何值，包括null。`expr`必须是数字, 此聚合器可以通过返回第一个遇到的值（包括空值）来简化和优化性能 |
+| `ANY_VALUE(expr, maxBytesPerString)` | 与 `ANY_VALUE(expr)` 类似，但是面向string。`maxBytesPerString` 参数确定每个字符串要分配多少聚合空间, 超过此限制的字符串将被截断。这个参数应该设置得尽可能低，因为高值会导致内存浪费。|
+
+对于近似聚合函数，请查看 [近似聚合文档](Aggregations.md#近似聚合)
+
 ### 扩展函数
 #### 数值函数
 #### 字符串函数

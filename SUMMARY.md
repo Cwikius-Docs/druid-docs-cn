@@ -62,9 +62,11 @@
 * [一些概念](Querying/datasource.md)
   * [数据源](Querying/datasource.md)
   * [多值维度](Querying/multi-value-dimensions.md)
-* [原生查询类型]
-* [原生查询组件]
-  * [过滤器](Querying/filters.md)
+* [原生查询类型](Querying/timeseriesquery.md)
+  * [Timeseries](Querying/timeseriesquery.md)
+* [原生查询组件](Querying/filters.md)
+  * [过滤](Querying/filters.md)
+  * [聚合](Querying/Aggregations.md)
 
 ### 配置列表
 
