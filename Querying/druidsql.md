@@ -229,6 +229,31 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `RPAD(expr, length[, chars])` | 从"expr"返回一个用"chars"填充的"length"字符串。如果"length"小于"expr"的长度，则结果为"expr"，并被截断为"length"。如果"expr"或"chars"为空，则结果为空。 |
 
 #### 时间函数
+
+时间函数可以与Druid的时 `__time` 一起使用，任何存储为毫秒时间戳的列都可以使用 `MILLIS_TO_TIMESTAMP` 函数，或者任何存储为字符串时间戳的列都可以使用 `TIME_PARSE` 函数。默认情况下，时间操作使用UTC时区。您可以通过将连接上下文参数"sqlTimeZone"设置为另一个时区的名称（如"America/Los_Angeles"）或设置为偏移量（如"-08:00"）来更改时区。如果需要在同一查询中混合多个时区，或者需要使用连接时区以外的时区，则某些函数还接受时区作为参数。这些参数始终优先于连接时区。
+
+连接时区中的字面量时间戳可以使用 `TIMESTAMP '2000-01-01 00:00:00'` 语法编写。在其他时区写入字面量时间戳的最简单方法是使用TIME_PARSE，比如 `TIME_PARSE（'2000-02-01 00:00:00'，NULL，'America/Los_Angeles'）`。
+
+| 函数 | 描述 |
+|-|-|
+| `CURRENT_TIMESTAMP` | 在连接时区的当前时间戳 |
+| `CURRENT_DATE` | 在连接时区的当期日期 |
+| `DATE_TRUNC(<unit>, <timestamp_expr>)` | 截断时间戳，将其作为新时间戳返回。单位可以是"毫秒"、"秒"、"分"、"时"、"日"、"周"、"月"、"季"、"年"、"十年"、"世纪"或"千年"。 |
+| `TIME_CEIL(<timestamp_expr>, <period>, [<origin>, [<timezone>]])` | 对时间戳进行向上取整，并将其作为新的时间戳返回。周期可以是任何ISO8601周期，如P3M（季度）或PT12H（半天）。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"。此函数类似于 `CEIL`，但更灵活。|
+| `TIME_FLOOR(<timestamp_expr>, <period>, [<origin>, [<timezone>]])` | 对时间戳进行向下取整，将其作为新时间戳返回。周期可以是任何ISO8601周期，如P3M（季度）或PT12H（半天）。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"。此功能类似于 `FLOOR`，但更灵活。 |
+| `TIME_SHIFT(<timestamp_expr>, <period>, <step>, [<timezone>])` | 将时间戳移动一个周期（步进时间），将其作为新的时间戳返回。 `period` 可以是任何ISO8601周期，`step` 可能为负。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"。|
+| `TIME_EXTRACT(<timestamp_expr>, [<unit>, [<timezone>]])` | 从expr中提取时间部分，并将其作为数字返回。单位可以是EPOCH、SECOND、MINUTE、HOUR、DAY（月的日）、DOW（周的日）、DOY（年的日）、WEEK（年周）、MONTH（1到12）、QUARTER（1到4）或YEAR。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"。此函数类似于 `EXTRACT`，但更灵活。单位和时区必须是字面量，并且必须提供引号，如时间提取 `TIME_EXTRACT(__time, 'HOUR')` 或 `TIME_EXTRACT(__time, 'HOUR', 'America/Los_Angeles')`。|
+| `TIME_PARSE(<string_expr>, [<pattern>, [<timezone>]])` | 如果未提供该 `pattern`, 使用给定的 [Joda DateTimeFormat模式](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 或ISO8601（例如`2000-01-02T03:04:05Z`）将字符串解析为时间戳。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"，并将用作不包括时区偏移量的字符串的时区。模式和时区必须是字面量。无法解析为时间戳的字符串将返回空值。|
+| `TIME_FORMAT(<timestamp_expr>, [<pattern>, [<timezone>]])` | 如果 `pattern` 未提供，使用给定的 [Joda DateTimeFormat模式](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 或ISO8601（例如`2000-01-02T03:04:05Z`）将时间戳格式化为字符串。时区（如果提供）应为时区名称，如"America/Los_Angeles"或偏移量，如"-08:00"，并将用作不包括时区偏移量的字符串的时区。模式和时区必须是字面量。无法解析为时间戳的字符串将返回空值。|
+| `MILLIS_TO_TIMESTAMP(millis_expr)` | 将纪元后的毫秒数转换为时间戳。|
+| `TIMESTAMP_TO_MILLIS(timestamp_expr)` | 将时间戳转换为自纪元以来的毫秒数 |
+| `EXTRACT(<unit> FROM timestamp_expr)` | 从expr中提取时间部分，并将其作为数字返回。单位可以是EPOCH, MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY (day of month), DOW (day of week), ISODOW (ISO day of week), DOY (day of year), WEEK (week of year), MONTH, QUARTER, YEAR, ISOYEAR, DECADE, CENTURY or MILLENNIUM。必须提供未加引号的单位，如 `EXTRACT(HOUR FROM __time)`。|
+| `FLOOR(timestamp_expr TO <unit>)` | 向下取整时间戳，将其作为新时间戳返回。`unit`可以是SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, 或者YEAR |
+| `CEIL(timestamp_expr TO <unit>)` | 向上取整时间戳，将其作为新时间戳返回。`unit`可以是SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, 或者YEAR |
+| `TIMESTAMPADD(<unit>, <count>, <timestamp>)` | 等价于 `timestamp + count * INTERVAL '1' UNIT` |
+| `TIMESTAMPDIFF(<unit>, <timestamp1>, <timestamp2>)` | 返回`timestamp1` 和 `timestamp2` 之间的（有符号）`unit` |
+| `timestamp_expr { + | - } <interval_expr>` | 从时间戳中加上或减去时间量。`interval_expr` 可以包括 `INTERVAL '2' HOUR` 之类的区间字面量，也可以包括区间算法。该操作将天数统一视为86400秒，并且不考虑夏令时。要计算夏时制时间，请使用 `TIME_SHIFT`。 |
+
 #### 约化函数
 #### IP地址函数
 #### 比较操作符
