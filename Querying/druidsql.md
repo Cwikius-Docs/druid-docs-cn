@@ -252,7 +252,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `CEIL(timestamp_expr TO <unit>)` | 向上取整时间戳，将其作为新时间戳返回。`unit`可以是SECOND, MINUTE, HOUR, DAY, WEEK, MONTH, QUARTER, 或者YEAR |
 | `TIMESTAMPADD(<unit>, <count>, <timestamp>)` | 等价于 `timestamp + count * INTERVAL '1' UNIT` |
 | `TIMESTAMPDIFF(<unit>, <timestamp1>, <timestamp2>)` | 返回`timestamp1` 和 `timestamp2` 之间的（有符号）`unit` |
-| `timestamp_expr { + | - } <interval_expr>` | 从时间戳中加上或减去时间量。`interval_expr` 可以包括 `INTERVAL '2' HOUR` 之类的区间字面量，也可以包括区间算法。该操作将天数统一视为86400秒，并且不考虑夏令时。要计算夏时制时间，请使用 `TIME_SHIFT`。 |
+| `timestamp_expr { +/- } <interval_expr>` | 从时间戳中加上或减去时间量。`interval_expr` 可以包括 `INTERVAL '2' HOUR` 之类的区间字面量，也可以包括区间算法。该操作将天数统一视为86400秒，并且不考虑夏令时。要计算夏时制时间，请使用 `TIME_SHIFT`。 |
 
 #### 归约函数
 
@@ -269,7 +269,43 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `LEAST([expr1, ...])` | 计算零个或多个表达式，并根据上述比较返回最小值。 |
 
 #### IP地址函数
+
+对于IPv4地址函数，地址参数可以是IPv4点分十进制字符串（例如"192.168.0.1"）或表示为整数的IP地址（例如3232235521）。`subnet` 参数应该是一个字符串，格式为CIDR表示法中的IPv4地址子网（例如"192.168.0.0/16"）。
+
+| 函数 | 描述 |
+|-|-|
+| `IPV4_MATCH(address, subnet)` | 如果 `address` 属于 `subnet`文本，则返回true，否则返回false。如果 `address` 不是有效的IPv4地址，则返回false。如果 `address` 是整数而不是字符串，则此函数更效率。 |
+| `IPV4_PARSE(address)` | 将 `address` 解析为存储为整数的IPv4地址。如果 `address` 是有效的IPv4地址的整数，则它将被可以解析。如果 `address` 不能表示为IPv4地址，则返回null。 |
+| `IPV4_STRINGIFY(address)` | 将 `address` 转换为以点分隔的IPv4地址十进制字符串。如果 `address` 是有效的IPv4地址的字符串，则它将解析。如果 `address` 不能表示为IPv4地址，则返回null。 |
+
 #### 比较操作符
+
+| 函数 | 描述 |
+|-|-|
+| `x = y` | 等于 |
+| `x <> y` | 不等于 |
+| `x > y` | 大于 |
+| `x >= y` | 大于等于 |
+| `x < y` | 小于 |
+| `x <= y` | 小于等于 |
+| `x BETWEEN y AND z` | 等价于 `x >= y AND x <= z` |
+| `x NOT BETWEEN y AND z` | 等价于 `x >= y OR x <= z` |
+| `x LIKE pattern [ESCAPE esc]` | 如果x匹配上了一个SQL LIKE模式则返回true |
+| `x NOT LIKE pattern [ESCAPE esc]` | 如果x没有匹配上了一个SQL LIKE模式则返回true |
+| `x IS NULL` | 如果x是NULL或者空串，返回true |
+| `x IS NOT NULL ` | 如果x不是NULL也不是空串，返回true |
+| `x IS TRUE ` | 如果x是true，返回true |
+| `x IS NOT TRUE` | 如果x不是true，返回true |
+| `x IS FALSE` | 如果x是false，返回true | 
+| `x IS NOT FALSE` | 如果x不是false，返回true |
+| `x IN (values)` | 如果x是列出的值之一，则为True |
+| `x NOT IN (values)` | 如果x不是列出的值之一，则为True |
+| `x IN (subquery)` | 如果子查询返回x，则为True。这将转换为联接；有关详细信息，请参阅 [查询转换](#查询转换) |
+| `x NOT IN (subquery)` | 如果子查询没有返回x，则为True。这将转换为联接；有关详细信息，请参阅 [查询转换](#查询转换) |
+| `x AND y` | 与 |
+| `x OR y` | 或 |
+| `NOT x` | 非 |
+
 #### Sketch函数
 #### 其他扩展函数
 ### 多值字符串函数
