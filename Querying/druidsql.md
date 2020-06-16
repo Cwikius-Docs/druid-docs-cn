@@ -307,7 +307,57 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `NOT x` | 非 |
 
 #### Sketch函数
+
+这些函数对返回sketch对象的表达式或列进行操作。
+
+**HLL Sketch函数**
+
+以下函数操作在 [DataSketches HLL sketches](../Configuration/core-ext/datasketches-hll.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+
+| 函数 | 描述 |
+|-|-|
+| `HLL_SKETCH_ESTIMATE(expr, [round])` | 从HLL草图返回非重复计数估计值。`expr`必须返回HLL草图。可选的`round`布尔参数如果设置为 `true` 将舍入估计值，默认值为 `false`。 |
+| `HLL_SKETCH_ESTIMATE_WITH_ERROR_BOUNDS(expr, [numStdDev])` | 从HLL草图返回不同的计数估计值和错误边界。`expr` 必须返回HLL草图。可以提供可选的 `numStdDev` 参数。 |
+| `HLL_SKETCH_UNION([lgK, tgtHllType], expr0, expr1, ...)` | 返回HLL草图的并集，其中每个输入表达式必须返回HLL草图。可以选择将 `lgK` 和 `tgtHllType` 指定为第一个参数；如果提供了，则必须同时指定这两个可选参数。|
+| `HLL_SKETCH_TO_STRING(expr)` | 返回用于调试的HLL草图的可读字符串表示形式。`expr` 必须返回HLL草图。|
+
+**Theta Sketch函数**
+
+以下函数操作在 [theta sketches](../Configuration/core-ext/datasketches-theta.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+
+| 函数 | 描述 |
+|-|-|
+| `THETA_SKETCH_ESTIMATE(expr)` | 从theta草图返回不同的计数估计值。`expr` 必须返回theta草图。|
+| `THETA_SKETCH_ESTIMATE_WITH_ERROR_BOUNDS(expr, errorBoundsStdDev)` | 从theta草图返回不同的计数估计值和错误边界。`expr` 必须返回theta草图。|
+| `THETA_SKETCH_UNION([size], expr0, expr1, ...)` | 返回theta草图的并集，其中每个输入表达式必须返回theta草图。可以选择将 `size` 指定为第一个参数。 |
+| `THETA_SKETCH_INTERSECT([size], expr0, expr1, ...)` | 返回theta草图的交集，其中每个输入表达式必须返回theta草图。可以选择将 `size` 指定为第一个参数。 |
+| `THETA_SKETCH_NOT([size], expr0, expr1, ...)` | 返回theta草图的集合差，其中每个输入表达式必须返回theta草图。可以选择将 `size` 指定为第一个参数。 |
+
+**Quantiles Sketch函数**
+
+以下函数操作在 [quantiles sketches](../Configuration/core-ext/datasketches-quantiles.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+
+| 函数 | 描述 |
+|-|-|
+| `DS_GET_QUANTILE(expr, fraction)` | 返回与来自分位数草图的 `fraction` 相对应的分位数估计。`expr` 必须返回分位数草图。 |
+| `DS_GET_QUANTILES(expr, fraction0, fraction1, ...)` | 返回一个字符串，该字符串表示与分位数草图的分数列表相对应的分位数估计数组。`expr` 必须返回分位数草图 |
+| `DS_HISTOGRAM(expr, splitPoint0, splitPoint1, ...)` | 返回一个字符串，该字符串表示给定一个分割点列表的直方图近似值，该列表定义了分位数草图中的直方图箱。`expr` 必须返回分位数草图。 |
+| `DS_CDF(expr, splitPoint0, splitPoint1, ...)` | 返回一个字符串，该字符串表示给定的分割点列表（该列表定义了来自分位数草图的容器边缘）的累积分布函数的近似值。`expr` 必须返回分位数草图。 |
+| `DS_RANK(expr, value)` | 返回对给定值的秩的近似值，该值是分布的分数，小于来自分位数草图的该值。`expr` 必须返回分位数草图。 |
+| `DS_QUANTILE_SUMMARY(expr)` | 返回分位数草图的字符串摘要，用于调试。`expr` 必须返回分位数草图。 |
+
 #### 其他扩展函数
+
+| 函数 | 描述 |
+|-|-|
+| `CAST(value AS TYPE)` | 将值转换为其他类型。 可以查看 [数据类型](#数据类型) 来了解在Druid SQL中如何传利CAST |
+| `CASE expr WHEN value1 THEN result1 \[ WHEN value2 THEN result2 ... \] \[ ELSE resultN \] END` | 简单CASE |
+| `CASE WHEN boolean_expr1 THEN result1 \[ WHEN boolean_expr2 THEN result2 ... \] \[ ELSE resultN \] END` | 搜索CASE |
+| `NULLIF(value1, value2)` | 如果value1和value2匹配，则返回NULL，否则返回value1 |
+| `COALESCE(value1, value2, ...)` | 返回第一个既不是NULL也不是空字符串的值。 |
+| `NVL(expr,expr-for-null)` | 如果'expr'为空（或字符串类型为空字符串），则返回 `expr for null` |
+| `BLOOM_FILTER_TEST(<expr>, <serialized-filter>)` | 如果值包含在Base64序列化bloom筛选器中，则返回true。 详情查看 [Bloom Filter扩展](../Configuration/core-ext/bloom-filter.md) |
+
 ### 多值字符串函数
 ### 查询转换
 #### 最佳实践
