@@ -359,6 +359,26 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `BLOOM_FILTER_TEST(<expr>, <serialized-filter>)` | 如果值包含在Base64序列化bloom筛选器中，则返回true。 详情查看 [Bloom Filter扩展](../Configuration/core-ext/bloom-filter.md) |
 
 ### 多值字符串函数
+
+多值字符串函数文档中的所有"array"引用都可以引用多值字符串列或数组字面量。
+
+| 函数 | 描述 |
+|-|-|
+| `ARRAY(expr1,expr ...)` | 从表达式参数构造SQL数组字面量，使用第一个参数的类型作为输出数组类型 |
+| `MV_LENGTH(arr)` | 返回数组表达式的长度 |
+| `MV_OFFSET(arr,long)` | 返回所提供的基于0的索引处的数组元素，或对于超出范围的索引返回null |
+| `MV_ORDINAL(arr,long)` | 返回所提供的基于1的索引处的数组元素，或对于超出范围的索引返回null |
+| `MV_CONTAINS(arr,expr)` | 如果数组包含expr指定的元素，则返回1；如果expr是数组，则返回expr指定的所有元素，否则返回0 |
+| `MV_OVERLAP(arr1,arr2)` | 如果arr1和arr2有任何共同元素，则返回1，否则返回0 |
+| `MV_OFFSET_OF(arr,expr)` | 返回数组中expr第一次出现的基于0的索引，或 `-1` 或 `null`。如果 `druid.generic.useDefaultValueForNull=false` 如果数组中不存在匹配元素。 |
+| `MV_ORDINAL_OF(arr,expr)` | 返回数组中expr第一次出现的基于1的索引，或 `-1` 或 `null`。如果 `druid.generic.useDefaultValueForNull=false` 如果数组中不存在匹配元素。|
+| `MV_PREPEND(expr,arr)` | 在开头将expr添加到arr，结果数组类型由数组类型决定 |
+| `MV_APPEND(arr,expr)` | 将expr追加到arr，结果数组类型由第一个数组的类型决定 |
+| `MV_CONCAT(arr1,arr2)` | 连接2个数组，结果数组类型由第一个数组的类型决定 |
+| `MV_SLICE(arr,start,end)` | 将arr的子数组从基于0的索引start（inclusive）返回到end（exclusive），如果start小于0，大于arr的长度或小于end，则返回空 |
+| `MV_TO_STRING(arr,str)` | 用str指定的分隔符连接arr的所有元素 |
+| `STRING_TO_MV(str1,str2)` | 将str1拆分为str2指定的分隔符上的数组 |
+
 ### 查询转换
 #### 最佳实践
 #### 解释EXPLAIN PLAN输出
