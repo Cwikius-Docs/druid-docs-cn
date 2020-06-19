@@ -393,7 +393,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 4. 解释**执行计划**输出时要小心，如果有疑问，请使用请求日志记录。请求日志将显示运行的确切原生查询。有关更多详细信息，请参见 [下一节](#解释EXPLAIN-PLAN输出)。
 5. 如果您遇到一个可以计划得更好的查询，可以在 [GitHub上提出一个问题](https://github.com/apache/druid/issues/new/choose)。一个可重复的测试用例总是值得赞赏的。
 
-#### 解释EXPLAIN-PLAN输出
+#### 解释EXPLAIN PLAN输出
 
 [EXPLAIN PLAN功能](#EXPLAIN-PLAN)可以帮助您理解如何将给定的SQL查询转换为原生查询。对于不涉及子查询或联接的简单查询，EXPLAIN PLAN的输出易于解释。将运行的原生查询作为JSON嵌入到"DruidQueryRel"行中：
 
@@ -469,8 +469,35 @@ Druid SQL使用四种不同的原生查询类型。
 * [GroupBy](groupby.md) 用于所有其他聚合，包括任何嵌套的聚合查询。Druid的GroupBy是一个传统的聚合引擎：它提供精确的结果和排名，并支持多种功能。GroupBy可以在内存中聚合，但如果没有足够的内存来完成查询，它可能会溢出到磁盘。如果您在GROUP BY子句中使用相同的表达式进行ORDER BY，或者根本没有ORDER BY，则结果将通过Broker从数据进程中流回。如果查询具有未出现在GROUP BY子句（如聚合函数）中的ORDER BY引用表达式，则Broker将在内存中具体化结果列表，最大值不超过LIMIT（如果有的话）。有关优化性能和内存使用的详细信息，请参阅GroupBy文档。
   
 #### 时间过滤器
+
+对于所有原生查询类型，只要有可能，`__time` 列上的过滤器将被转换为顶级查询的"interval"，这允许Druid使用其全局时间索引来快速调整必须扫描的数据集。请考虑以下（非详尽）时间过滤器列表，这些时间过滤器将被识别并转换为 "intervals"：
+
+* `__time >= TIMESTAMP '2000-01-01 00:00:00'` (与绝对时间相比)
+* `__time >= CURRENT_TIMESTAMP - INTERVAL '8' HOUR` (与相对时间相比)
+* `FLOOR(__time TO DAY) = TIMESTAMP '2000-01-01 00:00:00'` (指定的一天)
+
+请参阅 [解释执行计划输出](#解释EXPLAIN-PLAN输出) 部分，以了解有关确认时间筛选器按预期翻译的详细信息。
+
 #### 连接
+
+SQL连接运算符转换为原生连接数据源，如下所示：
+
+1. 原生层可以直接处理的连接将被逐字翻译为 [join数据源](datasource.md#join)，其 `left`、`right` 和 `condition` 是原始SQL的直接翻译。这包括任何SQL连接，其中右边是 `lookup` 或 `子查询`，条件是等式，其中一边是基于左边表的表达式，另一边是对右边表的简单列引用，等式的两边是相同的数据类型。
+2. 如果一个连接不能够被直接处理为原生的 [join数据源](datasource.md#join), Druid SQL将插入一个子查询使得其可运行。 例如： `foo INNER JOIN bar ON foo.abc = LOWER(bar.def)` 因为右边是一个表达式而非简单的列引用，所以不能够被直接转换，这时会插入一个子查询有效的转换为 `INNER JOIN (SELECT LOWER(def) AS def FROM bar) t ON foo.abc = t.def` 
+3. Druid SQL目前不重新排序连接以优化查询。
+
+请参阅 [解释执行计划输出部分](#解释EXPLAIN-PLAN输出)，以了解有关确认连接是否按预期转换的详细信息。
+
+有关如何执行连接操作的信息，请参阅 [查询执行页](queryexecution.md)。
+
 #### 子查询
+
+SQL中的子查询一般被转换为原生的查询数据源。有关如何执行子查询操作的信息，请参阅 [查询执行页](queryexecution.md)。
+
+> [!WARNING]
+> WHERE子句中的子查询，如：`WHERE col1 IN (SELECT foo FROM ...)`，被转化为内连接
+
+
 #### 近似
 #### 不支持的特征
 ### 客户端API
