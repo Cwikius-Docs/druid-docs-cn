@@ -62,6 +62,7 @@
 * [一些概念](Querying/datasource.md)
   * [数据源](Querying/datasource.md)
   * [多值维度](Querying/multi-value-dimensions.md)
+  * [上下文参数](Querying/query-context.md)
 * [原生查询类型](Querying/timeseriesquery.md)
   * [Timeseries](Querying/timeseriesquery.md)
   * [TopN](Querying/topn.md)

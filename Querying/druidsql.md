@@ -635,8 +635,34 @@ try (Connection connection = DriverManager.getConnection(url, connectionProperti
 
 Druid的JDBC服务不在Broker之间共享连接状态。这意味着，如果您使用JDBC并且有多个Druid Broker，您应该连接到一个特定的Broker，或者使用启用了粘性会话的负载平衡器。Druid Router进程在平衡JDBC请求时提供连接粘性，即使使用普通的非粘性负载平衡器，也可以用来实现必要的粘性。请参阅 [Router文档](../Design/Router.md) 以了解更多详细信息
 
+注意：非JDBC的 [HTTP POST](#http-post) 是无状态的，不需要粘性
+
 #### 动态参数
+
+在JDBC代码中也可以使用参数化查询，例如：
+
+```java
+PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) AS cnt FROM druid.foo WHERE dim1 = ? OR dim1 = ?");
+statement.setString(1, "abc");
+statement.setString(2, "def");
+final ResultSet resultSet = statement.executeQuery();
+```
+
 #### 连接上下文
+
+Druid SQL支持在客户端设置连接参数，下表中的参数会影响SQL执行。您提供的所有其他上下文参数都将附加到Druid查询，并可能影响它们的运行方式。关于可能选项的详情可以参见 [查询上下文](query-context.md)
+
+请注意，要为SQL查询指定唯一标识符，请使用 `sqlQueryId` 而不是`queryId`。为SQL请求设置 `queryId` 没有任何效果，所有SQL底层的原生查询都将使用自动生成的queryId。
+
+连接上下文可以指定为JDBC连接属性，也可以指定为JSON API中的 "context" 对象。
+
+| 参数 | 描述 | 默认值 |
+|-|-|-|
+| `sqlQueryId` | 本次SQL查询的唯一标识符。对于HTTP客户端，它在 `X-Druid-SQL-Query-Id` 头中返回 | 自动生成 |
+| `sqlTimeZone` | 设置此连接的时区，这将影响时间函数和时间戳文本的行为。应该是时区名称，如"America/Los_Angeles"或偏移量，如"-08:00" | Broker配置中的 `druid.sql.planner.sqlTimeZone` , 默认为：UTC |
+| `useApproximateCountDistinct` | 是否对 `COUNT(DISTINCT foo)` 使用近似基数算法 | Broker配置中的 `druid.sql.planner.useApproximateCountDistinct`， 默认为：true |
+| `useApproximateTopN` | 当SQL查询可以这样表示时，是否使用近似[TopN查询](topn.md)。如果为false，则将使用精确的 [GroupBy查询](groupby.md)。 | Broker配置中的 `druid.sql.planner.useApproximateTopN`， 默认为：true |
+
 ### 元数据表
 #### 信息Schema
 #### 系统Schema
