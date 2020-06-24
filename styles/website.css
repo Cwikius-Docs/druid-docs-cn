@@ -47,3 +47,30 @@ pre[class*="language-"] {
     animation: none !important;
     -webkit-animation: none !important;
 }
+
+.book-summary {
+    width: 220px !important;
+    left: 5px !important;
+}
+
+.book-body {
+    left: 220px !important;
+}
+
+.navigation.navigation-next {
+    right: 240px !important;
+}
+
+@media screen and (max-width: 1500px) {
+    .page-inner {
+        margin: 0 100px 0 100px !important;
+        max-width: 800px !important;
+    }
+}
+
+@media screen and (min-width: 1500px) {
+    .page-inner {
+        margin: 0 100px 0 100px !important;
+        max-width: 1000px !important;
+    }
+}
