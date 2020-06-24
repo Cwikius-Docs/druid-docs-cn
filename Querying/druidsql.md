@@ -664,7 +664,65 @@ Druid SQL支持在客户端设置连接参数，下表中的参数会影响SQL�
 | `useApproximateTopN` | 当SQL查询可以这样表示时，是否使用近似[TopN查询](topn.md)。如果为false，则将使用精确的 [GroupBy查询](groupby.md)。 | Broker配置中的 `druid.sql.planner.useApproximateTopN`， 默认为：true |
 
 ### 元数据表
-#### 信息Schema
-#### 系统Schema
+
+Druid Broker从集群中加载的段推断每个数据源的表和列元数据，并使用此来计划SQL查询。该元数据在Broker启动时缓存，并通过 [段元数据查询](segmentMetadata.md) 在后台定期更新。后台元数据刷新由进入和退出集群的段触发，也可以通过配置进行限制。
+
+Druid通过特殊的系统表公开系统信息。有两种schema可用：Information Schema和Sys Schema。Information Schema提供有关表和列类型的详细信息, Sys Schema提供了有关Druid内部的信息，比如段/任务/服务器。
+
+#### INFORMATION SCHEMA
+
+您可以使用JDBC连接 `connection.getMetaData()` 访问表和列元数据，或通过下面描述的INFORMATION_SCHEMA表。例如，要检索Druid数据源"foo"的元数据，请使用查询：
+
+```
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'druid' AND TABLE_NAME = 'foo'
+```
+
+> [!WARNING]
+> INFORMATION_SCHEMA表目前不支持Druid特定的函数，如：`TIME_PARSE` 和 `APPROX_QUANTILE_DS`, 只有标准的SQL函数是可用的。
+
+**SCHEMATA表**
+
+| Column | Notes |
+|-|-|
+| CATALOG_NAME | Unused |
+| SCHEMA_NAME | |
+| SCHEMA_OWNER | Unused |
+| DEFAULT_CHARACTER_SET_CATALOG | Unused | 
+| DEFAULT_CHARACTER_SET_SCHEMA | Unused |
+| DEFAULT_CHARACTER_SET_NAME | Unused |
+| SQL_PATH | Unused |
+
+**TABLES表**
+
+| Column | Notes |
+|-|-|
+| TABLE_CATALOG |	Unused |
+| TABLE_SCHEMA | |	
+| TABLE_NAME | |	
+| TABLE_TYPE |	"TABLE" or "SYSTEM_TABLE" |
+
+**COLUMNS表**
+
+| Column | Notes |
+|-|-|
+| TABLE_CATALOG |	Unused |
+| TABLE_SCHEMA	||
+| TABLE_NAME ||	
+| OLUMN_NAME	||
+| ORDINAL_POSITION	||
+| COLUMN_DEFAULT |	Unused|
+| IS_NULLABLE	||
+| DATA_TYPE	||
+| CHARACTER_MAXIMUM_LENGTH | Unused |
+| CHARACTER_OCTET_LENGTH | Unused |
+| NUMERIC_PRECISION	||
+| NUMERIC_PRECISION_RADIX	||
+| NUMERIC_SCALE	||
+| DATETIME_PRECISION	||
+| CHARACTER_SET_NAME	||
+| COLLATION_NAME	||
+| JDBC_TYPE |	Type code from java.sql.Types (Druid extension) |
+
+#### SYSTEM SCHEMA
 ### 服务配置
 ### 安全性
