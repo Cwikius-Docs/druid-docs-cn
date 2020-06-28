@@ -724,5 +724,74 @@ SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'druid' AND TABLE_
 | JDBC_TYPE |	Type code from java.sql.Types (Druid extension) |
 
 #### SYSTEM SCHEMA
+
+"sys"模式提供了对Druid段、服务器和任务的可见性。
+
+> [!WARNING]
+> 注意： "sys"表当前不支持Druid特定的函数，例如 `TIME_PARSE` 和 `APPROX_QUANTILE_DS`。 仅仅标准SQL函数可以被使用。
+
+**SEGMENTS表**
+
+segments表提供了所有Druid段的详细信息，无论该段是否被发布
+
+| 字段 | 类型 | 注意 |
+|-|-|-|
+| `segment_id` | STRING | 唯一的段标识符 |
+| `datasource` | STRING | 数据源名称 |
+| `start` | STRING | Interval开始时间（ISO8601格式） |
+| `end` | STRING | Interval结束时间（ISO8601格式） |
+| `size` | LONG | 段大小，单位为字节 |
+| `version` | STRING | 版本字符串（通常是ISO8601时间戳，对应于段集首次启动的时间）。较高的版本意味着最近创建的段。版本比较基于字符串比较。 |
+| `partition_num` | LONG | 分区号（整数，在数据源+间隔+版本中是唯一的；不一定是连续的） |
+| `num_replicas` | LONG | 当前正在服务的此段的副本数 |
+| `num_rows` | LONG | 当前段中的行数，如果查询时Broker未知，则此值可以为空 |
+| `is_published` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段已发布到元数据存储且 `used=1`。详情查看 [架构页面](../Design/Design.md) |
+| `is_available` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段当前由任何进程（Historical或Realtime）提供服务。详情查看 [架构页面](../Design/Design.md) |
+| `is_realtime` | LONG | 布尔值表示为long类型，其中1=true，0=false。如果此段仅由实时任务提供服务，则为1；如果任何Historical进程正在为此段提供服务，则为0。 |
+| `is_overshadowed` | LONG | 布尔值表示为long类型，其中1=true，0=false。如果此段已发布，并且被其他已发布的段完全覆盖则为1。目前，对于未发布的段，`is_overshadowed` 总是false，尽管这在未来可能会改变。可以通过过滤 `is_published=1` 和 `is_overshadowed=0` 来筛选"应该发布"的段。如果段最近被替换，它们可以短暂地被发布，也可以被掩盖，但还没有被取消发布。详情查看 [架构页面](../Design/Design.md)  |
+| `payload` | STRING | JSON序列化数据段负载 |
+
+例如，要检索数据源"wikipedia"的所有段，请使用查询：
+
+```sql
+SELECT * FROM sys.segments WHERE datasource = 'wikipedia'
+```
+
+另一个检索每个数据源的段总大小、平均大小、平均行数和段数的示例：
+
+```sql
+SELECT
+    datasource,
+    SUM("size") AS total_size,
+    CASE WHEN SUM("size") = 0 THEN 0 ELSE SUM("size") / (COUNT(*) FILTER(WHERE "size" > 0)) END AS avg_size,
+    CASE WHEN SUM(num_rows) = 0 THEN 0 ELSE SUM("num_rows") / (COUNT(*) FILTER(WHERE num_rows > 0)) END AS avg_num_rows,
+    COUNT(*) AS num_segments
+FROM sys.segments
+GROUP BY 1
+ORDER BY 2 DESC
+```
+
+注意：请注意，一个段可以由多个流摄取任务或Historical进程提供服务，在这种情况下，它将有多个副本。当由多个摄取任务提供服务时，这些副本彼此之间的一致性很弱，直到某个片段最终由一个Historical段提供服务，此时该段是不可变的。Broker更喜欢从Historical中查询段，而不是从摄取任务中查询段。但如果一个段有多个实时副本，例如Kafka索引任务，同时一个任务比另一个慢，然后`sys.segments`结果在任务的持续时间内可能会有所不同，因为Broker只查询一个摄取任务，并且不能保证每次都选择相同的任务。段表的 `num_rows` 列在此期间可能有不一致的值。关于与流摄取任务的不一致性，有一个 [公开问题](https://github.com/apache/druid/issues/5915) 。
+
+**SERVERS表**
+
+Servers表列出集群中发现的所有服务器
+| 字段 | 类型 | 注意 |
+|-|-|-|
+| `server` | STRING | 服务名称，格式为host:port |
+| `host` | STRING | 服务的hostname |
+| `plaintext_port` | LONG | 服务器的不安全端口，如果禁用明文通信，则为-1 |
+| `tls_port` | LONG | 服务器的TLS端口，如果禁用了TLS，则为-1 |
+| `server_type` | STRING | Druid服务的类型，可能的值包括：COORDINATOR, OVERLORD, BROKER, ROUTER, HISTORICAL, MIDDLE_MANAGER 或者 PEON |
+| `tier` | STRING | 分布层，查看 [druid.server.tier](../Configuration/configuration.md#Historical)。仅对Historical有效，对于其他类型则为null |
+| `current_size` | LONG | 此服务器上以字节为单位的段的当前大小。仅对Historical有效，对于其他类型则为0 |
+| `max_size` | LONG | 此服务器建议分配给段的最大字节大小，请参阅 [druid.server.maxSize](../Configuration/configuration.md) 文件, 仅对Historical有效，对于其他类型则为0 |
+
+要检索有关所有服务器的信息，请使用查询：
+
+```sql
+SELECT * FROM sys.servers;
+```
+
 ### 服务配置
 ### 安全性
