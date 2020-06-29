@@ -776,6 +776,7 @@ ORDER BY 2 DESC
 **SERVERS表**
 
 Servers表列出集群中发现的所有服务器
+
 | 字段 | 类型 | 注意 |
 |-|-|-|
 | `server` | STRING | 服务名称，格式为host:port |
@@ -793,5 +794,36 @@ Servers表列出集群中发现的所有服务器
 SELECT * FROM sys.servers;
 ```
 
+**SERVER_SEGMENTS表**
+
+SERVER_SEGMENTS表用来连接服务与段表
+
+| 字段 | 类型 | 注意 |
+|-|-|-|
+| `server` | STRING | 格式为host:port的服务名称， [SERVER表](#SERVERS表) 的主键 |
+| `segment_id` | STRING | 段标识符，[SEGMENTS表](#SEGMENTS表) 的主键 |
+
+"SERVERS"和"SEGMENTS"之间的联接可用于查询特定数据源的段数，按SERVER分组，示例查询：
+
+```sql
+SELECT count(segments.segment_id) as num_segments from sys.segments as segments
+INNER JOIN sys.server_segments as server_segments
+ON segments.segment_id  = server_segments.segment_id
+INNER JOIN sys.servers as servers
+ON servers.server = server_segments.server
+WHERE segments.datasource = 'wikipedia'
+GROUP BY servers.server;
+```
+
+**TASKS表**
+
+**SUPERVISORS表**
+
+
 ### 服务配置
+
+Druid SQL计划发生在Broker上，由 [Broker runtime properties](../Configuration/configuration.md#broker) 配置。
+
 ### 安全性
+
+有关进行SQL查询需要哪些权限的信息，请参阅基本安全文档中的 [定义SQL权限](../Configuration/core-ext/druid-basic-security.md) 。
