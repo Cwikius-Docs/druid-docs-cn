@@ -4,4 +4,5 @@
 ### `lookup`
 ### `union`
 ### `inline`
+### `query`
 ### `join`
