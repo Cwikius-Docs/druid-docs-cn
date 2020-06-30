@@ -817,8 +817,51 @@ GROUP BY servers.server;
 
 **TASKS表**
 
+"TASKS"表提供有关活跃的和最近完成的索引任务的信息。有关更多信息，请查看 [摄取任务的文档](../DataIngestion/taskrefer.md)。
+
+| 字段 | 类型 | 注意 |
+|-|-|-|
+| `task_id` | STRING | 唯一的任务标识符 |
+| `group_id` | STRING | 本任务的任务组ID，值依赖于任务的 `type`, 例如，对于原生索引任务， 它与 `task_id` 相同，对于子任务，该值为父任务的ID |
+| `type` | STRING | 任务类型，例如该值为"index"表示为索引任务。 可以查看 [任务概述](../DataIngestion/taskrefer.md) |
+| `datasource` | STRING | 被索引的数据源名称 |
+| `created_time` | STRING | ISO8601格式的时间戳，与创建摄取任务的时间相对应。请注意，此值是为已完成和正在等待的任务填充的。对于正在运行和挂起的任务，此值设置为1970-01-01T00:00:00Z |
+| `queue_insertion_time` | STRING | ISO8601格式的时间戳，与此任务添加到Overlord上的队列时对应 |
+| `status` | STRING | 任务状态，可以是RUNNING、FAILED、SUCCESS|
+| `runner_status` | STRING | 对于已完成任务的运行状态为NONE，对于进行中的任务，值可以为RUNNING、WAITING、PENDING |
+| `duration` | LONG | 完成任务所用的时间（毫秒），此值仅对已完成的任务显示 |
+| `location` | STRING | 运行此任务的服务器名称，格式为主机：端口，此信息仅对正在运行的任务显示 |
+| `host` | STRING | 运行此任务的服务器名称 |
+| `plaintext_port` | LONG | 服务器的不安全端口，如果明文通信被禁用，则为-1 |
+| `tls_port` | LONG | 服务器的TLS端口，如果TLS被禁用，则为-1 |
+| `error_msg` | STRING | FAILED任务的详细错误信息 |
+
+例如，要检索按状态筛选的任务信息，请使用查询
+
+```sql
+SELECT * FROM sys.tasks WHERE status='FAILED';
+```
+
 **SUPERVISORS表**
 
+SUPERVISORS表提供supervisor的详细信息
+
+| 字段 | 类型 | 注意 |
+|-|-|-|
+| `supervisor_id` | STRING | supervisor任务的标识符 |
+| `state` | STRING | supervisor的基本状态，可用状态有： `UNHEALTHY_SUPERVISOR`, `UNHEALTHY_TASKS`, `PENDING`, `RUNNING`, `SUSPENDED`, `STOPPING`。详情可以查看 [Kafka摄取文档](../DataIngestion/kafka.md) |
+| `detailed_state` | STRING | supervisor特定的状态。(详情查看特定的supervisor状态的文档)|
+| `healthy` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示supervisor健康 |
+| `type` | STRING | supervisor的类型，例如 `kafka`, `kinesis` 或者 `materialized_view` |
+| `source` | STRING | supervisor的源，例如 Kafka Topic或者Kinesis Stream |
+| `suspended` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示supervisor处于暂停状态 |
+| `spec` | STRING | JSON序列化的supervisor说明 |
+
+例如：要检索按运行状况筛选的supervisor任务信息，请使用查询：
+
+```sql
+SELECT * FROM sys.supervisors WHERE healthy=0;
+```
 
 ### 服务配置
 
