@@ -9,3 +9,13 @@ obox.style.bottom = "100px";
 
 var sbox = document.getElementsByTagName("body")[0];
 sbox.appendChild(obox);
+
+var scbox1 = document.createElement("script")
+scbox1.type = "text/javascript"
+scbox1.innerHTML = 'var jd_union_pid = "3002597012";var jd_union_euid = "";'
+var scbox2 = document.createElement("script")
+scbox2.type = "text/javascript"
+scbox2.src = "//ads-union.jd.com/static/js/union.js"
+
+sbox.appendChild(scbox1)
+sbox.appendChild(scbox2)
