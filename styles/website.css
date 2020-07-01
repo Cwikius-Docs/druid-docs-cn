@@ -26,8 +26,8 @@ pre[class*="language-"] {
 #QR {
     padding-top: 20px;
     position: fixed;
-    bottom: 100px;
-    right: 10px;
+    bottom: 0px;
+    right: 230px;
 }
 
 .gitbook-donate #wechat, .gitbook-donate #alipay {
