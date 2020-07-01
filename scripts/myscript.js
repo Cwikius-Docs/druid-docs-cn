@@ -7,6 +7,6 @@ window.onload = function() {
     obox.style.right = "20px";
     obox.style.bottom = "100px";
 
-    var sbox = document.getElementsByClassName(".page-inner")[0];
+    var sbox = document.getElementsByClassName("page-inner")[0];
     sbox.appendChild(obox);
 }
