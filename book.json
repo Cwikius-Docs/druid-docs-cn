@@ -25,7 +25,8 @@
         "edit-link",
         "copy-code-button",
         "tbfed-pagefooter",
-        "donate"
+        "donate",
+        "scripts"
     ],
     "pluginsConfig": {
         "edit-link": {
@@ -55,6 +56,9 @@
             "button": "友情赞助",
             "alipayText": "支付宝",
             "wechatText": "微信"
+        },
+        "scripts": {
+            "files": ["./scripts/myscript.js"]
         }
     }
 }
