@@ -61,6 +61,7 @@
 * [查询执行](Querying/queryexecution.md)
 * [一些概念](Querying/datasource.md)
   * [数据源](Querying/datasource.md)
+  * [Lookups](Querying/lookups.md)
   * [多值维度](Querying/multi-value-dimensions.md)
   * [查询缓存](Querying/querycached.md)
   * [上下文参数](Querying/query-context.md)
