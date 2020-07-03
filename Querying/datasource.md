@@ -252,4 +252,17 @@ SQL中的join格式如下：
 
 **Join的性能**
 
+Join是一个可以显著影响查询性能的功能。一些性能提示和注意事项：
+
+1. Joins与[lookup数据源](#lookup)一起使用是非常有用的，但是在大多数场景下，[LOOKUP函数](druidsql.md#字符串函数) 的性能比Join更优。 如果使用场景非常近似的话，可以考虑使用 `LOOKUP` 
+2. 当在Druid SQL中使用join的时候，它可以生成未在查询中显式指定的子查询。关于何时发生以及何时探测到它可以在 [Druid SQL](druidsql.md) 查看详细信息
+3. 一个生成显式子查询的常见原因是：等号两边的类型不一致。 例如：因为lookup的key总是字符串，当 `d.field` 是字符串的时候 `druid.d JOIN lookup.l ON d.field = l.field` 的性能最佳
+4. 从druid0.18.1开始，join操作符必须为每一行计算条件。在未来，我们希望实现早期和延迟的条件评估，这将大大提高常见用例的性能。
+
 **Join的下一步工作**
+
+Join是Druid开发中比较活跃发展的一个领域。目前缺少以下功能，但可能会在将来的版本中出现：
+* 比Lookup更宽的预加载维度表（例如支持单个键和多个值）
+* RIGHT OUTER和FULL OUTER连接。目前，它们已部分实施, 查询会运行，但结果并不总是正确的
+* [上一节](#Join的性能)中提到的与性能相关的优化
+* broadcast hash-join以外的连接算法
