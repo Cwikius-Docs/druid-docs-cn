@@ -78,6 +78,7 @@
 * [原生查询组件](Querying/filters.md)
   * [过滤](Querying/filters.md)
   * [聚合](Querying/Aggregations.md)
+  * [维度](Querying/querydimensions.md)
 
 ### 配置列表
 
