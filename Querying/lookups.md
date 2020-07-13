@@ -69,3 +69,54 @@ GROUP BY 1
 
 > [!WARNING]
 > 目前，当Lookup是 [Join数据源](datasource.md#join) 的输入时，不会触发内射查找优化。它只在直接使用查找函数时使用，而不使用联接运算符。
+
+### 动态配置
+
+> [!WARNING]
+> 动态Lookup配置是一个 [实验特性](../Development/experimental.md), 不再支持静态配置。下面的文档说明了集群范围的配置，该配置可以通过Coordinator进行访问。配置通过服务器的"tier"概念传播。"tier"被定义为一个应该接收一组Lookup的服务集合。例如，您可以让所有Historical都是 `_default`，而Peon是它们所负责的数据源的各个层的一部分。Lookups的tier完全独立于Historical tiers。
+
+这些配置都可以通过以下URI模板来使用JSON获取到：
+
+```
+http://<COORDINATOR_IP>:<PORT>/druid/coordinator/v1/lookups/config/{tier}/{id}
+```
+
+假设下面的所有URI都预先被添加到了 `http://<COORDINATOR_IP>:<PORT>`
+
+如果您此前**从未**配置过lookups，**必须**首先通过POST请求发送一个Json Object `{}` 到 `/druid/coordinator/v1/lookups/config` 来进行初始化。
+
+该接口可能返回以下几个结果：
+
+* 资源不存在的时返回404
+* 请求格式存在问题时返回400
+* 请求(`POST` 和 `DELETE`)被异步接收返回202
+* 请求(仅针对 `GET`)成功返回200
+
+### 配置传播行为
+配置由Coordinator传播到查询服务进程（Broker / Router / Peon / Historical）。查询服务进程有一个内部API，用于管理进程上的Lookup，这些查询由Coordinator使用。Coordinator定期检查是否有任何进程需要加载/删除Lookup并适当地更新它们。
+
+请注意，一个查询服务进程只能同时处理两个同步的Lookup配置传播请求。该限制是为了防止Lookup处理消耗过多的服务器HTTP连接。
+
+### 配置Lookups的API
+#### 批量更新Lookup
+#### 更新Lookup
+#### 获取所有Lookups
+#### 获取Lookup
+#### 删除Lookup
+#### 删除tier
+#### 列出所有tier名称
+#### 列出所有Lookup名称
+### Lookup状态的API
+#### 列出所有Lookups的加载状态
+#### 列出一个tier中的Lookups的加载状态
+#### 列出单个Lookup的加载状态
+#### 列出所有进程的Lookup状态
+#### 列出某个tier中进程的Lookup状态
+#### 列出单一进程中Lookup的状态
+### 内部API
+#### 获取Lookups
+#### 获取Lookup
+### 配置
+### 重启时保存配置
+### Lookup反射
+
