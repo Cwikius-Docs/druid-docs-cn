@@ -99,24 +99,321 @@ http://<COORDINATOR_IP>:<PORT>/druid/coordinator/v1/lookups/config/{tier}/{id}
 
 ### 配置Lookups的API
 #### 批量更新Lookup
+
+Lookups可以通过发送一个POST请求到 `/druid/coordinator/v1/lookups/config` 进行批量更新， 数据格式为：
+
+```json
+{
+    "<tierName>": {
+        "<lookupName>": {
+          "version": "<version>",
+          "lookupExtractorFactory": {
+            "type": "<someExtractorFactoryType>",
+            "<someExtractorField>": "<someExtractorValue>"
+          }
+        }
+    }
+}
+```
+
+请注意，"version"是用户指定的任意字符串，当更新现有Lookup时，用户需要指定一个字典级别更高的版本。
+
+例如，配置可能看起来像：
+
+```json
+{
+  "__default": {
+    "country_code": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "77483": "United States"
+        }
+      }
+    },
+    "site_id": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "cachedNamespace",
+        "extractionNamespace": {
+          "type": "jdbc",
+          "connectorConfig": {
+            "createTables": true,
+            "connectURI": "jdbc:mysql:\/\/localhost:3306\/druid",
+            "user": "druid",
+            "password": "diurd"
+          },
+          "table": "lookupTable",
+          "keyColumn": "country_id",
+          "valueColumn": "country_name",
+          "tsColumn": "timeColumn"
+        },
+        "firstCacheTimeout": 120000,
+        "injective": true
+      }
+    },
+    "site_id_customer1": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "847632": "Internal Use Only"
+        }
+      }
+    },
+    "site_id_customer2": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "AHF77": "Home"
+        }
+      }
+    }
+  },
+  "realtime_customer1": {
+    "country_code": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "77483": "United States"
+        }
+      }
+    },
+    "site_id_customer1": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "847632": "Internal Use Only"
+        }
+      }
+    }
+  },
+  "realtime_customer2": {
+    "country_code": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "77483": "United States"
+        }
+      }
+    },
+    "site_id_customer2": {
+      "version": "v0",
+      "lookupExtractorFactory": {
+        "type": "map",
+        "map": {
+          "AHF77": "Home"
+        }
+      }
+    }
+  }
+}
+```
+
+map中所有的条目都将会更新，没有条目被删除。
+
 #### 更新Lookup
+
+通过发送一个 `POST` 请求到 `/druid/coordinator/v1/lookups/config/{tier}/{id}`，可以根据特定的 `lookupExtractorFactory` 来更新Lookup。
+
+例如，一个POST `/druid/coordinator/v1/lookups/config/realtime_customer1/site_id_customer1` 可能包含以下信息：
+
+```json
+{
+  "version": "v1",
+  "lookupExtractorFactory": {
+    "type": "map",
+    "map": {
+      "847632": "Internal Use Only"
+    }
+  }
+}
+```
+
+该操作会使用上边定义的配置来更新 `realtime_customer1` 的 `site_id_customer1` Lookup
+
 #### 获取所有Lookups
+
+对 `/druid/coordinator/v1/lookups/config/all` 的 `GET` 请求会返回所有tier的已知Lookups
+
 #### 获取Lookup
+
+对 `/druid/coordinator/v1/lookups/config/{tier}/{id}` 的 `GET` 请求会返回一个特定的Lookup
+
+针对前边的例子，`GET` 请求 `/druid/coordinator/v1/lookups/config/realtime_customer2/site_id_customer2` 会返回：
+
+```json
+{
+  "version": "v1",
+  "lookupExtractorFactory": {
+    "type": "map",
+    "map": {
+      "AHF77": "Home"
+    }
+  }
+}
+```
+
 #### 删除Lookup
+
+对 `/druid/coordinator/v1/lookups/config/{tier}/{id}` 的 `DELETE`  请求会删除掉集群中的Lookup，如果该Lookup是该tier的最有一个，则tier也被删除
+
 #### 删除tier
+
+对 `/druid/coordinator/v1/lookups/config/{tier}` 的 `DELETE` 请求会删除掉集群中的指定tier
+
 #### 列出所有tier名称
+
+对 `/druid/coordinator/v1/lookups/config` 的 `GET`请求将返回动态配置中所有已知的tier名称列表， 在请求中加上 `discover=true`参数（即 `/druid/coordinator/v1/lookups/config?discover=true`）可以查找集群中除动态配置中已知tier之外当前活动的tier列表
+
 #### 列出所有Lookup名称
+
+对 `/druid/coordinator/v1/lookups/config/{tier}` 的 `GET` 请求将返回该tier的所有已知Lookup的名称。
+
+这些接口可用于获取已配置的Lookup的传播状态，以使用Historical之类的查找来处理进程。
+
 ### Lookup状态的API
 #### 列出所有Lookups的加载状态
+
+`GET /druid/coordinator/v1/lookups/status`,参数 `detailed` 是一个可选的查询参数
+
 #### 列出一个tier中的Lookups的加载状态
+
+`GET /druid/coordinator/v1/lookups/status/{tier}`,参数 `detailed` 是一个可选的查询参数
+
 #### 列出单个Lookup的加载状态
+
+`GET /druid/coordinator/v1/lookups/status/{tier}/{lookup}`,参数 `detailed` 是一个可选的查询参数
+
 #### 列出所有进程的Lookup状态
+
+`GET /druid/coordinator/v1/lookups/nodeStatus`, 参数 `discover`为可选的查询参数，用来发现tiers或者已列出tier的Lookup
+
 #### 列出某个tier中进程的Lookup状态
+
+`GET /druid/coordinator/v1/lookups/nodeStatus/{tier}`
+
 #### 列出单一进程中Lookup的状态
+
+`GET /druid/coordinator/v1/lookups/nodeStatus/{tier}/{host:port}`
+
 ### 内部API
+
+在Peon、Router、Broker和Historical进程中都可以消费到Lookup配置。 `/druid/listen/v1/lookups` 是一个内部API，这些进程都使用该API进行 list/load/drop 它们的Lookups。它们遵循与集群范围动态配置相同的返回值约定。以下接口可用于调试目的，但不能用于其他目的。
+
 #### 获取Lookups
+
+在一个进程上对 `/druid/listen/v1/lookups` 的 `GET` 请求将返回当前进程上活跃的lookup的一个json map。
+
+```json
+{
+  "site_id_customer2": {
+    "version": "v1",
+    "lookupExtractorFactory": {
+      "type": "map",
+      "map": {
+        "AHF77": "Home"
+      }
+    }
+  }
+}
+```
+
 #### 获取Lookup
+
+在一个进程上对 `/druid/listen/v1/lookups/some_lookup_name` 的 `GET` 请求将返回由 `some_lookup_name` 标识的LookupExtractorFactory。
+
+```json
+{
+  "version": "v1",
+  "lookupExtractorFactory": {
+    "type": "map",
+    "map": {
+      "AHF77": "Home"
+    }
+  }
+}
+```
+
 ### 配置
+
+可以查看Coordinator配置中的 [Lookups动态配置](../Configuration/configuration.md#coordinator)
+
+使用以下属性来配置Broker/Router/Historical/Peon来宣告它自身作为一个lookup tier的部分。
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.lookup.lookupTier` | 该进程上lookups的tier。 独立于其他tier | `__default` |
+| `druid.lookup.lookupTierIsDatasource` | 对于索引服务任务之类的某些操作，数据源是在任务的运行时属性中传递的。此选项从与任务的数据源相同的值中获取tier名称。建议只将其用作索引服务的Peon可选项（如果有的话）。如果为true，则 `druid.lookup.lookupTier`必须指定。 | `false`|
+
+在Coordinator上使用以下属性来配置动态配置管理器的行为：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.manager.lookups.hostTimeout` | 每台主机处理请求的超时时间，毫秒单位 | `2000`(2s) |
+| `druid.manager.lookups.allHostTimeout` | 在所有进程上完成Lookup管理的超时时间，毫秒单位 | `900000`(15mins) |
+| `druid.manager.lookups.period` | 管理周期中可以暂停多久 | `120000`(2mins) |
+| `druid.manager.lookups.threadPoolSize` | 可以并行的管理的服务进程数量 | `10` |
+
 ### 重启时保存配置
+
+可以在重新启动时保存配置，这样进程就不必等待Coordinator操作来重新填充其Lookup。为此，将设置以下属性：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.lookup.snapshotWorkingDir` | 用于存储当前Lookup配置的快照的工作路径，将此属性留空将禁用快照/引导实用程序 | null |
+| `druid.lookup.enableLookupSyncOnStartup` | 启动时使用Coordinator启用Lookup同步进程。可查询进程将从Coordinator获取并加载Lookup，而不是等待Coordinator加载Lookup。如果集群中没有配置Lookup，用户可以选择禁用此选项。 | true |
+| `druid.lookup.numLookupLoadingThreads` | 启动时并行加载Lookup的线程数。启动完成后，此线程池将被销毁。它不会在JVM的生命周期内保留 | 可用的处理器/2 |
+| `druid.lookup.coordinatorFetchRetries` | 在启动时同步期间，重试从Coordinator获取Lookup bean列表的次数。| 3 |
+| `druid.lookup.lookupStartRetries` | 在启动时同步期间或运行时，重试启动每个Lookup的次数。| 3 |
+| `druid.lookup.coordinatorRetryDelay` | 启动时同步期间从Coordinator获取Lookups列表的重试之间延迟的时间（毫秒）。 | 60000 |
+
 ### Lookup反射
 
+如果lookup类型实现了 `LookupIntrospectHandler`接口，Broker提供了一个Lookup反射的API。
+
+对 `/druid/v1/lookups/introspect/{lookupId}` 发送一个 `GET` 请求将返回完整值的map，例如：`GET /druid/v1/lookups/introspect/nato-phoneti`:
+
+```json
+{
+    "A": "Alfa",
+    "B": "Bravo",
+    "C": "Charlie",
+    ...
+    "Y": "Yankee",
+    "Z": "Zulu",
+    "-": "Dash"
+}
+```
+key的列表可以通过 `GET /druid/v1/lookups/introspect/{lookupId}/keys` 来获取到，例如：`GET /druid/v1/lookups/introspect/nato-phonetic/keys`
+
+```json
+[
+    "A",
+    "B",
+    "C",
+    ...
+    "Y",
+    "Z",
+    "-"
+]
+```
+
+values的列表可以通过 `GET /druid/v1/lookups/introspect/{lookupId}/values` 来获取到。例如： `GET /druid/v1/lookups/introspect/nato-phonetic/values` 
+
+```json
+[
+    "Alfa",
+    "Bravo",
+    "Charlie",
+    ...
+    "Yankee",
+    "Zulu",
+    "Dash"
+]
+```
