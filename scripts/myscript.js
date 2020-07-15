@@ -15,6 +15,15 @@ obox2.style.position = "fixed";
 obox2.style.right = "20px";
 obox2.style.bottom = "310px";
 
+var obox3 = document.createElement("div")
+obox3.innerHTML = '<a href="https://union-click.jd.com/jdc?e=&p=AyIGZRprFQETA1YdXhAyVlgNRQQlW1dCFFlQCxxKQgFHREkdSVJKSQVJHFRXFk9FUlpGQUpLCVBaTFhbXQtWVmpSWRtYFAYRAVAea01lT3c0ZQ9GYGwdUlwndltxAVN9W1MOHjdUK1sUAxAGUxpYEgEiN1Uca0NsEgZUGloUBxICVitaJQIWD1AdUxcGEg5XG1wlBRIOZR5YFAARBVYcRxUHGgVQH2slMhE3ZStbJQEiRTsSDkdVG1AHTw9CVxcCBU5ZRldHAwFPDxVXGwdcSAtAByIFVBpfHA%3D%3D" target="_blank" title="大数据架构详解">' +
+    '<img src = "/img/5804fe12N50fda30b.jpg" width = "200" height = "200" />' +
+    '</a>';
+obox3.style.position = "fixed";
+obox3.style.right = "20px";
+obox3.style.bottom = "520px";
+
 var sbox = document.getElementsByTagName("body")[0];
 sbox.appendChild(obox1);
 sbox.appendChild(obox2);
+sbox.appendChild(obox3);
