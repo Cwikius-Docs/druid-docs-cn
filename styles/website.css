@@ -61,6 +61,10 @@ pre[class*="language-"] {
     right: 240px !important;
 }
 
+.treeview__container-title {
+    display: none;
+}
+
 @media screen and (max-width: 1500px) {
     .page-inner {
         margin: 0 100px 0 100px !important;
