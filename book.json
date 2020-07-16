@@ -20,7 +20,8 @@
         "prism",
         "back-to-top-button",
         "flexible-alerts",
-        "atoc",
+        "page-treeview",
+        //"atoc",
         "copy-code-button",
         "tbfed-pagefooter",
         "heading-anchors",
@@ -35,10 +36,14 @@
             ],
             "size": "small"
         },
-        "atoc": {
+        "page-treeview":{
+            "minHeaderCount": "2",
+            "minHeaderDeep": "2"
+        },
+        /*"atoc": {
             "addClass": true,
             "className": "atoc"
-        },
+        },*/
         "tbfed-pagefooter": {
             "copyright": "<a href=\"http://www.beian.miit.gov.cn/\">渝ICP备16001958号</a> | Copyright © 2020 apache-druid.cn",
             "modify_label": "最近一次修改时间：",
