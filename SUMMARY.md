@@ -1,12 +1,12 @@
 # Summary
 
-## ApacheDruid中文技术社区
+* [ApacheDruid中文技术社区]()
 
-### 优质技术文章合集
+* [优质技术文章合集]()
 
-### 整体介绍
-
-* [Druid概述](README.md)
+* [整体介绍]()
+  * [Druid概述](README.md)
+  * [官方原版英文文档](https://druid.apache.org/docs/latest/design/)
 
 * [新手入门]()
   * [Druid介绍](GettingStarted/chapter-1.md)
@@ -15,7 +15,7 @@
   * [单服务器部署](GettingStarted/chapter-3.md)
   * [集群部署](GettingStarted/chapter-4.md)
 
-### 使用指导
+* [使用指导]()
   * [加载本地文件](Tutorials/chapter-1.md)
   * [从Kafka加载数据](Tutorials/chapter-2.md)
   * [从Hadoop加载数据](Tutorials/chapter-3.md)
@@ -45,7 +45,7 @@
   * [元数据存储](Design/Metadata.md)
   * [Zookeeper](Design/Zookeeper.md)
 
-### 数据摄取
+* [数据摄取]()
   * [摄取概述](DataIngestion/ingestion.md)
   * [数据格式](DataIngestion/dataformats.md)
   * [schema设计](DataIngestion/schemadesign.md)
@@ -60,44 +60,39 @@
   * [任务参考](DataIngestion/taskrefer.md)
   * [问题FAQ](DataIngestion/faq.md)
 
-### 数据查询
+* [数据查询]()
+  * [Druid SQL](Querying/druidsql.md)
+  * [原生查询](Querying/makeNativeQueries.md)
+  * [查询执行](Querying/queryexecution.md)
+  * [一些概念](Querying/datasource.md)
+    * [数据源](Querying/datasource.md)
+    * [Joins](Querying/joins.md)
+    * [Lookups](Querying/lookups.md)
+    * [多值维度](Querying/multi-value-dimensions.md)
+    * [查询缓存](Querying/querycached.md)
+    * [上下文参数](Querying/query-context.md)
+  * [原生查询类型](Querying/timeseriesquery.md)
+    * [Timeseries](Querying/timeseriesquery.md)
+    * [TopN](Querying/topn.md)
+    * [GroupBy](Querying/groupby.md)
+    * [Scan](Querying/scan.md)
+    * [Search](Querying/searchquery.md)
+    * [TimeBoundary](Querying/timeboundaryquery.md)
+    * [SegmentMetadata](Querying/segmentMetadata.md)
+    * [DatasourceMetadata](Querying/datasourcemetadataquery.md)
+  * [原生查询组件](Querying/filters.md)
+    * [过滤](Querying/filters.md)
+    * [聚合](Querying/Aggregations.md)
+    * [维度](Querying/dimensionspec.md)
 
-* [Druid SQL](Querying/druidsql.md)
-* [原生查询](Querying/makeNativeQueries.md)
-* [查询执行](Querying/queryexecution.md)
-* [一些概念](Querying/datasource.md)
-  * [数据源](Querying/datasource.md)
-  * [Joins](Querying/joins.md)
-  * [Lookups](Querying/lookups.md)
-  * [多值维度](Querying/multi-value-dimensions.md)
-  * [查询缓存](Querying/querycached.md)
-  * [上下文参数](Querying/query-context.md)
-* [原生查询类型](Querying/timeseriesquery.md)
-  * [Timeseries](Querying/timeseriesquery.md)
-  * [TopN](Querying/topn.md)
-  * [GroupBy](Querying/groupby.md)
-  * [Scan](Querying/scan.md)
-  * [Search](Querying/searchquery.md)
-  * [TimeBoundary](Querying/timeboundaryquery.md)
-  * [SegmentMetadata](Querying/segmentMetadata.md)
-  * [DatasourceMetadata](Querying/datasourcemetadataquery.md)
-* [原生查询组件](Querying/filters.md)
-  * [过滤](Querying/filters.md)
-  * [聚合](Querying/Aggregations.md)
-  * [维度](Querying/dimensionspec.md)
+* [配置列表]()
+  * [配置列表](Configuration/index.md)
 
-### 配置列表
+* [操作指南]()
+  * [操作指南](Operations/index.md)
 
-* [配置列表](Configuration/index.md)
+* [开发指南]()
+  * [开发指南](Development/index.md)
 
-### 操作指南
-
-* [操作指南](Operations/index.md)
-
-### 开发指南
-
-* [开发指南](Development/index.md)
-
-### 其他相关
-
-* [其他相关](Misc/index.md)
+* [其他相关]()
+  * [其他相关](Misc/index.md)
