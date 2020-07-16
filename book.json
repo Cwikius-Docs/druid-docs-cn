@@ -14,7 +14,7 @@
         "-sharing",
         "-search",
         "-fontsettings",
-        "splitter",
+        "-highlight",
         "search-pro",
         "github-buttons@2.1.0",
         "prism",
