@@ -25,9 +25,7 @@
         "tbfed-pagefooter",
         "heading-anchors",
         "donate",
-        "scripts",
-        "expandable-chapters",
-        "chapter-fold"
+        "scripts"
     ],
     "pluginsConfig": {
         "github-buttons": {
