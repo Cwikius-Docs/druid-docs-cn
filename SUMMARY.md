@@ -69,6 +69,7 @@
     * [Joins](Querying/joins.md)
     * [Lookups](Querying/lookups.md)
     * [多值维度](Querying/multi-value-dimensions.md)
+    * [多租户](Querying/multitenancy.md)
     * [查询缓存](Querying/querycached.md)
     * [上下文参数](Querying/query-context.md)
   * [原生查询类型](Querying/timeseriesquery.md)
