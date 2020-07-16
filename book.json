@@ -1,5 +1,5 @@
 {
-    "title": "Apache Druid中文文档",
+    "title": "ApacheDruid中文技术文档",
     "author": "Jian-Huan LIU",
     "description": "Apache Druid is a high performance real-time analytics database.",
     "language": "zh-hans",
@@ -19,24 +19,19 @@
         "prism",
         "back-to-top-button",
         "expandable-chapters",
-        "pageview-count",
         "flexible-alerts",
         "atoc",
-        "edit-link",
         "copy-code-button",
         "tbfed-pagefooter",
         "donate",
-        "scripts"
+        "scripts",
+        "theme-darkblue"
     ],
     "pluginsConfig": {
-        "edit-link": {
-            "base": "https://github.com/liujianhuanzz/apache-druid-chinese-docs/edit/master",
-            "label": "Edit This Page"
-        },
         "github-buttons": {
             "repo": "liujianhuanzz/apache-druid-chinese-docs",
             "types": [
-                "star","fork"
+                "star"
             ],
             "size": "small"
         },
