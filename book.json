@@ -24,8 +24,17 @@
         "tbfed-pagefooter",
         "donate",
         "scripts",
-        "theme-darkblue"
+        "theme-fexa"
     ],
+    "variables": {
+        "themeFexa": {
+            "nav": [{
+                "url": "http://...",
+                "target": "_blank",
+                "name": "简易教程"
+            }]
+        },
+    },
     "pluginsConfig": {
         "github-buttons": {
             "repo": "liujianhuanzz/apache-druid-chinese-docs",
@@ -33,6 +42,11 @@
                 "star"
             ],
             "size": "small"
+        },
+        "theme-fexa": {
+            "search-placeholder": "输入关键字搜索", 
+            "logo": "../img/druid_nav.png", 
+            "favicon": "../img/druid_nav.png" 
         },
         "atoc": {
             "addClass": true,
