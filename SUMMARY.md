@@ -1,8 +1,14 @@
 # Summary
 
+## ApacheDruid中文技术社区
+
+### 优质技术文章合集
+
+### 整体介绍
+
 * [Druid概述](README.md)
 
-### 新手入门
+* [新手入门]()
   * [Druid介绍](GettingStarted/chapter-1.md)
   * [快速开始](GettingStarted/chapter-2.md)
   * [Docker](GettingStarted/Docker.md)
@@ -23,7 +29,7 @@
   * [转换输入数据](Tutorials/chapter-11.md)
   * [Kerberized HDFS存储](Tutorials/chapter-12.md)
 
-### 架构设计
+* [架构设计]()
   * [整体设计](Design/Design.md)
   * [段设计](Design/Segments.md)
   * [进程与服务](Design/Processes.md)
