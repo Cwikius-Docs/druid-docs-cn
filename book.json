@@ -13,6 +13,7 @@
     "plugins": [
         "-sharing",
         "-search",
+        "-fontsettings",
         "splitter",
         "search-pro",
         "github-buttons@2.1.0",
@@ -22,6 +23,8 @@
         "atoc",
         "copy-code-button",
         "tbfed-pagefooter",
+        "cuav-chapters",
+        "heading-anchors",
         "donate",
         "scripts",
         "theme-fexa"
