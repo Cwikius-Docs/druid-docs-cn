@@ -1,6 +1,6 @@
 # Summary
 
-* [ApacheDruid中文技术社区](/bbs/index)
+* [ApacheDruid中文技术社区](http://apache-druid.cn/bbs/index)
 
 * [优质技术文章合集]()
   * [基本使用类](Misc/basicused.md)
