@@ -20,14 +20,15 @@ pre[class*="language-"] {
     width: 0% !important;
     position: fixed;
     right: 150px;
-    bottom: 10px;
+    bottom: 0px;
 }
 
 #QR {
     padding-top: 20px;
     position: fixed;
     bottom: 0px;
-    right: 230px;
+    right: 25px;
+    display: block;
 }
 
 .gitbook-donate #wechat, .gitbook-donate #alipay {
@@ -41,8 +42,22 @@ pre[class*="language-"] {
 }
 
 .gitbook-donate div:first-child{
+    display: block;
+    width: 200px;
+    position: relative;
+    right: 85px;
+    bottom: 130px;
+}
+
+#rewardButton {
     display: none;
 }
+
+#wechat {
+    bottom: 0px;
+    right: 15px;
+}
+
 #wechat:hover p, #alipay:hover p{
     animation: none !important;
     -webkit-animation: none !important;

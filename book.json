@@ -47,7 +47,7 @@
         "donate": {
             "wechat": "../img/wechat.png",
             "alipay": "../img/alipay.png",
-            "title": "每一天都要开心与奋斗~",
+            "title": "<span>坚持不易，欢迎打赏~</span><br><span>每一天都要开心与奋斗~</span>",
             "button": "友情赞助",
             "alipayText": "支付宝",
             "wechatText": "微信"
