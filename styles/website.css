@@ -28,7 +28,7 @@ pre[class*="language-"] {
     position: fixed;
     bottom: 0px;
     right: 25px;
-    display: block;
+    display: block !important;
 }
 
 .gitbook-donate #wechat, .gitbook-donate #alipay {
