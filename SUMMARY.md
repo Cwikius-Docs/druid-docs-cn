@@ -1,7 +1,5 @@
 # Summary
 
-* [ApacheDruid中文技术社区](http://community.apache-druid.cn/bbs/index)
-
 * [优质技术文章合集]()
   * [基本使用类](Misc/basicused.md)
   * [源码解读类](Misc/sourcecode.md)
