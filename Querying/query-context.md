@@ -29,9 +29,44 @@
 | parallelMergeParallelism | `druid.processing.merge.pool.parallelism` | 在Broker上用于并行结果合并的最大并行线程数。有关更多详细信息，请参阅[Broker配置](../Configuration/configuration.md#broker) |
 | parallelMergeInitialYieldRows | `druid.processing.merge.task.initialYieldNumRows` | 有关更多详细信息，请参阅[Broker配置](../Configuration/configuration.md#broker) |
 | parallelMergeSmallBatchRows | `druid.processing.merge.task.smallBatchNumRows` | 有关更多详细信息，请参阅[Broker配置](../Configuration/configuration.md#broker) |
+| useFilterCNF | `false` | 如果为true，Druid将尝试将查询过滤器转换为合取范式（CNF）。在查询处理期间，可以通过与符合条件的过滤器匹配的所有值的位图索引相交来预过滤列，这通常会大大减少需要扫描的原始行数。但是这种效果只发生在顶层过滤器，或者顶层“and”过滤器的单个子句中。因此，在预过滤期间，CNF中的过滤器可能更有可能在字符串列上使用大量位图索引。但是，使用此设置时应格外小心，因为它有时会对性能产生负面影响，并且在某些情况下，计算过滤器的CNF的操作可能会非常昂贵。如果可能的话，我们建议手动调整过滤器以生成一个最佳的表单，或者至少通过实验验证使用此参数实际上可以提高查询性能而不会产生不良影响 |
 
 ### 查询类型特定的参数
+
+另外，一些特定的查询类型提供了特定的上下文参数。
+
 #### TopN
+
+| 属性 | 默认值 | 描述 |
+|-|-|-|
+| minTopNThreshold | `1000` | 返回每个段的 `minTopNThreshold` 局部结果，以便合并以确定全局topN。 |
+
 #### Timeseries
+
+| 属性 | 默认值 | 描述 |
+|-|-|-|
+| skipEmptyBuckets | `false` | 禁用Timeseries查询中零填充行为，因此只返回包含结果的bucket。|
+
 #### GroupBy
+
+GroupBy的[查询上下文参数](groupby.md)可以专门查看GroupBy查询页
+
 ### 矢量化参数
+
+GroupBy和Timeseries查询类型可以在*矢量化*模式下运行，通过一次处理多个行来加快查询执行。并非所有查询都可以矢量化。特别是矢量化目前有以下要求：
+* 所有查询级筛选器必须能够在位图索引上运行，或者必须提供矢量化的行匹配器。其中包括"selector"、"bound"、"in"、"like"、"regex"、"search"、"and"、"or"和"not"
+* 筛选聚合器中的所有筛选器都必须提供矢量化的行匹配器
+* 所有聚合器必须提供矢量化实现。其中包括"count"、"doubleSum"、"floatSum"、"longSum"、"hyperUnique"和"filtered"
+* 没有虚拟列
+* 对于GroupBy：所有维度spec都必须是"default"（没有提取函数或过滤的维度spec）
+* 对于GroupBy：没有多值维度
+* 对于时间序列：没有"降序"顺序
+* 只有不可变的片段（不是实时的）
+* 仅[表数据源](datasource.md)（不包括联接、子查询、查找或内联数据源）
+
+其他查询类型（如TopN、Scan、Select和Search）忽略"vectorize"参数，将在不进行矢量化的情况下执行。这些查询类型将忽略"vectorize"参数，即使它被设置为"force"。
+
+| 属性 | 默认值 | 描述 |
+|-|-|-|
+| vectorize | `true` | 启用或者禁用矢量化查询执行。 可能的值有 `false`(禁用), `true`（如果可能则启用，否则禁用）和 `force`(已启用，无法矢量化的groupBy和Timeseries查询将会失败)。"force"设置的目的是帮助测试，在生产中通常不起作用（因为实时段永远不能通过矢量化执行进行处理，因此对实时数据的任何查询都将失败）。设置该值将覆盖 `druid.query.vectorize` |
+| vectorSize | `512` | 设置一个特定查询的行数批量大小，设置该值将覆盖 `druid.query.vectorSize` 的值 |
