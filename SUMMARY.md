@@ -84,8 +84,11 @@
     * [DatasourceMetadata](Querying/datasourcemetadataquery.md)
   * [原生查询组件](Querying/filters.md)
     * [过滤](Querying/filters.md)
-    * [聚合](Querying/Aggregations.md)
+    * [粒度](Querying/granularity.md)
     * [维度](Querying/dimensionspec.md)
+    * [聚合](Querying/Aggregations.md)
+    * [后聚合](Querying/postaggregation.md)
+    
 
 * [配置列表]()
   * [配置列表](Configuration/index.md)
