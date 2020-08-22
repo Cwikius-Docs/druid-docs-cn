@@ -88,6 +88,10 @@
     * [维度](Querying/dimensionspec.md)
     * [聚合](Querying/Aggregations.md)
     * [后聚合](Querying/postaggregation.md)
+    * [表达式](Querying/expression.md)
+    * [Having(GroupBy)](Querying/having.md)
+    * [排序和Limit(GroupBy)](Querying/limitspec.md)
+    * [排序(TopN)](Querying/topnsorting.md)
     
 
 * [配置列表]()
