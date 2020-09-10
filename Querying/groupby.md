@@ -230,6 +230,17 @@ Historical和摄取任务需要为每个groupBy查询提供一个合并缓冲区
 使用groupBy v1时，所有聚合都在堆上完成，资源限制通过参数`druid.query.groupBy.maxResults`来决定，这是对结果集中最大结果数的限制。超过此限制的查询将失败，并显示"Resource limit exceeded"错误，指示它们超出了行限制。集群操作应该确保堆上聚合不会超过预期并发查询负载的可用JVM堆空间。
 
 #### v2版本的性能优化
+
+**限制下推优化**
+
+Druid将groupBy查询中的`limit`规范推到Historical数据段中，以便尽早删除不必要的中间结果，并将传输给Broker的数据量降到最低。默认情况下，仅当`orderBy`规范中的所有字段都是分组键的子集时，才应用此技术。这是因为如果`orderBy`规范包含任何不在分组键中的字段，`limitPushDown`不能保证准确的结果。但是, 即使在这种情况下, 如果您可以牺牲一些准确性来快速处理topN查询, 您也可以启用此技术。可以在[高级配置](#高级配置)部分中查看`forceLimitPushDown`。
+
+**优化哈希表**
+
+groupBy v2通过寻址打开哈希引擎来用于聚合。哈希表使用给定的初始bucket编号初始化，并在缓冲区满时逐渐增长。在哈希冲突中，使用了线性探测技术。
+
+初始bucket的默认数目是1024个，哈希表的默认最大负载因子是0.7。如果在哈希表中可以看到太多的冲突，可以调整这些数字。可以在[高级配置](#高级配置)部分中查看 `bufferGrouperInitialBuckets`和`bufferGrouperMaxLoadFactor`。
+
 #### 备选方案
 #### 嵌套的GroupBy查询
 #### 配置
