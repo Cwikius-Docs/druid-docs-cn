@@ -1,7 +1,7 @@
 # Summary
 
 * [优质技术文章合集]()
-  * [基本使用类](Misc/basicused.md)
+  * [入门学习类](Misc/learning.md)
   * [源码解读类](Misc/sourcecode.md)
   * [优化实践类](Misc/optimized.md)
 
