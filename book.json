@@ -24,7 +24,7 @@
         "copy-code-button",
         "tbfed-pagefooter",
         "heading-anchors",
-        "donate",
+        "-donate",
         "scripts"
     ],
     "pluginsConfig": {
