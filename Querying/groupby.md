@@ -254,6 +254,63 @@ groupBy v2通过寻址打开哈希引擎来用于聚合。哈希表使用给定�
 请注意，每个Historical都需要两个合并缓冲区来处理带有并行合并的groupBy v2查询：一个用于计算每个段的中间聚合，另一个用于并行合并中间聚合。
 
 #### 备选方案
+
+在某些情况下，其他查询类型可能比groupBy更好。
+
+* 对于没有"维度"的查询（即仅按时间分组），[Timeseries查询](timeseriesquery.md)通常比groupBy快。主要的区别在于，它是以完全流的方式实现的（利用段已经按时排序的事实），并且不需要使用哈希表进行合并。
+* 对于具有单个"维度"元素的查询（即按一个字符串维度分组），[TopN查询](topn.md)通常会比groupBy快。这是特别真实的，如果你是按指标排序，并发现近似结果可以接受。
+
 #### 嵌套的GroupBy查询
+
+嵌套的groupby(类型为"query"的数据源)对"v1"和"v2"的执行方式不同。broker首先以通常的方式运行内部groupBy查询,"v1"策略然后用Druid的索引机制在堆上具体化内部查询的结果，并对这些具体化的结果运行外部查询。"v2"策略在内部查询的结果流上运行外部查询，其中包含堆外事实映射和堆内字符串字典，这些字典可能溢出到磁盘。这两种策略都以单线程方式对Broker执行外部查询。
+
 #### 配置
+
+本节介绍groupBy查询的配置。可以在Broker、Historical和MiddleManager进程上设置运行时属性运行`runtime.properties`, 可以通过查询上下文设置查询上下文参数。
+
+**groupBy v2的一些配置**
+
+支持的运行时属性：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.query.groupBy.maxMergingDictionarySize` | 合并期间用于字符串字典的最大堆空间量（大约）。当字典超过此大小时，将触发溢出到磁盘。 | 100000000 |
+| `druid.query.groupBy.maxOnDiskStorage` | 当合并缓冲区或字典已满时，每个查询用于将结果集溢出到磁盘的最大磁盘空间量。超过此限制的查询将失败。设置为零以禁用磁盘溢出。 | 0(禁用)|
+
+支持的查询上下文：
+
+| key | 描述 |
+|-|-|
+| `maxMergingDictionarySize` | `druid.query.groupBy.maxMergingDictionarySize` |
+| `maxOnDiskStorage` | `druid.query.groupBy.maxOnDiskStorage` |
+
 #### 高级配置
+
+**所有GroupBy策略的通用配置**
+
+支持的运行时属性：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.query.groupBy.defaultStrategy` | 默认的GroupBy查询策略 | v2 |
+| `druid.query.groupBy.singleThreaded` | 使用单线程合并结果 | false |
+
+支持的查询上下文：
+
+| key | 描述 |
+|-|-|
+| `groupByStrategy` | 覆盖 `druid.query.groupBy.defaultStrategy` 的值 |
+| `groupByIsSingleThreaded` | 覆盖 `druid.query.groupBy.singleThreaded` 的值 |
+
+**GroupBy V2配置**
+
+支持的运行时属性：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.query.groupBy.bufferGrouperInitialBuckets` | 堆外哈希表中用于分组结果的初始存储桶数。设置为0以使用合理的默认值（1024）。 | 0 |
+| `druid.query.groupBy.bufferGrouperMaxLoadFactor` | 用于分组结果的堆外哈希表的最大负载因子。当负载因子超过此大小时，表将增长或溢出到磁盘。设置为0以使用合理的默认值（0.7） | 0 |
+| `druid.query.groupBy.forceHashAggregation` | 强制使用基于哈希的聚合 | false |
+| `druid.query.groupBy.intermediateCombineDegree` | 合并树中合并在一起的中间节点数。如果服务器有足够强大的cpu内核，那么更高的度将需要更少的线程，这可能有助于通过减少过多线程的开销来提高查询性能。 | 8 |
+| `druid.query.groupBy.numParallelCombineThreads` | 并行合并线程数的提示。该值应大于1以启用并行合并功能。用于并行合并的实际线程数为`druid.query.groupBy.numParallelCombineThreads`和`druid.processing.numThreads`中较小的数 | 1(禁用) |
+| `druid.query.groupBy.applyLimitPushDownToSegment` | 如果Broker将限制向下推到可查询的数据服务器（Historical，Peon），则在段扫描期间限制结果。如果数据服务器上通常有大量段参与查询，则如果启用此设置，可能会违反直觉地降低性能。 | false(禁用) |
