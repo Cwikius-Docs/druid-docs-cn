@@ -281,8 +281,8 @@ groupBy v2通过寻址打开哈希引擎来用于聚合。哈希表使用给定�
 
 | key | 描述 |
 |-|-|
-| `maxMergingDictionarySize` | `druid.query.groupBy.maxMergingDictionarySize` |
-| `maxOnDiskStorage` | `druid.query.groupBy.maxOnDiskStorage` |
+| `maxMergingDictionarySize` | 在本次查询中取与`druid.query.groupBy.maxMergingDictionarySize`比较小的值 |
+| `maxOnDiskStorage` | 在本次查询中取与``druid.query.groupBy.maxOnDiskStorage`比较小的值 |
 
 #### 高级配置
 
@@ -314,3 +314,45 @@ groupBy v2通过寻址打开哈希引擎来用于聚合。哈希表使用给定�
 | `druid.query.groupBy.intermediateCombineDegree` | 合并树中合并在一起的中间节点数。如果服务器有足够强大的cpu内核，那么更高的度将需要更少的线程，这可能有助于通过减少过多线程的开销来提高查询性能。 | 8 |
 | `druid.query.groupBy.numParallelCombineThreads` | 并行合并线程数的提示。该值应大于1以启用并行合并功能。用于并行合并的实际线程数为`druid.query.groupBy.numParallelCombineThreads`和`druid.processing.numThreads`中较小的数 | 1(禁用) |
 | `druid.query.groupBy.applyLimitPushDownToSegment` | 如果Broker将限制向下推到可查询的数据服务器（Historical，Peon），则在段扫描期间限制结果。如果数据服务器上通常有大量段参与查询，则如果启用此设置，可能会违反直觉地降低性能。 | false(禁用) |
+
+支持的查询上下文：
+
+| key | 描述 | 默认值 |
+|-|-|-|
+| `bufferGrouperInitialBuckets` | 覆盖本次查询`druid.query.groupBy.bufferGrouperInitialBuckets`的值 | None |
+| `bufferGrouperMaxLoadFactor` | 覆盖本次查询`druid.query.groupBy.bufferGrouperMaxLoadFactor`的值 | None |
+| `forceHashAggregation` | 覆盖本次查询`druid.query.groupBy.forceHashAggregation`的值 | None |
+| `intermediateCombineDegree` | 覆盖本次查询`druid.query.groupBy.intermediateCombineDegree`的值 | None |
+| `numParallelCombineThreads` | 覆盖本次查询`druid.query.groupBy.numParallelCombineThreads`的值 | None|
+| `sortByDimsFirst` | 首先按维度值排序结果，然后按时间戳排序。| false |
+| `forceLimitPushDown` | 当orderby中的所有字段都是分组键的一部分时，broker将把limit操作下推到Historical。当排序顺序使用不在分组键中的字段时，使用此优化可能会导致精度未知的近似结果，因此在这种情况下默认情况下禁用此优化。启用此上下文标志将为包含非分组键列的limit/orderbys启用limit下推。 | false |
+| `applyLimitPushDownToSegment` | 如果Broker将limit向下推到可查询的节点（Historical，Peon），则在段扫描期间限制结果。这个上下文的值将覆盖 `druid.query.groupBy.applyLimitPushDownToSegment` | true |
+
+**GroupBy V1配置**
+
+支持的运行时属性：
+
+| 属性 | 描述 | 默认值 |
+|-|-|-|
+| `druid.query.groupBy.maxIntermediateRows` | 每段分组引擎的最大中间行数。这是一个优化参数，它不会强加硬限制；相反，它可能会将合并工作从每段引擎转移到整个合并索引。超过此限制的查询不会失败。 | 50000 |
+| `druid.query.groupBy.maxResults` | 最大结果数。超过此限制的查询将失败。 | 500000 |
+
+支持的查询上下文：
+
+| key | 描述 | 默认值 |
+|-|-|-|
+| `maxIntermediateRows` | 在本次查询中取与`druid.query.groupBy.maxIntermediateRows`比较小的值 | None |
+| `maxResults` | 在本次查询中取与`druid.query.groupBy.maxResults`比较小的值 | None |
+| `useOffheap` | 设置为true可在合并结果时将聚合存储在堆外。 | false |
+
+**基于数组的结果行**
+
+在内部，Druid总是使用基于数组的groupBy结果行表示，但在默认情况下，它在broker处被转换为基于map的结果格式。为了减少这种转换的开销，如果在查询上下文中将`resultAsArray`设置为`true`，则还可以直接以基于数组的格式从broker返回结果。
+
+每一行都是位置行，并按顺序包含以下字段：
+* 时间戳（可选；仅适用于粒度！=全部）
+* 维度（按顺序）
+* 聚合器（按顺序）
+* 后聚合器（可选；按顺序，如果存在）
+  
+此架构在响应中不可用，因此必须从发出的查询中计算它才能正确读取结果。
