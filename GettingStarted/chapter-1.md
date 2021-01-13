@@ -1,5 +1,15 @@
 <!-- toc -->
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 ### Druid是什么
 
 Apache Druid是一个实时分析型数据库，旨在对大型数据集进行快速的查询分析（"[OLAP](https://en.wikipedia.org/wiki/Online_analytical_processing)"查询)。Druid最常被当做数据库来用以支持实时摄取、高性能查询和高稳定运行的应用场景，同时，Druid也通常被用来助力分析型应用的图形化界面，或者当做需要快速聚合的高并发后端API，Druid最适合应用于面向事件类型的数据。
@@ -13,17 +23,6 @@ Druid通常应用于以下场景：
 * 应用性能指标分析
 * 数字广告分析
 * 商务智能 / OLAP
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-8828078415045620"
-     data-ad-slot="7586680510"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 
 Druid的核心架构吸收和结合了[数据仓库](https://en.wikipedia.org/wiki/Data_warehouse)、[时序数据库](https://en.wikipedia.org/wiki/Time_series_database)以及[检索系统](https://en.wikipedia.org/wiki/Search_engine_(computing))的优势，其主要特征如下：
 
