@@ -10,6 +10,7 @@
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
 ### Druid是什么
 
 Apache Druid是一个实时分析型数据库，旨在对大型数据集进行快速的查询分析（"[OLAP](https://en.wikipedia.org/wiki/Online_analytical_processing)"查询)。Druid最常被当做数据库来用以支持实时摄取、高性能查询和高稳定运行的应用场景，同时，Druid也通常被用来助力分析型应用的图形化界面，或者当做需要快速聚合的高并发后端API，Druid最适合应用于面向事件类型的数据。
