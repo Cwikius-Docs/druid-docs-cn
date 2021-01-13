@@ -14,4 +14,4 @@ sbox.appendChild(obox1);
 
 var p = document.getElementsByTagName("section")[0];
 var sbox2 = document.getElementsByTagName("h3")[0];
-p.insertBefore(obox2, sbox2);
+//p.insertBefore(obox2, sbox2);
