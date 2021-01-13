@@ -16,7 +16,7 @@
         "-fontsettings",
         "-highlight",
         "search-pro",
-        "github-buttons@2.1.0",
+        "-github-buttons@2.1.0",
         "prism",
         "back-to-top-button",
         "flexible-alerts",
