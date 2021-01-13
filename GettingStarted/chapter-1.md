@@ -14,6 +14,17 @@ Druid通常应用于以下场景：
 * 数字广告分析
 * 商务智能 / OLAP
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 Druid的核心架构吸收和结合了[数据仓库](https://en.wikipedia.org/wiki/Data_warehouse)、[时序数据库](https://en.wikipedia.org/wiki/Time_series_database)以及[检索系统](https://en.wikipedia.org/wiki/Search_engine_(computing))的优势，其主要特征如下：
 
 1. **列式存储**，Druid使用列式存储，这意味着在一个特定的数据查询中它只需要查询特定的列，这样极地提高了部分列查询场景的性能。另外，每一列数据都针对特定数据类型做了优化存储，从而支持快速的扫描和聚合。
