@@ -5,6 +5,17 @@ Apache Druid支持多值字符串维度。当输入字段中包括一个数组�
 
 本文档描述了对一个维度进行聚合时，多值维度上的GroupBy查询行为（TopN很类似）。对于多值维度的内部详细信息可以查看 [Segments](../Design/Segments.md) 文档的多值列部分。本文档中的示例都为 [原生Druid查询](makeNativeQueries.md)格式，对于多值维度在SQL中的使用情况请查阅 [Druid SQL 文档](druidsql.md)
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 查询多值维度
 
 假设，您已经有一个具有一个段的数据源，该段包含以下几行，其中 `tags`是一个多值维度。

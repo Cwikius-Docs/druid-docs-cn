@@ -1,5 +1,16 @@
 <!-- toc -->
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 编写一个摄取规范
 
 本教程将指导读者定义摄取规范的过程，指出关键的注意事项和指导原则

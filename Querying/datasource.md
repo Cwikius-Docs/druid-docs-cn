@@ -5,6 +5,17 @@
 
 出现在API请求和响应中的"datasource"一般拼写为 `dataSource` ，注意是大写的S。
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 数据源类型
 #### `table`
 

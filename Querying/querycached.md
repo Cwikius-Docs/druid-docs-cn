@@ -1,4 +1,16 @@
 <!-- toc -->
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 查询缓存
 
 Apache Druid支持两种级别的结果缓存，分别是：段缓存和整个查询结果的缓存。缓存数据既可以存储在本地JVM堆内存中，也可以存储在一个外部的分布式kv存储中。在所有场景中，Druid的缓存是查询结果的缓存，唯一的差别是特定段的*部分结果*还是全部结果。 在所有情况下，只要数据发生变化，缓存即失效，Druid永远不会返回过期的结果。

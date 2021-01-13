@@ -1,5 +1,16 @@
 <!-- toc -->
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 元数据存储
 
 元数据存储是Apache Druid的一个外部依赖。Druid使用它来存储系统的各种元数据，但不存储实际的数据。下面有许多用于各种目的的表。

@@ -4,6 +4,20 @@
 > [!WARNING]
 > Apache Druid支持两种查询语言，[Druid SQL](druidsql.md) 和 [原生查询](#)，该文档描述原生查询语言。有关Druid SQL如何选择运行SQL查询时要使用的原生查询类型的信息，请查看 [SQL文档](druidsql.md)。
 
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+
 Druid中的原生查询是JSON对象，通常发送给Broker或Router进程。查询可以这样发布：
 
 ```bash

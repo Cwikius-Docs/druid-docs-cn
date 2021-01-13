@@ -1,5 +1,16 @@
 <!-- toc -->
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## Roll-up
 
 Apache Druid可以通过roll-up在数据摄取阶段对原始数据进行汇总。 Roll-up是对选定列集的一级聚合操作，它可以减小存储数据的大小。

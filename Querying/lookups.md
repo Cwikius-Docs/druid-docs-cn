@@ -18,6 +18,18 @@ Lookups没有历史记录，总是使用当前的数据。这意味着，如果�
 * 来自本地文件、远程URI或JDBC的全局缓存Lookup，使用 [lookups-cached-global扩展](../Configuration/core-ext/lookups-cached-global.md)
 * 来自Kafka Topic的全局缓存Lookup，使用 [ kafka-extraction-namespace扩展](../Configuration/core-ext/kafka-extraction-namespace.md)
 
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 查询符号
 
 在[Druid SQL](druidsql.md) 中，Lookups可以使用 [`LOOKUP`函数](druidsql.md#字符串函数) 来进行查询，例如：

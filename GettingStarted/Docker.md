@@ -5,6 +5,17 @@
 
 在开始快速启动之前，阅读 [Druid概述](chapter-1.md) 和 [摄取概述](../DataIngestion/ingestion.md) 是很有帮助的，因为教程将参考这些页面上讨论的概念。此外，建议熟悉Docker。
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 前提条件
 
 * Docker

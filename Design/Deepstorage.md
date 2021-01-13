@@ -1,5 +1,16 @@
 <!-- toc -->
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 深度存储
 
 Apache Druid不提供的存储机制，深度存储是存储段的地方。深度存储基础结构定义了数据的持久性级别，只要Druid进程能够看到这个存储基础结构并获得存储在上面的段，那么无论丢失多少Druid节点，都不会丢失数据。如果段在深度存储层消失了，则这些段中存储的任何数据都将丢失。

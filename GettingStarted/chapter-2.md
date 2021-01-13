@@ -84,6 +84,7 @@ $ ./bin/start-micro-quickstart
 
 所有Druid进程完全启动需要花费几秒钟。 如果在启动服务后立即打开控制台，则可能会看到一些可以安全忽略的错误。
 
+（以下为广告，请见谅）
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
      style="display:block; text-align:center;"
@@ -94,6 +95,7 @@ $ ./bin/start-micro-quickstart
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
 #### 加载数据
 ##### 教程使用的数据集
 

@@ -2,6 +2,17 @@
 
 Apache Druid经常被用于支持面向用户的数据应用程序，其中多租户是一个重要的需求。本文概述了Druid的多租户存储和查询功能。
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 共享数据源还是每个租户一个数据源
 
 Druid中的数据源等价于关系型数据库中的表。 对于多租户场景，可以为每一个租户创建独立的数据源，也可以多个租户之间通过使用一个租户ID的维度来共享一个或者多个数据源。在决定走哪条路时，要考虑每一条路都有利弊。

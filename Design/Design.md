@@ -21,6 +21,18 @@ Druid进程可以按照您喜欢的方式部署，但是为了便于部署，我
 
 关于进程和服务组织的更多信息，可以查看[Druid进程与服务](Processes.md)
 
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ### 外部依赖
 除了内置的进程类型外，Druid同时有三个外部依赖，它们旨在利用现有的基础设施（如果有的话）。
 

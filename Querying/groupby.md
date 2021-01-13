@@ -9,6 +9,20 @@
 > [!WARNING]
 > 如果您正在使用时间作为唯一的分组进行聚合，或者在单个维度上使用有序的GroupBy，请考虑 [Timeseries](timeseriesquery.md) 和 [TopN](topn.md) 查询以及GroupBy。在某些情况下，他们的表现可能会更好。更多详细信息，请参阅下面的[备选方案](#备选方案)。
 
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+
 GroupBy查询对象的示例如下所示:
 ```json
 {

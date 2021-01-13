@@ -1,4 +1,16 @@
 <!-- toc -->
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 段
 ApacheDruid将索引存储在按时间分区的*段文件*中。在基本设置中，通常为每个时间间隔创建一个段文件，其中时间间隔可在 `granularitySpec` 的`segmentGranularity` 参数中配置。为了使Druid在繁重的查询负载下运行良好，段文件大小必须在建议的300MB-700MB范围内。如果段文件大于此范围，请考虑更改时间间隔的粒度，或者对数据进行分区，并在 `partitionsSpec` 中调整 `targetPartitionSize`（此参数的建议起点是500万行）。有关更多信息，请参阅下面的**分片部分**和[批处理摄取](../DataIngestion/native.md)文档的**分区规范**部分。
 

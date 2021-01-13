@@ -1,4 +1,16 @@
 <!-- toc -->
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 ## 基于Hadoop的摄入
 
 Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hadoop的批量索引任务， 这些任务被提交到 [Druid Overlord](../Design/Overlord.md)的一个运行实例上。详情可以查看 [基于Hadoop的摄取vs基于本地批摄取的对比](ingestion.md#批量摄取) 来了解基于Hadoop的摄取、本地简单批摄取、本地并行摄取三者的比较。

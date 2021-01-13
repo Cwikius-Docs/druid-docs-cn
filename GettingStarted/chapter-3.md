@@ -24,6 +24,18 @@ Druid包括一组参考配置和用于单机部署的启动脚本：
 
 虽然为大型单台计算机提供了示例配置，但在更高规模下，我们建议在集群部署中运行Druid，以实现容错和减少资源争用。
 
+（以下为广告，请见谅）
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 #### 单服务器参考配置
 ##### Nano-Quickstart: 1 CPU, 4GB 内存
 
