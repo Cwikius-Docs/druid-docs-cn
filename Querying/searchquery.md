@@ -14,7 +14,7 @@
 ## Search查询
 
 > [!WARNING]
-> Apache Druid支持两种查询语言： [Druid SQL](druidsql.md) 和 [原生查询](makeNativeQueries.md)。该文档描述了原生查询中的一种查询方式。 对于Druid SQL中使用的该种类型的信息，可以参考 [SQL文档](druidsql.md)。
+> Apache Druid支持两种查询语言： [Druid SQL](druidsql.md) 和 [原生查询](makeNativeQueries.md)。该文档描述了仅仅在原生查询中的一种查询方式。
 
 搜索查询返回与搜索规范匹配的维度值。
 
