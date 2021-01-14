@@ -142,6 +142,44 @@ Scan查询以流模式返回原始Apache Druid行。
 ```
 
 ### 时间排序
+
+对于非传统模式，Scan查询当前是支持基于时间戳的排序。请注意，使用时间戳进行排序将产生并不标识来源于哪个段中的行的结果(`segmentId`将展示为`null`)。 此外，仅当结果集限制小于`druid.query.scan.maxRowsQueuedForOrdering`行或者所有被扫描的段小于`druid.query.scan.maxSegmentPartitionsOrderedInMemory`时，才支持时间排序。 另外，除非指定了段列表，否则直接向Historical发出的查询不支持时间排序。这些限制背后的原因是，时间排序的实现使用了两种策略，如果不受限制，这两种策略可能会消耗太多堆内存。这些策略（如下所列）是根据查询结果集限制和扫描的段数在每个Historical进行选择的。
+
+1. 优先级队列：按顺序打开Historical上的每个段。每一行都被添加到一个按时间戳排序的有界优先级队列中。对于超过结果集限制的每一行，时间戳最早（如果降序）或最晚（如果升序）的行将被取消排队。在处理完每一行之后，优先级队列的排序内容将以批处理的方式流回Broker。试图将太多的行加载到内存中会有Historical内存不足的风险。这个`druid.query.scan.maxRowsQueuedForOrdering`属性通过在使用时间排序时限制查询结果集中的行数来防止此问题。
+2. N路合并：对于每个段，并行打开每个分区。由于每个分区的行已经按时间顺序排列，因此可以对每个分区的结果执行n路合并。这种方法不会将整个结果集持久化到内存中（像优先级队列那样），因为它会在批处理从merge函数返回时将它们流式返回。但是，由于需要为每个分区打开解压缩和解码缓冲区，尝试查询太多分区也可能导致内存使用率高。这个`druid.query.scan.maxSegmentPartitionsOrderedInMemory`通过在使用时间排序的任何时候限制打开的分区数来防止出现这种情况。
+
+无论是 `druid.query.scan.maxRowsQueuedForOrdering` 还是 `druid.query.scan.maxSegmentPartitionsOrderedInMemory`，都可以根据硬件规格和查询的维度数量来进行优化调整，这些属性也可以在查询上下文中通过 `maxRowsQueuedForOrdering` 和 `maxSegmentPartitionsOrderedInMemory` 进行覆盖，可以查看 [查询上下文属性](#查询上下文属性) 部分来查看。
+
 ### 传统模式
+
+Scan查询支持一个传统模式，该模式是为与以前的Scan查询contrib扩展的协议兼容性而设计的。在传统模式下，您可以预期以下行为更改：
+
+* `__time` 列返回为 `timestamp` 而不是 `__time`。 它将优先于任何其他名称为 `timestamp` 的列
+* `__time` 列包含在列的列表中，即使没有特别的指定
+* 时间戳以ISO8601时间字符串而不是整数的形式返回（自1970-01-01 00:00:00 UTC以来的毫秒）。
+
+传统模式可以通过两种方式来进行触发： 在查询的JSON中传入 `"legacy":true` ，在Druid进程中设置 `druid.query.scan.legacy = true` 配置。 如果以前使用的是scan查询contrib扩展，迁移的最佳方法是在滚动升级期间激活传统模式，然后在升级完成后将其关闭。
+
 ### 配置属性
+
+| 属性 | 描述 | 值 | 默认值 |
+|-|-|-|-|
+| `druid.query.scan.maxRowsQueuedForOrdering` | 当使用时间排序时，返回的最大行数 | 1到2147483647之间的一个整数 | 100000 |
+| `druid.query.scan.maxSegmentPartitionsOrderedInMemory` | 当使用时间排序时， 每个Historical上被扫描的最大的段数 | 1到2147483647之间的一个整数 | 50 |
+| `druid.query.scan.legacy` | 在scan查询中是否打开传统模式 | true或者false | false |
+
 ### 查询上下文属性
+
+| 属性 | 描述 | 值 | 默认值 |
+|-|-|-|-|
+| `maxRowsQueuedForOrdering` | 当使用时间排序时，返回的最大行数, 覆盖同名配置 | 1到2147483647之间的一个整数 | `druid.query.scan.maxRowsQueuedForOrdering` |
+| `maxSegmentPartitionsOrderedInMemory` | 当使用时间排序时， 每个Historical上被扫描的最大的段数 | 1到2147483647之间的一个整数 | `druid.query.scan.maxSegmentPartitionsOrderedInMemory` |
+
+示例查询上下文的JSON对象：
+
+```json
+{
+  "maxRowsQueuedForOrdering": 100001,
+  "maxSegmentPartitionsOrderedInMemory": 100
+}
+```
