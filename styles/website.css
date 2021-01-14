@@ -63,14 +63,6 @@ pre[class*="language-"] {
     -webkit-animation: none !important;
 }
 
-.book-summary {
-    width: 220px !important;
-}
-
-.navigation.navigation-next {
-    right: 240px !important;
-}
-
 .treeview__container-title {
     display: none;
 }
@@ -90,6 +82,14 @@ pre[class*="language-"] {
     .book-body {
         left: 220px !important;
     }
+
+    .book-summary {
+        width: 220px !important;
+    }
+
+    .navigation.navigation-next {
+        right: 240px !important;
+    }
 }
 
 @media screen and (min-width: 1500px) {
@@ -100,5 +100,13 @@ pre[class*="language-"] {
 
     .book-body {
         left: 220px !important;
+    }
+
+    .book-summary {
+        width: 220px !important;
+    }
+
+    .navigation.navigation-next {
+        right: 240px !important;
     }
 }
