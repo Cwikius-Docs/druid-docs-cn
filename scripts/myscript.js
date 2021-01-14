@@ -5,6 +5,8 @@ obox1.style.position = "fixed";
 obox1.style.right = "20px";
 obox1.style.bottom = "0px";
 
+obox1.setAttribute("class", "movie")
+
 var sbox = document.getElementsByTagName("body")[0];
 sbox.appendChild(obox1);
 

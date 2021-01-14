@@ -79,7 +79,13 @@ pre[class*="language-"] {
     display: none;
 }
 
-@media screen and (max-width: 1500px) {
+@media screen and (max-width: 600px) {
+    .movie {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1500px) and (min-width: 1000px) {
     .page-inner {
         margin: 0 100px 0 100px !important;
         max-width: 800px !important;
