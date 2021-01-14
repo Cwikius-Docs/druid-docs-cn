@@ -67,10 +67,6 @@ pre[class*="language-"] {
     width: 220px !important;
 }
 
-.book-body {
-    left: 220px !important;
-}
-
 .navigation.navigation-next {
     right: 240px !important;
 }
@@ -81,7 +77,7 @@ pre[class*="language-"] {
 
 @media screen and (min-width: 1400px) {
     .movie {
-        display: block;
+        display: block !important;
     }
 }
 
@@ -90,11 +86,19 @@ pre[class*="language-"] {
         margin: 0 100px 0 100px !important;
         max-width: 800px !important;
     }
+
+    .book-body {
+        left: 220px !important;
+    }
 }
 
 @media screen and (min-width: 1500px) {
     .page-inner {
         margin: 0 100px 0 100px !important;
         max-width: 1250px !important;
+    }
+
+    .book-body {
+        left: 220px !important;
     }
 }
