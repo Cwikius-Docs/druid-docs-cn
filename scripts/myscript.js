@@ -13,12 +13,16 @@ obox2.innerHTML = '<img src = "/img/support.png" width = "200" height = "90" />'
 obox2.style.position = "fixed";
 obox2.style.bottom = "0px";
 obox2.style.left = "0px";
+obox2.style.zIndex = "9999";
 obox2.style.display = "none";
 
 var sbox = document.getElementsByTagName("body")[0];
 sbox.appendChild(obox1);
 
-if (Math.random() > 0.7) {
+var rand = Math.random();
+console.log(rand);
+
+if (rand > 0.7) {
     sbox.appendChild(obox2);
     setTimeout(function(){
         obox2.style.display = "block";
