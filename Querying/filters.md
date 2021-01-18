@@ -324,5 +324,174 @@ Like过滤器支持使用提取函数，详情可见 [带提取函数的过滤�
 }
 ```
 
-#### **带提取函数的过滤器**
+### **间隔过滤器(Interval Filter)**
 
+间隔过滤器针对包含长毫秒值的列启用范围过滤，边界指定为ISO-8601时间间隔。 它适用于 `__time`列， Long类型的指标列，和值可以解析为长毫秒的维度列。
+
+该过滤器将ISO-8601的时间间隔转换为开始/结束范围，同时将这些毫秒范围转换为边界过滤器的OR操作。 边界过滤器为左闭右开匹配，（例如，start  <= time < end）
+
+| 属性 | 类型 | 描述 | 是否必须 |
+|-|-|-|-|
+| `type` | String | 该值始终为`interval` | 是 |
+| `dimension` | String | 需要过滤的维度 | 是 |
+| `interval` | Array | 包含了ISO-8601间隔字符串的JSON数组，该字段定义了要过滤的时间范围 | 是 |
+| `extractionFn` | [提取函数](dimensionspec.md) | 对维度使用的 [提取函数](dimensionspec.md)  | 否 |
+
+间隔过滤器支持使用提取函数，详情可见 [带提取函数的过滤器](#带提取函数的过滤器)
+
+如果在该过滤器中使用提取函数，则提取函数的输出值应该是可以解析成长毫秒类型的。
+
+下列实例展示了过滤时间范围在2014年10月1日到7日、2014年11月15日-16日的数据：
+
+```json
+{
+    "type" : "interval",
+    "dimension" : "__time",
+    "intervals" : [
+      "2014-10-01T00:00:00.000Z/2014-10-07T00:00:00.000Z",
+      "2014-11-15T00:00:00.000Z/2014-11-16T00:00:00.000Z"
+    ]
+}
+```
+
+上述过滤器等价于下边的OR连接的边界过滤器：
+
+```json
+{
+    "type": "or",
+    "fields": [
+      {
+        "type": "bound",
+        "dimension": "__time",
+        "lower": "1412121600000",
+        "lowerStrict": false,
+        "upper": "1412640000000" ,
+        "upperStrict": true,
+        "ordering": "numeric"
+      },
+      {
+         "type": "bound",
+         "dimension": "__time",
+         "lower": "1416009600000",
+         "lowerStrict": false,
+         "upper": "1416096000000" ,
+         "upperStrict": true,
+         "ordering": "numeric"
+      }
+    ]
+}
+```
+#### **带提取函数的过滤**
+
+除了"spatial"之外的所有的过滤器都支持提取函数，提取函数通过在过滤器的 `extractionFn` 字段中设置。 关于提取函数更多的信息可以参见[提取函数](dimensionspec.md)
+
+如果指定了，提取函数将在过滤器之前对输入数据进行转换。 下边的实例展示了一个带有提取函数的选择过滤器，该过滤器首先根据预定义的lookup值来转换输入值，然后转换后的值匹配到了 `bar_1`。
+
+实例： 下边的例子对于 `product`列来进行匹配 `[product_1, product_3, product_5]` 中的维度值。
+
+```json
+{
+    "filter": {
+        "type": "selector",
+        "dimension": "product",
+        "value": "bar_1",
+        "extractionFn": {
+            "type": "lookup",
+            "lookup": {
+                "type": "map",
+                "map": {
+                    "product_1": "bar_1",
+                    "product_5": "bar_1",
+                    "product_3": "bar_1"
+                }
+            }
+        }
+    }
+}
+```
+
+### 列类型
+
+Druid支持在时间戳、字符串、长整型和浮点数列上进行过滤。
+
+注意：仅仅是字符串类型的列有位图索引。 因此，在其他类型的列上进行过滤将需要扫描列数据。
+
+**在数值列上进行过滤**
+
+在对数值列进行过滤时，可以将过滤器当作字符串来编写。在大多数情况下，筛选器将转换为数值，并将直接应用于数值列值。在某些情况下（如正则过滤器），数字列值将在扫描期间转换为字符串。
+
+例如，在一个特定值过滤，`myFloatColumn = 10.1`:
+
+```json
+"filter": {
+  "type": "selector",
+  "dimension": "myFloatColumn",
+  "value": "10.1"
+}
+```
+在一个范围值进行过滤， `10 <= myFloatColumn < 20`:
+
+```json
+"filter": {
+  "type": "bound",
+  "dimension": "myFloatColumn",
+  "ordering": "numeric",
+  "lower": "10",
+  "lowerStrict": false,
+  "upper": "20",
+  "upperStrict": true
+}
+```
+
+**在时间戳列上进行过滤**
+
+查询过滤器同时也可以应用于时间戳列。 时间戳列有长毫秒值。 时间戳列的使用是通过字符串 `__time` 来当做维度名称的。 和数值型维度类似， 当时间戳的值为字符串时，时间戳过滤器需要被指定。
+
+如果我们希望以一个特定的格式（时区等）来解释时间戳，[时间格式转换函数](dimensionspec.md) 是非常有用的。
+
+例如，对一个长时间戳值进行过滤：
+
+```json
+"filter": {
+  "type": "selector",
+  "dimension": "__time",
+  "value": "124457387532"
+}
+```
+
+对一周的一天进行过滤：
+
+```json
+"filter": {
+  "type": "selector",
+  "dimension": "__time",
+  "value": "Friday",
+  "extractionFn": {
+    "type": "timeFormat",
+    "format": "EEEE",
+    "timeZone": "America/New_York",
+    "locale": "en"
+  }
+}
+```
+
+对一个ISO-8601时间间隔集合进行过滤：
+
+```json
+{
+    "type" : "interval",
+    "dimension" : "__time",
+    "intervals" : [
+      "2014-10-01T00:00:00.000Z/2014-10-07T00:00:00.000Z",
+      "2014-11-15T00:00:00.000Z/2014-11-16T00:00:00.000Z"
+    ]
+}
+```
+
+### True过滤器
+
+true过滤器是匹配所有值的过滤器。它可以用来暂时禁用其他过滤器而不删除过滤器。
+
+```json
+{ "type" : "true" }
+```
