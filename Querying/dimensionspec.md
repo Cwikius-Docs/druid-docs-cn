@@ -244,14 +244,228 @@ null字符串被认定为长度为0
 
 #### TimeParsing提取函数
 
+时间解析提取函数是将维度值按照给定的输入格式解析为时间戳， 同时返回按照给定的输出格式格式化后的数据。
+
+注意，如果操作的是 `__time` 维度，应当考虑使用 [TimeFormat提取函数](#timeformat提取函数) 来替代，它直接作用于时间值，而不是字符串值
+
+如果"joda"是true， 时间格式就是 [Joda DateTimeFormat文档](https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 中描述的。 如果"joda"是false或者未指定，则时间格式就是 [SimpleDateFormat文档](https://unicode-org.github.io/icu-docs/#/icu4j/com/ibm/icu/text/SimpleDateFormat.html) 中描述的。 一般来说，我们推荐设置"joda"为true，因为Joda格式在Druid API中比较常见，而且因为Joda以更符合ISO8601的方式处理某些边缘案例（如日历年开始和结束时的周和周）。
+
+如果无法使用提供的时间格式解析某个值，则将按原样返回该值。
+
+```json
+{ "type" : "time",
+  "timeFormat" : <input_format>,
+  "resultFormat" : <output_format>,
+  "joda" : <true, false> }
+```
+
 #### JavaScript提取函数
+
+该功能返回经过JavaScript函数转换后的维度值。
+
+对于一般的维度，输入值以字符串来传入。
+
+对于 `__time` 维度，输入值被传入为自1970-01-01UTC以来的秒值
+
+一般维度的示例如下：
+
+```json
+{
+  "type" : "javascript",
+  "function" : "function(str) { return str.substr(0, 3); }"
+}
+```
+
+```json
+{
+  "type" : "javascript",
+  "function" : "function(str) { return str + '!!!'; }",
+  "injective" : true
+}
+```
+
+`injective`属性指定JavaScript函数是否保持唯一性。默认值为`false`，表示不保留唯一性
+
+`__time` 维度的示例如下：
+
+```json
+{
+  "type" : "javascript",
+  "function" : "function(t) { return 'Second ' + Math.floor((t % 60000) / 1000); }"
+}
+```
+
+> [!WARNING]
+> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../Development/JavaScript.md)。
 
 #### 已注册的Lookup提取函数
 
+Lookup是Druid中的一个概念，可以可选地将维度值使用新值进行替换。 对于更多[Lookups](lookups.md)的使用可以查看对应文档。 "registeredLookup"提取函数允许您引用已在集群范围配置中注册的查找。
+
+实例：
+
+```json
+{
+  "type":"registeredLookup",
+  "lookup":"some_lookup_name",
+  "retainMissingValue":true
+}
+```
+
+`retainMissingValue` 和 `replaceMissingValueWith` 属性可以在查询时候被指定来显示的标识如何操作缺失值。 将 `replaceMissingValueWith` 设置为 `""` 与设置为 `null`具有同等作用。 将 `retainMissingValue` 设置为true的话，如果未在Lookup中找到则使用维度的原始值。 默认下，`retainMissingValue = false` 和 `replaceMissingValueWith = null`, 即缺失值当做丢失来处理。
+
+将`retainMissingValue`设置为true且同时指定了`replaceMissingValueWith`，这是不合法的。
+
+可以提供属性`optimize`以允许优化基于Lookup的提取过滤器（默认情况下 `optimize=true` ）。优化层将在Broker上运行，并将提取过滤器重写为选择器过滤器的子句。
+
+```json
+{
+    "filter": {
+        "type": "selector",
+        "dimension": "product",
+        "value": "bar_1",
+        "extractionFn": {
+            "type": "registeredLookup",
+            "optimize": true,
+            "lookup": "some_lookup_name"
+        }
+    }
+}
+```
+以上过滤器将被重写为下列简单查询，假设在lookup中"product_1"和"product_3"被映射为"bar_1"值：
+
+```json
+{
+   "filter":{
+      "type":"or",
+      "fields":[
+         {
+            "filter":{
+               "type":"selector",
+               "dimension":"product",
+               "value":"product_1"
+            }
+         },
+         {
+            "filter":{
+               "type":"selector",
+               "dimension":"product",
+               "value":"product_3"
+            }
+         }
+      ]
+   }
+}
+```
+在lookup文件中将空字符串指定为key可以用来实现将一个空的维度值映射为特定的值。该特性有助于区分一个空值维度和lookup导致的null。例如，对维度值`[null, "foo", "bat"]`指定`{"":"bar","bat":"baz"}`,将缺失值替换为 `"oof"` 得到结果 `["bar", "oof", "baz"]`。 省略空字符串键将导致丢失的值接管。 例如，对维度值`[null, "foo", "bat"]`指定`{"bat":"baz"}` ，将缺失值替换为 `"oof"` 将得到的结果是 `["oof", "oof", "baz"]`。
+
+#### InlineLookup提取函数
+
+Lookup是Druid中的一个概念，可以可选地将维度值使用新值进行替换。 对于更多[Lookups](lookups.md)的使用可以查看对应文档。 "Lookup"提取函数允许您指定一个行内的未在集群范围配置中注册的查找。
+
+实例：
+
+```json
+{
+  "type":"lookup",
+  "lookup":{
+    "type":"map",
+    "map":{"foo":"bar", "baz":"bat"}
+  },
+  "retainMissingValue":true,
+  "injective":true
+}
+```
+
+```json
+{
+  "type":"lookup",
+  "lookup":{
+    "type":"map",
+    "map":{"foo":"bar", "baz":"bat"}
+  },
+  "retainMissingValue":false,
+  "injective":false,
+  "replaceMissingValueWith":"MISSING"
+}
+```
+Inline Lookup应该是 `map` 类型
+
+`retainMissingValue`, `replaceMissingValueWith`, `injective` 和 `optimize` 四个属性与上述的 [已注册的Lookup提取函数](#已注册的Lookup提取函数) 相类似。
+
 #### Cascade提取函数
+
+该函数提供了提取函数链式执行的能力。
+
+`extractionFns`属性包括一个提取函数数组，将按照顺序来执行。
+
+以下为一个包含 [正则表达式提取函数](#正则表达式提取函数) 、 [JavaScript提取函数](#javascript提取函数)、[substring提取函数](#substring提取函数) 的链式
+
+```json
+{
+  "type" : "cascade",
+  "extractionFns": [
+    {
+      "type" : "regex",
+      "expr" : "/([^/]+)/",
+      "replaceMissingValue": false,
+      "replaceMissingValueWith": null
+    },
+    {
+      "type" : "javascript",
+      "function" : "function(str) { return \"the \".concat(str) }"
+    },
+    {
+      "type" : "substring",
+      "index" : 0, "length" : 7
+    }
+  ]
+}
+```
+
+它将使用指定的提取函数按指定的顺序转换维度值。例如，`/druid/prod/historical'`转换为 `'the dru'`, 过程为先经过正则提取转化为 `druid`,然后通过JavaScript提取函数转化为 `'the druid'`, 最后，substring提取函数将其转化为 `the dru`
 
 #### StringFormat提取函数
 
+返回根据给定格式字符串格式化的维度值。
+
+```json
+{ "type" : "stringFormat", "format" : <sprintf_expression>, "nullHandling" : <optional attribute for handling null value> }
+```
+
+例如想在某个维度值的前后拼接一个 `"["` 和 `"]"`,需要指定格式字符串为 "[%s]"。`nullHandling` 可以是 `nullString`, `emptyString` 或者 `returnNull`中质疑。 对于 "[%s]" 格式， 每一项配置的结果为 `[null]`, `[]`, `null`。默认为 `nullString`。 
+
 #### 大小写提取函数
 
+返回所有大小写的维度值。用户可以选择指定要使用的语言来执行上转换或下转换
+
+```json
+{
+  "type" : "upper",
+  "locale":"fr"
+}
+```
+或者不设置“locale”（在本例中，是该Java虚拟机实例的默认locale的当前值）
+
+```json
+{
+  "type" : "lower"
+}
+```
+
 #### Bucket提取函数
+
+Bucket提取函数用于通过将给定大小的每个范围内的数值转换为相同的基值来提取Bucket。非数值将转换为null。
+
+* `size`: bucket的大小，默认为1
+* `offset`: Bucket的offset，默认为0
+
+下列提取函数创建了一个起始于2长度为5的bucket，在这种情况下，[2, 7)之间的值转化为2， [7,12)之间的值转化为7
+
+```json
+{
+  "type" : "bucket",
+  "size" : 5,
+  "offset" : 2
+}
+```
