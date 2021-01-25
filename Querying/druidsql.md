@@ -213,7 +213,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 | 函数 | 描述 |
 |-|-|
-| `x || y` | 拼接字符串 |
+| `x||y` | 拼接字符串 |
 | `CONCAT(expr, expr, ...)` | 拼接一系列表达式 |
 | `TEXTCAT(expr, expr)` | 两个参数版本的CONCAT |
 | `STRING_FORMAT(pattern[, args...])` | 返回以Java的 [方式格式化](https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#format-java.lang.String-java.lang.Object...-) 的字符串字符串格式 | 
@@ -232,7 +232,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `RIGHT(expr, [length])` | 从expr返回最右边的长度字符。|
 | `LEFT(expr, [length])` | 返回expr中最左边的长度字符。|
 | `SUBSTR(expr, index, [length])` | SUBSTRING的同义词 |
-| `TRIM([BOTH | LEADING | TRAILING] [ FROM] expr)` | 返回expr, 如果字符在"chars"中，则从"expr"的开头、结尾或两端删除字符。如果未提供"chars"，则默认为""（空格）。如果未提供方向参数，则默认为"BOTH"。 |
+| `TRIM([BOTH|LEADING|TRAILING][FROM] expr)` | 返回expr, 如果字符在"chars"中，则从"expr"的开头、结尾或两端删除字符。如果未提供"chars"，则默认为""（空格）。如果未提供方向参数，则默认为"BOTH"。 |
 | `BTRIM(expr[, chars])` | `TRIM(BOTH <chars> FROM <expr>)`的替代格式 |
 | `LTRIM(expr[, chars])` | `TRIM(LEADING <chars> FROM <expr>)`的替代格式 |
 | `RTRIM(expr[, chars])` | `TRIM(TRAILING <chars> FROM <expr>)`的替代格式 |
