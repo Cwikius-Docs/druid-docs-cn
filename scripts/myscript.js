@@ -15,6 +15,7 @@ obox2.style.bottom = "0px";
 obox2.style.left = "0px";
 obox2.style.zIndex = "9999";
 obox2.style.display = "none";
+obox2.setAttribute("class", "movie")
 
 var sbox = document.getElementsByTagName("body")[0];
 sbox.appendChild(obox1);
