@@ -81,3 +81,16 @@ Long，Double和String类型都是支持的。 如果一个数字包括了小数
 | `repeat` | repeat(expr, N) 重复字符串N次 |
 | `lpad` | lpad(expr, length, chars) 返回使用`chars`对`expr`进行从左补齐到`length`的字符串。 如果 `length` 比 `expr` 长度短， 则返回结果是截断到 `length` 的 `expr`。当 `expr`或者 `chars`为null时， 结果为null。 如果 `chars` 为空字符串， 则不增加填充，虽然必要时对 `expr` 修剪 |
 | `rpad` | rpad(expr, length, chars) 返回使用`chars`对`expr`进行从右补齐到`length`的字符串。 如果 `length` 比 `expr` 长度短， 则返回结果是截断到 `length` 的 `expr`。当 `expr`或者 `chars`为null时， 结果为null。 如果 `chars` 为空字符串， 则不增加填充，虽然必要时对 `expr` 修剪 |
+
+### 时间函数
+
+| 名称 | 描述 |
+|-|-|
+| `timestamp` | timestamp(expr[,format-string])， 将字符串解析为日期然后返回毫秒，没有format-string时则按ISO日期格式来处理 |
+| `unix_timestamp` | 与 `timestamp` 相同，但是返回的是秒 |
+| `timestamp_ceil` | timestamp_ceil(expr, period, [origin, [timezone]])， 向上舍入一个时间戳， 并将其作为新的时间戳返回。 period可以是任何ISO8601周期， 如 P3M(季度) 或者 PT12H(半天)。 timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00" |
+| `timestamp_floor` | timestamp_floor(expr, period, [origin, [timezone]])， 向下舍入一个时间戳， 并将其作为新的时间戳返回。 period可以是任何ISO8601周期， 如 P3M(季度) 或者 PT12H(半天)。 timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00" |
+| `timestamp_shift` | timestamp_shift(expr, period, step, [timezone]) 将时间戳移动一个周期（步长时间），并将其作为新的时间戳返回。|
+| `timestamp_extract` | timestamp_extract(expr, unit, [timezone]) 从expr中提取时间部分，返回一个数字，unit可以是EPOCH、SECOND、MINUTE、HOUR、DAY、DOW、DOY、WEEK、MONTH、QUATER、YEAR。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00" |
+| `timestamp_parse` | timestamp_parse(string expr, [pattern, [timezone]]) 使用给定的 [Joda DatetimeFormat Pattern](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 将字符串转换为时间戳。 如果pattern未提供，则按照ISO8601或者SQL格式来解析。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00"，将用作不包含时区偏移的字符串的时区。pattern和timezone必须是文字。无法解析为时间戳的字符串将作为空值返回。 |
+| `timestamp_format` | timestamp_format(expr, [pattern, [timezone]]) 使用给定的 [Joda DatetimeFormat Pattern](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 将字符串转换为时间戳。 如果pattern未提供，则按照ISO8601或者SQL格式来解析。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00"，将用作不包含时区偏移的字符串的时区。pattern和timezone必须是文字。|
