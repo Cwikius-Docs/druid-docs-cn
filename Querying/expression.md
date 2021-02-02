@@ -94,3 +94,49 @@ Long，Double和String类型都是支持的。 如果一个数字包括了小数
 | `timestamp_extract` | timestamp_extract(expr, unit, [timezone]) 从expr中提取时间部分，返回一个数字，unit可以是EPOCH、SECOND、MINUTE、HOUR、DAY、DOW、DOY、WEEK、MONTH、QUATER、YEAR。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00" |
 | `timestamp_parse` | timestamp_parse(string expr, [pattern, [timezone]]) 使用给定的 [Joda DatetimeFormat Pattern](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 将字符串转换为时间戳。 如果pattern未提供，则按照ISO8601或者SQL格式来解析。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00"，将用作不包含时区偏移的字符串的时区。pattern和timezone必须是文字。无法解析为时间戳的字符串将作为空值返回。 |
 | `timestamp_format` | timestamp_format(expr, [pattern, [timezone]]) 使用给定的 [Joda DatetimeFormat Pattern](http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html) 将字符串转换为时间戳。 如果pattern未提供，则按照ISO8601或者SQL格式来解析。timezone如果提供了，名称必须如"America/Los_Angeles"这样，或者"-08:00"，将用作不包含时区偏移的字符串的时区。pattern和timezone必须是文字。|
+
+### 数学函数
+
+每一个函数都可以查看java.lang.Math的javadoc来获的详细信息
+
+| 名称 | 描述 |
+|-|-|
+| `abs` | 绝对值 |
+| `acos` | 反余弦 |
+| `asin` | 反正弦|
+| `atan` | 反正切 |
+| `atan2` | atan2（y，x）将返回直角坐标（x，y）到极坐标（r，θ）转换的角度θ |
+| `cbrt` | cbrt（x）将返回x的立方根 |
+| `ceil` | 向上取整 |
+| `copysign` | copysign（x）将返回第一个浮点参数和第二个浮点参数的符号 |
+| `cos` | 余弦 |
+| `cosh` | 双曲余弦 |
+| `cot` | 余切 |
+| `div` | div（x，y）是x除以y的整数 |
+| `exp` | 次方运算 |
+| `expm1` | e^x-1 |
+| `floor` | 向下取整 |
+| `getExponent` | getExponent（x）将返回用于表示x的无偏指数 |
+| `hypot` | hypop（x，y）将返回sqrt（x^2+y^2），没有中间溢出或下溢 |
+| `log` | 自然对数 |
+| `log10` | 以10为底的对数 |
+| `log1p` | log1p(x) 返回x+1的自然对数 |
+| `max` | max(x,y) 返回两者的最大值 |
+| `min` | min(x,y) 返回两者的最小值|
+| `nextAfter` | nextAfter（x，y）将返回在y方向上与x相邻的浮点数 |
+| `nextUp` | nextUp（x）将返回与x相邻的正无穷方向的浮点值 |
+| `pi` | 圆周率 |
+| `pow` | pow（x，y）将x的y的次幂 |
+| `remainder` | 余数（x，y）将返回ieee754标准规定的两个参数的余数运算 |
+| `rint` | rint（x）将返回最接近x的值，该值等于一个数学整数 |
+| `round` | round（x，y）将返回x的值，四舍五入到y的小数位。虽然x可以是整数或浮点数，但y必须是整数。返回值的类型由x的类型指定。如果省略，则默认为0。当y为负时，x在y小数点的左侧四舍五入。如果x是NaN，x将返回0。如果x为无穷大，则x将转换为最近的有限双精度。 |
+| `scalb` | scalb（d，sf）将返回d*2^sf四舍五入，就好像是由一个正确四舍五入的浮点乘法对双值集的一个成员执行一样 |
+| `signum` | signum（x）将返回参数x的signum函数 |
+| `sin` | 正弦值 |
+| `sinh` | 双曲正弦 |
+| `sqrt` | 开平方 |
+| `tan` | 正切 |
+| `tanh` | 双曲正切 |
+| `todegrees` | todegrees（x）将以弧度度量的角度转换为以度度量的近似等效角度 |
+| `toradians` | toradians（x）将以度为单位的角度转换为以弧度为单位的近似等效角度 |
+| `ulp` | ulp（x）将返回参数x的ulp的大小 |
