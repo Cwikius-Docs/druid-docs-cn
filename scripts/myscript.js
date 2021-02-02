@@ -23,7 +23,7 @@ sbox.appendChild(obox1);
 var rand = Math.random();
 console.log(rand);
 
-if (rand > 0.5) {
+if (rand > 1) {
     sbox.appendChild(obox2);
     setTimeout(function(){
         obox2.style.display = "block";
