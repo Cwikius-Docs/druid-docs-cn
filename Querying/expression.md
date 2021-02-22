@@ -140,3 +140,23 @@ Long，Double和String类型都是支持的。 如果一个数字包括了小数
 | `todegrees` | todegrees（x）将以弧度度量的角度转换为以度度量的近似等效角度 |
 | `toradians` | toradians（x）将以度为单位的角度转换为以弧度为单位的近似等效角度 |
 | `ulp` | ulp（x）将返回参数x的ulp的大小 |
+
+
+### 数组函数
+
+| 名称 | 描述 |
+|-|-|
+| `array(expr1, expr ...)` | 使用第一个参数的类型作为输出数组类型，从表达式参数构造数组 |
+| `array_length(arr)` | 返回数组长度 |
+| `array_offset(arr, long)` | 返回所提供的基于0的索引处的数组元素，如果索引超出范围，则返回null |
+| `array_ordinal(arr, long)` | 返回所提供的基于1的索引处的数组元素，如果索引超出范围，则返回null |
+| `array_contains(arr, expr)` | 如果数组包含expr指定的元素，或者 如果expr是数组，包含expr指定的所有元素，则返回1；，否则返回0 |
+| `array_overlap(arr1, arr2)` | 如果arr1和arr2有任何共同元素，则返回1，否则返回0 |
+| `array_offset_of(arr,expr)` | 返回数组中第一次出现的expr的基于0的索引，未匹配到任何元素返回 `-1` 或 `null`（如果`druid.generic.useDefaultValueForNull=false`） |
+| `array_ordinal_of(arr,expr)` | 返回数组中第一次出现的expr的基于1的索引，未匹配到任何元素返回 `-1` 或 `null`（如果`druid.generic.useDefaultValueForNull=false`） |
+| `array_prepend(expr,arr)` | 将expr添加到arr的开头，结果数组类型由arr的类型决定 |
+| `array_append(arr1,expr)` | 将expr追加到arr，结果数组类型由第一个数组的类型确定 |
+| `array_concat(arr1,arr2)` | 串联2个数组，结果数组类型由第一个数组的类型决定 |
+| `array_slice(arr,start,end)` | 返回基于0的索引的子数组， 从start到end，包括start不包括end。 如果start小于0或者大于数组的长度，则返回`null` |
+| `array_to_string(arr,str)` | 以str为连接符将arr的所有元素连接成一个字符串 |
+| `string_to_array(str1,str2)` | 以str2位分隔符将字符串str1分割为数组 |
