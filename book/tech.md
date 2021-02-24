@@ -1,6 +1,6 @@
 1. [Elasticsearch源码解析与优化实战](https://union-click.jd.com/jdc?e=&p=AyIGZRprFQEXAFYdWhcyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UVARcAVh1aFx1LQglGa1J9G2NXExBTZ1JlMQE7fWdoBlF%2BKFMOHjdUK1sUAxAGUxpYEgEiN1Uca0NsEgZUGloUBxICVitaJQIVB1AbXhMHFAddHFolBRIOZR5YFAARBVYcRxUHGgVQH2slMhE3ZStbJQEiRTsfCRJREARWEgxFChsCVB5bRlBAVVUfXhQCE1QCEwkRViIFVBpfHA%3D%3D)
 
-<script async type="text/javascript">var jd_union_pid="3003361822";var jd_union_euid="";</script><script type="text/javascript" src="//ads-union.jd.com/static/js/union.js"></script>
+<script type="text/javascript">var jd_union_pid="3003361822";var jd_union_euid="";</script><script async type="text/javascript" src="//ads-union.jd.com/static/js/union.js"></script>
 
 适读人群 ：本书适合对Elasticsearch进行改进的研发人员、平台运维人员，对分布式搜索感兴趣的朋友，以及在使用Elasticsearch过程中遇到问题的人们。
 

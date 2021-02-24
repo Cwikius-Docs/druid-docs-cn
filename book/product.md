@@ -1,6 +1,6 @@
 1. [B端的奇点——产品架构师进阶之路](https://union-click.jd.com/jdc?e=&p=AyIGZRprFQATD1wcUhQyVlgNRQQlW1dCFFlQCxxKQgFHRE5XDVULR0UVABMPXBxSFB1LQglGa28YFmMSQTsVYAhhXWw4cV5RXQJsOHUOHjdUK1sUAxAGUxpYEgEiN1Uca15sEzdUK1sSAhcHUBxTEwYWA1IrXBULIgJWGlkWABEASRteHQAXA2UraxYyIjdVK1glQHxVAUlTFQBGAVETUhcHGgYCS1wcAhUEXRIIFAQUVAUbWiUAEwZREg%3D%3D)
 
-<script async type="text/javascript">var jd_union_pid="3003360811";var jd_union_euid="";</script><script type="text/javascript" src="//ads-union.jd.com/static/js/union.js"></script>
+<script type="text/javascript">var jd_union_pid="3003360811";var jd_union_euid="";</script><script async type="text/javascript" src="//ads-union.jd.com/static/js/union.js"></script>
 
 适读人群 ：产品经理
 
