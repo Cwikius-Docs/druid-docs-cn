@@ -160,3 +160,54 @@ Long，Double和String类型都是支持的。 如果一个数字包括了小数
 | `array_slice(arr,start,end)` | 返回基于0的索引的子数组， 从start到end，包括start不包括end。 如果start小于0或者大于数组的长度，则返回`null` |
 | `array_to_string(arr,str)` | 以str为连接符将arr的所有元素连接成一个字符串 |
 | `string_to_array(str1,str2)` | 以str2位分隔符将字符串str1分割为数组 |
+
+### 应用函数(Apply Functions)
+
+| 名称 | 描述 |
+|-|-|
+| `map(lambda, arr)` | 将单参数lambda表达式指定的转换应用于arr的所有元素，并返回一个新数组 |
+| `cartesian_map(lambda, arr1, arr2, ...)` | 将多参数lambda表达式指定的转换应用于所有输入数组的笛卡尔乘积的所有元素，并返回一个新数组；lambda参数和数组输入的数目必须相同 |
+| `filter(lambda, arr)` | 按单个参数lambda筛选arr，返回包含所有匹配元素的新数组，如果没有匹配元素，则返回null |
+| `fold(lambda, arr)` | 在arr上折叠一个2参数lambda。lambda的第一个参数是数组元素，第二个参数是累加器，返回单个累计值。 |
+| `cartesian_fold(lambda, arr1, arr2, ...)` | 在所有输入数组的笛卡尔积上折叠多参数lambda。lambda的第一个参数是数组元素，最后一个参数是累加器，返回单个累计值。 |
+| `any(lambda, arr)` | 如果数组中的任何元素与lambda表达式匹配，则返回1，否则返回0 |
+| `all(lambda, err)` | 如果数组中的所有元素与lambda表达式匹配，则返回1，否则返回0 |
+
+### 约化函数(Reduction functions)
+
+约化函数操作零个或者多个表达式，返回一个单一表达式。如果没有表达式传入，结果是 `NULL`， 表达式必须是可以转化为常用的数字类型的。
+
+* 如果所有的参数是 `NULL`, 结果是 `NULL`; 否则， `NULL` 参数将被忽略
+* 如果参数由数字和字符串混合， 参数将被解释为字符串
+* 如果所有的参数是整型字符串，参数将被解释为long
+* 如果所有的参数是数字，且至少一个参数是double，则参数都被解释为double
+
+| 名称 | 描述 |
+|-|-|
+| `greatest([expr1, ...])` | 计算零个或多个表达式，并根据上述比较返回最大值 |
+| `least([expr1, ...])` | 计算零个或多个表达式，并根据上述比较返回最小值。 |
+
+### IP地址函数
+
+对于IPV4地址函数， `address` 参数要么是点号分割的IPv4(例如："192.168.0.1")，或者一个表示为Long的IP地址（例如：3232235521）。 `subnet` 参数应该是一个CIDR表示法中的IPv4地址子网的字符串（例如:"192.168.0.0/16"）
+
+| 名称 | 描述 |
+|-|-|
+| `ipv4_match(address, subnet)` ||
+| `ipv4_parse(address)` ||
+| `ipv4_stringify(address)` ||
+
+### 向量化支持(Vectorization Support)
+
+一些表达式支持[向量化查询引擎](query-context.md)
+
+已支持的特性：
+
+* 任何列类型都支持常量和标识符
+* 对于数值和字符串类型支持 `cast` 
+* 数学操作：数值类型支持 `+`，`-`，`*`，`/`，`%`, `^` 
+* 比较操作：数值类型支持 `=`, `!=`, `>`, `>=`, `<`, `<=`
+* 数学函数：数值类型支持 `abs`, `acos`, `asin`, `atan`, `cbrt`, `ceil`, `cos`, `cosh`, `cot`, `exp`, `expm1`, `floor`, `getExponent`, `log`, `log10`, `log1p`, `nextUp`, `rint`, `signum`, `sin`, `sinh`, `sqrt`, `tan`, `tanh`, `toDegrees`, `toRadians`, `ulp`, `atan2`, `copySign`, `div`, `hypot`, `max`, `min`, `nextAfter`, `pow`, `remainder`, `scalb`
+* 时间函数： 数值类型支持 `timestamp_floor` 
+* 其他： 对于数值和字符串类型， `parse_long` 是被支持的
+
