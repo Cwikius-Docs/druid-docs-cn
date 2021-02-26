@@ -22,12 +22,6 @@
 
 ---
 
-笔者强烈推荐一个居家省钱的羊毛神器，有兴趣可以点击以下图片关注查看。
-
-[![一个让你可以省钱的神器](img/ads.png)](http://hd.meiguang028.cn/ishare/mxCard/index.html?mi=ZPKPPAQ#activity)
-
----
-
 > [!TIP]
 > 在国内Druid的使用者越来越多，但是并没有一个很好的中文版本的使用文档。 本文档根据Apache Druid官方文档0.20.1版本进行翻译，目前托管在Github上，欢迎更多的Druid使用者以及爱好者加入翻译行列，为国内的使用者提供一个高质量的中文版本使用文档。
 
