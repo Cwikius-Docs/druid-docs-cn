@@ -1,9 +1,4 @@
 <!-- toc -->
-## Docker
-
-在这个部分中，我们将从 [Docker Hub](https://hub.docker.com/r/apache/druid) 下载Apache Druid镜像，并使用 [Docker](https://www.docker.com/get-started) 和 [Docker Compose](https://docs.docker.com/compose/) 在一台机器上安装它。完成此初始设置后，集群将准备好加载数据。
-
-在开始快速启动之前，阅读 [Druid概述](chapter-1.md) 和 [摄取概述](../DataIngestion/ingestion.md) 是很有帮助的，因为教程将参考这些页面上讨论的概念。此外，建议熟悉Docker。
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
@@ -15,6 +10,12 @@
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
+## Docker
+
+在这个部分中，我们将从 [Docker Hub](https://hub.docker.com/r/apache/druid) 下载Apache Druid镜像，并使用 [Docker](https://www.docker.com/get-started) 和 [Docker Compose](https://docs.docker.com/compose/) 在一台机器上安装它。完成此初始设置后，集群将准备好加载数据。
+
+在开始快速启动之前，阅读 [Druid概述](chapter-1.md) 和 [摄取概述](../DataIngestion/ingestion.md) 是很有帮助的，因为教程将参考这些页面上讨论的概念。此外，建议熟悉Docker。
 
 ### 前提条件
 
