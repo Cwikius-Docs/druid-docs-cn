@@ -1,5 +1,16 @@
 ## Apache Druid是一个高性能的实时分析型数据库
 
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-8828078415045620"
+     data-ad-slot="7586680510"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
 * ### 云原生、流原生的分析型数据库
   
     Druid专为需要快速数据查询与摄入的工作流程而设计，在即时数据可见性、即席查询、运营分析以及高并发等方面表现非常出色。在实际中[众多场景](Misc/usercase.md)下数据仓库解决方案中，可以考虑将Druid当做一种开源的替代解决方案。
