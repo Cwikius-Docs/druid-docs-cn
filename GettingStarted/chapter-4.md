@@ -10,6 +10,7 @@
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+
 ## 集群部署
 
 Apache Druid旨在作为可伸缩的容错集群进行部署。
