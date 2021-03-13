@@ -96,7 +96,9 @@
     * [Having(GroupBy)](Querying/having.md)
     * [排序和Limit(GroupBy)](Querying/limitspec.md)
     * [排序(TopN)](Querying/topnsorting.md)
-    
+    * [字符串比较器(String Comparators)](Querying/sorting-orders.md)
+    * [虚拟列(Virtual Columns)](Querying/virtual-columns.md)
+    * [空间过滤器(Spatial Filter)](Querying/spatialfilter.md)
 
 * [配置列表]()
   * [配置列表](Configuration/index.md)
