@@ -101,7 +101,7 @@
     * [空间过滤器(Spatial Filter)](Querying/spatialfilter.md)
 
 * [配置列表]()
-  * [配置列表](Configuration/index.md)
+  * [配置列表](Configuration/configuration.md)
 
 * [操作指南]()
   * [操作指南](Operations/index.md)
