@@ -1,20 +1,20 @@
-- CWIKIUS.CN 概述
-  - [文档介绍和快速链接](README.md)
+- DRUID.OSSEZ.COM 概述
+  - [项目概述](README.md)
   - [公众平台](CONTACT.md)
 
-- 湘南地区古村落
-  - [毛坪里村](yong-zhou/ling-ling/mao-ping-li-cun/index.md)
-  - [塘付村](yong-zhou/ling-ling/tang-fu-cun/index.md)
-  - [赵家湾村](yong-zhou/ling-ling/zhao-jia-wan-cun/index.md)
+- 开始使用
+  - [从文件中载入数据](yong-zhou/ling-ling/mao-ping-li-cun/index.md)
+  - [从 Kafka 中载入数据](yong-zhou/ling-ling/tang-fu-cun/index.md)
+  - [从 Hadoop 中载入数据](yong-zhou/ling-ling/zhao-jia-wan-cun/index.md)
   
-- 其他小工具
+- 设计（Design）
   - [JWT](jwt/README.md)
   - [MessagePack](message-pack/index.md)
   - [Protocol Buffers](protocol-buffers/index.md)
 
-- 面试和算法
+- 摄取（Ingestion）
   - [面试问题和经验](interview/index.md)
   - [算法题](algorithm/index.md)
-  
-- [Awesome docsify](awesome.md)
+- 查询（Querying）
+
 - [Changelog](changelog.md)

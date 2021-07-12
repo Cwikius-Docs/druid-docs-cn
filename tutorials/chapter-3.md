@@ -15,7 +15,7 @@
 
 本教程向您展示如何使用远程Hadoop集群将数据文件加载到Apache Druid中。
 
-对于本教程，我们假设您已经使用[快速入门](../GettingStarted/chapter-2.md)中所述的 `micro-quickstart` 单机配置完成了前边的[批处理摄取指南](./chapter-1.md)。
+对于本教程，我们假设您已经使用[快速入门](../GettingStarted/chapter-2.md)中所述的 `micro-quickstart` 单机配置完成了前边的[批处理摄取指南](tutorial-batch.md)。
 
 ### 安装Docker
 
