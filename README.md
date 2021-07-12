@@ -1,7 +1,7 @@
 
 ---
 
-[中文文档](https://druid.apache.org/docs/latest/design/) |
+[中文文档](https://druid.ossez.com/) |
 [官方网站](https://druid.apache.org/) |
 [官方文档（英文）](https://druid.apache.org/docs/latest/design/) |
 [开发者邮件地址](https://lists.apache.org/list.html?dev@druid.apache.org) |
@@ -12,7 +12,22 @@
 ---
 
 ## Apache Druid
-Apache Druid 是一个高性能的实时分析型数据库。
+Apache Druid 是一个高性能的实时分析型数据库。 Druid 的主要价值是能够减少检查和查找的时间。
+
+Druid 的工作流被设计为能够快速进行查询并且能够对实时的情况进行分析。
+
+Druid 具有非常强大的 UI 界面，能够让用户进行 即席查询（Ad-Hoc Query），或者能够处理高并发。 
+
+针对数据库仓库或一系列的用户使用案例，可以将 Druid 考虑为这些使用场景的开源解决方案。
+
+### Ad-Hoc Query
+如果你对 Ad-Hoc Query （即席查询）的概念和使用不是是否清楚的话，请自行搜索相关的技术文档。
+
+简单来说：即席查询（Ad Hoc）是用户根据自己的需求，灵活的选择查询条件，系统能够根据用户的选择生成相应的统计报表。
+
+即席查询与普通应用查询最大的不同是普通的应用查询是定制开发的，而即席查询是由用户自定义查询条件的。
+
+即席查询是指那些用户在使用系统时，根据自己当时的需求定义的查询。
 
 ### 云原生、流原生的分析型数据库
 Druid专为需要快速数据查询与摄入的工作流程而设计，在即时数据可见性、即席查询、运营分析以及高并发等方面表现非常出色。
