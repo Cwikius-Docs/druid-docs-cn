@@ -1,32 +1,6 @@
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
-
-[![Slack](https://img.shields.io/badge/slack-%23druid-72eff8?logo=slack)](https://s.apache.org/slack-invite)
-[![Build Status](https://api.travis-ci.com/apache/druid.svg?branch=master)](https://travis-ci.com/apache/druid)
-[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/apache/druid.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/apache/druid/context:java)
-[![Coverage Status](https://img.shields.io/codecov/c/gh/apache/druid)](https://codecov.io/gh/apache/druid)
-[![Docker](https://img.shields.io/badge/container-docker-blue.svg)](https://hub.docker.com/r/apache/druid)
-[![Helm](https://img.shields.io/badge/helm-druid-5F90AB?logo=helm)](https://artifacthub.io/packages/helm/helm-incubator/druid)
-<!--- Following badges are disabled until they can be fixed: -->
-<!--- [![Inspections Status](https://img.shields.io/teamcity/http/teamcity.jetbrains.com/s/OpenSourceProjects_Druid_Inspections.svg?label=TeamCity%20inspections)](https://teamcity.jetbrains.com/viewType.html?buildTypeId=OpenSourceProjects_Druid_Inspections) -->
 
 ---
+
 [中文文档](https://druid.apache.org/docs/latest/design/) |
 [官方网站](https://druid.apache.org/) |
 [官方文档（英文）](https://druid.apache.org/docs/latest/design/) |
@@ -34,6 +8,7 @@
 [用户邮件地址](https://groups.google.com/forum/#!forum/druid-user) |
 [Slack](https://s.apache.org/slack-invite) |
 [下载地址](https://druid.apache.org/downloads.html)
+
 ---
 
 ## Apache Druid
@@ -56,5 +31,8 @@ Druid为点击流、APM、供应链、网络监测、市场营销以及其他事
 ### 可部署在AWS/GCP/Azure,混合云,Kubernetes, 以及裸机上
 无论在云上还是本地，Druid可以轻松的部署在商用硬件上的任何*NIX环境。部署Druid也是非常简单的，包括集群的扩容或者下线都也同样很简单。
 
-> [!TIP]
-> 在国内Druid的使用者越来越多，但是并没有一个很好的中文版本的使用文档。 本文档根据Apache Druid官方文档0.20.1版本进行翻译，目前托管在Github上，欢迎更多的Druid使用者以及爱好者加入翻译行列，为国内的使用者提供一个高质量的中文版本使用文档。
+```text
+在国内Druid的使用者越来越多，但是并没有一个很好的中文版本的使用文档。 
+本文档根据Apache Druid官方文档0.20.1版本进行翻译，目前托管在Github上，欢迎更多的Druid使用者以及爱好者加入翻译行列，为国内的使用者提供一个高质量的中文版本使用文档。
+
+```
