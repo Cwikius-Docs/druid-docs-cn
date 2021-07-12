@@ -22,7 +22,7 @@ Kafka索引服务支持在Overlord上配置*supervisors*，supervisors通过管�
 
 ### 教程
 
-本页包含基于Apache Kafka的摄取的参考文档。同样，您可以查看 [Apache Kafka教程](../Tutorials/chapter-2.md) 中的加载。
+本页包含基于Apache Kafka的摄取的参考文档。同样，您可以查看 [Apache Kafka教程](../tutorials/chapter-2.md) 中的加载。
 
 ### 提交一个supervisor规范
 

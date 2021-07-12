@@ -19,7 +19,7 @@ Apache Druid可以通过roll-up在数据摄取阶段对原始数据进行汇总�
 
 本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
 
-完成[加载本地文件](./chapter-1.md)和[数据查询](./chapter-4.md)两部分内容也是非常有帮助的。
+完成[加载本地文件](tutorial-batch.md)和[数据查询](./chapter-4.md)两部分内容也是非常有帮助的。
 
 ### 示例数据
 

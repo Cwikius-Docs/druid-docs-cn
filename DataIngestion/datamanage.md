@@ -177,7 +177,7 @@ Druid支持永久的将标记为"unused"状态（详情可见架构设计中的 
 
 对于通过Coordinator API来禁用段的文档，可以详细看 [Coordinator数据源API](../Operations/api.md#coordinator)
 
-在本文档中已经包含了一个删除删除的教程，请看 [数据删除教程](../Tutorials/chapter-9.md)
+在本文档中已经包含了一个删除删除的教程，请看 [数据删除教程](../tutorials/chapter-9.md)
 
 ### 杀死任务
 

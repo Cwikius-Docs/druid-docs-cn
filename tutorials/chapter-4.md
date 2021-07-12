@@ -17,7 +17,7 @@
 
 本教程假定您已经完成了摄取教程之一，因为我们将查询Wikipedia编辑样例数据。
 
-* [加载本地文件](./chapter-1.md)
+* [加载本地文件](tutorial-batch.md)
 * [从Kafka加载数据](./chapter-2.md)
 * [从Hadoop加载数据](./chapter-3.md)
 

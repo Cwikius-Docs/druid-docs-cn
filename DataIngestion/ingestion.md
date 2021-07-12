@@ -79,7 +79,7 @@ Druid Schema必须始终包含一个主时间戳。主时间戳用于对 [数据
 #### 指标
 Metrics是以聚合形式存储的列。启用 [rollup](#Rollup) 时，它们最有用。指定一个Metric允许您为Druid选择一个聚合函数，以便在摄取期间应用于每一行。这有两个好处：
 
-1. 如果启用了 [rollup](#Rollup)，即使保留摘要信息，也可以将多行折叠为一行。在 [Rollup教程](../Tutorials/chapter-5.md) 中，这用于将netflow数据折叠为每（`minute`，`srcIP`，`dstIP`）元组一行，同时保留有关总数据包和字节计数的聚合信息。
+1. 如果启用了 [rollup](#Rollup)，即使保留摘要信息，也可以将多行折叠为一行。在 [Rollup教程](../tutorials/chapter-5.md) 中，这用于将netflow数据折叠为每（`minute`，`srcIP`，`dstIP`）元组一行，同时保留有关总数据包和字节计数的聚合信息。
 2. 一些聚合器，特别是近似聚合器，即使在非汇总数据上，如果在接收时部分计算，也可以在查询时更快地计算它们。
 
 Metrics是通过 [`metricsSpec`](#metricsSpec) 配置的。
@@ -99,7 +99,7 @@ rollup默认是启用状态。
 Rollup由 `granularitySpec` 中的 `rollup` 配置项控制。 默认情况下，值为 `true`(启用状态)。如果你想让Druid按原样存储每条记录，而不需要任何汇总，将该值设置为 `false`。
 
 #### rollup示例
-有关如何配置Rollup以及该特性将如何修改数据的示例，请参阅[Rollup教程](../Tutorials/chapter-5.md)。
+有关如何配置Rollup以及该特性将如何修改数据的示例，请参阅[Rollup教程](../tutorials/chapter-5.md)。
 
 #### 最大化rollup比率
 通过比较Druid中的行数和接收的事件数，可以测量数据源的汇总率。这个数字越高，从汇总中获得的好处就越多。一种方法是使用[Druid SQL](../Querying/druidsql.md)查询，比如：

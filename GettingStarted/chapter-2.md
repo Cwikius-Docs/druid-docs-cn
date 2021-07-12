@@ -141,10 +141,10 @@ $ ./bin/start-micro-quickstart
 
 以下教程演示了将数据加载到Druid的各种方法，包括批处理和流处理用例。 所有教程均假定您使用的是上面提到的`micro-quickstart`单机配置。
 
-* [加载本地文件](../Tutorials/chapter-1.md) - 本教程演示了如何使用Druid的本地批处理摄取来执行批文件加载
-* [从Kafka加载流数据](../Tutorials/chapter-2.md) - 本教程演示了如何从Kafka主题加载流数据
-* [从Hadoop加载数据](../Tutorials/chapter-3.md) - 本教程演示了如何使用远程Hadoop集群执行批处理文件加载
-* [编写一个自己的数据摄取规范](../Tutorials/chapter-10.md) - 本教程演示了如何编写新的数据摄取规范并使用它来加载数据
+* [加载本地文件](../tutorials/tutorial-batch.md) - 本教程演示了如何使用Druid的本地批处理摄取来执行批文件加载
+* [从Kafka加载流数据](../tutorials/chapter-2.md) - 本教程演示了如何从Kafka主题加载流数据
+* [从Hadoop加载数据](../tutorials/chapter-3.md) - 本教程演示了如何使用远程Hadoop集群执行批处理文件加载
+* [编写一个自己的数据摄取规范](../tutorials/chapter-10.md) - 本教程演示了如何编写新的数据摄取规范并使用它来加载数据
 
 ##### 重置集群状态
 
@@ -154,7 +154,7 @@ $ ./bin/start-micro-quickstart
 
 ##### 重置Kafka
 
-如果您完成了[教程：从Kafka加载流数据](../Tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
+如果您完成了[教程：从Kafka加载流数据](../tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
 
 在停止ZooKeeper和Druid服务之前，使用`CTRL-C`关闭`Kafka Broker`，然后删除`/tmp/kafka-logs`中的Kafka日志目录：
 
