@@ -17,4 +17,7 @@
   - [算法题](algorithm/index.md)
 - 查询（Querying）
 
+- 其他杂项（Misc）
+  - [Druid 资源快速导航](misc/index.md)
+
 - [Changelog](changelog.md)
