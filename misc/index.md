@@ -8,8 +8,9 @@
 * [Kylin、Druid、ClickHouse 核心技术对比](https://www.ossez.com/t/kylin-druid-clickhouse/13567) - 
   Druid索引结构使用自定义的数据结构，整体上它是一种列式存储结构，每个列独立一个逻辑文件（实际上是一个物理文件，在物理文件内部标记了每个列的 start 和 offset）
 
-* [适用于大数据的开源OLAP系统的比较：ClickHouse，Druid和Pinot](https://www.cnblogs.com/029zz010buct/p/12674287.html)
-  ClickHouse，Druid和Pinot在效率和性能优化上具有大​​约相同的“极限”。没有“魔术药”可以使这些系统中的任何一个都比其他系统快得多。在当前状态下，这些系统在某些基准测试中的性能有很大不同，这一事实并不会让您感到困惑。
+* [适用于大数据的开源 OLAP 系统的比较：ClickHouse，Druid 和 Pinot](https://www.ossez.com/t/olap-clickhouse-druid-pinot/13568) - 
+  ClickHouse，Druid 和 Pinot 在效率和性能优化上具有约相同的“极限”。
+  没有 “魔术药” 可以使这些系统中的任何一个都比其他系统快得多。在当前状态下，这些系统在某些基准测试中的性能有很大不同，这一事实并不会让您感到困惑。
 
 * [有人说下kudu,kylin,druid,clickhouse的区别,使用场景么?](https://www.zhihu.com/question/303991599)
   Kylin 和 ClickHouse 都能通过 SQL 的方式在 PB 数据量级下,亚秒级(绝多数查询 5s内返回)返回 OLAP(在线分析查询) 查询结果
