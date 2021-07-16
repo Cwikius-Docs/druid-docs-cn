@@ -1,6 +1,6 @@
 # Druid 资源快速导航
 
-## Druid 入门与基础
+## 入门与基础
 * [十分钟了解 Apache Druid](https://www.ossez.com/t/apache-druid/13566) - 
   Apache Druid是一个集时间序列数据库、数据仓库和全文检索系统特点于一体的分析性数据平台。
   本文将带你简单了解Druid的特性，使用场景，技术特点和架构。这将有助于你选型数据存储方案，深入了解Druid存储，深入了解时间序列存储等。
@@ -63,7 +63,7 @@
 * [Druid原理分析之Segment的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
 
 
-## Druid 优化与实践
+## 优化与实践
 * [快手 Druid 精确去重的设计和实现](https://www.ossez.com/t/druid/13565) - 
   快手的业务特点包括超大数据规模、毫秒级查询时延、高数据实时性要求、高并发查询、高稳定性以及较高的 Schema 灵活性要求；因此快手选择 Druid 平台作为底层架构。
   由于 Druid 原生不支持数据精确去重功能，而快手业务中会涉及到例如计费等场景，有精确去重的需求。因此，本文重点讲述如何在 Druid 平台中实现精确去重。
