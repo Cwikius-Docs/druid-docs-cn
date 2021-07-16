@@ -5,9 +5,9 @@
   * [技术类](book/tech.md)
 
 * [优质技术文章合集]()
-  * [分析调研类](Misc/learning.md)
-  * [源码解读类](Misc/sourcecode.md)
-  * [优化实践类](Misc/optimized.md)
+  * [分析调研类](misc/learning.md)
+  * [源码解读类](misc/sourcecode.md)
+  * [优化实践类](misc/optimized.md)
 
 * [整体介绍]()
   * [Druid概述](README.md)
@@ -110,7 +110,7 @@
   * [开发指南](Development/index.md)
 
 * [其他相关]()
-  * [其他相关](Misc/index.md)
+  * [其他相关](misc/index.md)
 
 * [站内链接合集]()
   * [产品架构师进阶](book/1.md)
