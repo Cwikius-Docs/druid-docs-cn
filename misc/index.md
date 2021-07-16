@@ -5,7 +5,7 @@
   Apache Druid是一个集时间序列数据库、数据仓库和全文检索系统特点于一体的分析性数据平台。
   本文将带你简单了解Druid的特性，使用场景，技术特点和架构。这将有助于你选型数据存储方案，深入了解Druid存储，深入了解时间序列存储等。
 
-* [Kylin、Druid、ClickHouse 核心技术对比](https://zhuanlan.zhihu.com/p/267311457) - 
+* [Kylin、Druid、ClickHouse 核心技术对比](https://www.ossez.com/t/kylin-druid-clickhouse/13567) - 
   Druid索引结构使用自定义的数据结构，整体上它是一种列式存储结构，每个列独立一个逻辑文件（实际上是一个物理文件，在物理文件内部标记了每个列的 start 和 offset）
 
 * [适用于大数据的开源OLAP系统的比较：ClickHouse，Druid和Pinot](https://www.cnblogs.com/029zz010buct/p/12674287.html)
