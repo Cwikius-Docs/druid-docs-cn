@@ -69,7 +69,7 @@
   由于 Druid 原生不支持数据精确去重功能，而快手业务中会涉及到例如计费等场景，有精确去重的需求。因此，本文重点讲述如何在 Druid 平台中实现精确去重。
   另一方面，Druid 对外的接口是 json 形式 ( Druid 0.9 版本之后逐步支持 SQL ) ，对 SQL 并不友好，本文最后部分会简述 Druid 平台与 MySQL 交互方面做的一些改进。
 
-* [基于ApacheDruid 实时分析平台在爱奇艺的实践](https://www.ossez.com/t/apache-druid/13575) - 
+* [基于 Apache Druid 实时分析平台在爱奇艺的实践](https://www.ossez.com/t/apache-druid/13575) - 
   爱奇艺大数据服务团队评估了市面上主流的OLAP引擎，最终选择Apache Druid时序数据库来满足业务的实时分析需求。
   本文将介绍Druid在爱奇艺的实践情况、优化经验以及平台化建设的一些思考。
 
