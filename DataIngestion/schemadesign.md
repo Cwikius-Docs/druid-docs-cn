@@ -102,9 +102,9 @@ Druid可以在接收数据时将其汇总，以最小化需要存储的原始数
 
 Druid schema必须始终包含一个主时间戳, 主时间戳用于对数据进行 [分区和排序](ingestion.md#分区)，因此它应该是您最常筛选的时间戳。Druid能够快速识别和检索与主时间戳列的时间范围相对应的数据。
 
-如果数据有多个时间戳，则可以将其他时间戳作为辅助时间戳摄取。最好的方法是将它们作为 [毫秒格式的Long类型维度](ingestion.md#dimensionsspec) 摄取。如有必要，可以使用 [`transformSpec`](ingestion.md#transformspec) 和 `timestamp_parse` 等 [表达式](../Misc/expression.md) 将它们转换成这种格式，后者返回毫秒时间戳。
+如果数据有多个时间戳，则可以将其他时间戳作为辅助时间戳摄取。最好的方法是将它们作为 [毫秒格式的Long类型维度](ingestion.md#dimensionsspec) 摄取。如有必要，可以使用 [`transformSpec`](ingestion.md#transformspec) 和 `timestamp_parse` 等 [表达式](../misc/expression.md) 将它们转换成这种格式，后者返回毫秒时间戳。
 
-在查询时，可以使用诸如 `MILLIS_TO_TIMESTAMP`、`TIME_FLOOR` 等 [SQL时间函数](../Querying/druidsql.md) 查询辅助时间戳。如果您使用的是原生Druid查询，那么可以使用 [表达式](../Misc/expression.md)。
+在查询时，可以使用诸如 `MILLIS_TO_TIMESTAMP`、`TIME_FLOOR` 等 [SQL时间函数](../Querying/druidsql.md) 查询辅助时间戳。如果您使用的是原生Druid查询，那么可以使用 [表达式](../misc/expression.md)。
 
 #### 嵌套维度
 
