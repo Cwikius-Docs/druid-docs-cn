@@ -1,6 +1,6 @@
 # Druid 资源快速导航
 
-## Druid 入门与基础
+## 入门与基础
 * [十分钟了解 Apache Druid](https://www.ossez.com/t/apache-druid/13566) - 
   Apache Druid是一个集时间序列数据库、数据仓库和全文检索系统特点于一体的分析性数据平台。
   本文将带你简单了解Druid的特性，使用场景，技术特点和架构。这将有助于你选型数据存储方案，深入了解Druid存储，深入了解时间序列存储等。
@@ -15,11 +15,11 @@
 * [有人说下 kudu，kylin，druid，clickhouse 的区别,使用场景么](https://www.ossez.com/t/kudu-kylin-druid-clickhouse/13569) - 
   Kylin 和 ClickHouse 都能通过 SQL 的方式在 PB 数据量级下,亚秒级(绝多数查询 5s内返回)返回 OLAP(在线分析查询) 查询结果。
 
-* [OLAP 演进实战，Druid 对比 ClickHouse 输在哪里？](https://www.manongdao.com/article-2427509.html) - 
-  本文介绍eBay广告数据平台的基本情况，并对比分析了ClickHouse与Druid的使用特点。
-  基于ClickHouse表现出的良好性能和扩展能力，本文介绍了如何将 eBay 广告系统从 Druid 迁移至 ClickHouse，希望能为同业人员带来一定的启发。
+* [OLAP 演进实战，Druid 对比 ClickHouse 输在哪里](https://www.ossez.com/t/olap-druid-clickhouse/13570) - 
+  本文介绍 eBay 广告数据平台的基本情况，并对比分析了 ClickHouse 与 Druid 的使用特点。
+  基于 ClickHouse 表现出的良好性能和扩展能力，本文介绍了如何将 eBay 广告系统从 Druid 迁移至 ClickHouse，希望能为同业人员带来一定的启发。
 
-* [clickhouse 和 druid 实时分析性能总结](https://www.pianshen.com/article/26311113725/) - 
+* [clickhouse 和 druid 实时分析性能总结](https://www.ossez.com/t/clickhouse-druid/13571) - 
   clickhouse 是俄罗斯的搜索引擎（Yandex）公司在 2016 年开源的，一款针对大数据实时分析的高性能分布式数据库，与之对应的有 hadoop 生态 hive，Vertica 和 palo。
   
 ## 源代码与进阶
@@ -63,14 +63,15 @@
 * [Druid原理分析之Segment的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
 
 
-## Druid 优化与实践
+## 优化与实践
 * [快手 Druid 精确去重的设计和实现](https://www.ossez.com/t/druid/13565) - 
   快手的业务特点包括超大数据规模、毫秒级查询时延、高数据实时性要求、高并发查询、高稳定性以及较高的 Schema 灵活性要求；因此快手选择 Druid 平台作为底层架构。
   由于 Druid 原生不支持数据精确去重功能，而快手业务中会涉及到例如计费等场景，有精确去重的需求。因此，本文重点讲述如何在 Druid 平台中实现精确去重。
   另一方面，Druid 对外的接口是 json 形式 ( Druid 0.9 版本之后逐步支持 SQL ) ，对 SQL 并不友好，本文最后部分会简述 Druid 平台与 MySQL 交互方面做的一些改进。
 
-* [基于ApacheDruid 实时分析平台在爱奇艺的实践](https://www.sohu.com/a/398880575_315839)
-  爱奇艺大数据服务团队评估了市面上主流的OLAP引擎，最终选择Apache Druid时序数据库来满足业务的实时分析需求。本文将介绍Druid在爱奇艺的实践情况、优化经验以及平台化建设的一些思考
+* [基于 Apache Druid 实时分析平台在爱奇艺的实践](https://www.ossez.com/t/apache-druid/13575) - 
+  爱奇艺大数据服务团队评估了市面上主流的OLAP引擎，最终选择Apache Druid时序数据库来满足业务的实时分析需求。
+  本文将介绍Druid在爱奇艺的实践情况、优化经验以及平台化建设的一些思考。
 
 * [熵简技术谈 | 实时OLAP引擎之Apache Druid：架构、原理和应用实践](https://zhuanlan.zhihu.com/p/178572172)
   本文以实时 OLAP 引擎的优秀代表 Druid 为研究对象，详细介绍 Druid 的架构思想和核心特性。在此基础上，我们介绍了熵简科技在数据智能分析场景下，针对私有化部署与实时响应优化的实践经验。

@@ -22,13 +22,15 @@ title: "Papers"
   ~ under the License.
   -->
 
-## Papers
+## 相关文献
 
-* [Druid: A Real-time Analytical Data Store](http://static.druid.io/docs/druid.pdf) - Discusses the Druid architecture in detail.
+* [Druid： 一个实时的分析数据存储](https://www.ossez.com/t/druid/13572) -
+  讨论有关 Druid 的体系结构。
 
-* [The RADStack: Open Source Lambda Architecture for Interactive Analytics](http://static.druid.io/docs/radstack.pdf) - Discusses how Druid supports real-time and batch workflows.
+* [RADStack：针对交互式分析（Interactive Analytics）的开源 Lambda 体系结构](https://www.ossez.com/t/interactive-analytics-lambda/13573) - 
+  讨论了 Druid 是如何能够支持实时和批量的工作流。
 
-## Presentations
+## 演示文稿
 
 * [Introduction to Druid](https://www.youtube.com/watch?v=hgmxVPx4vVw) - Discusses the motivations behind Druid and the architecture of the system.
 
