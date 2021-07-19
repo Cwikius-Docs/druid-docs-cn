@@ -62,7 +62,7 @@ Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的�
 
 ### 查询返回来了空结果
 
-您可以对为数据源创建的dimension和metric使用段 [元数据查询](../Querying/segmentMetadata.md)。确保您在查询中使用的聚合器的名称与这些metric之一匹配，还要确保指定的查询间隔与存在数据的有效时间范围匹配。
+您可以对为数据源创建的dimension和metric使用段 [元数据查询](../querying/segmentMetadata.md)。确保您在查询中使用的聚合器的名称与这些metric之一匹配，还要确保指定的查询间隔与存在数据的有效时间范围匹配。
 
 ### schema变化时如何在Druid中重新索引现有数据
 

@@ -39,6 +39,6 @@ org.apache.druid.cli.Main server historical
 
 ### 查询段
 
-有关查询Historical的详细信息，请参阅 [数据查询](../Querying/makeNativeQueries.md)。
+有关查询Historical的详细信息，请参阅 [数据查询](../querying/makeNativeQueries.md)。
 
 Historical可以被配置记录和报告每个服务查询的指标。

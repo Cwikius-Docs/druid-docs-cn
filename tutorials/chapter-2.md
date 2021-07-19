@@ -132,7 +132,7 @@ Druid的体系结构需要一个主时间列（内部存储为名为__time的列
 
 ![](img-2/tutorial-kafka-data-loader-12.png)
 
-查看[查询教程](../Querying/makeNativeQueries.md)以对新加载的数据运行一些示例查询。
+查看[查询教程](../querying/makeNativeQueries.md)以对新加载的数据运行一些示例查询。
 
 #### 通过控制台提交supervisor
 
