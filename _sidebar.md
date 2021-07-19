@@ -1,6 +1,6 @@
 - DRUID.OSSEZ.COM 概述
   - [项目概述](README.md)
-  - [公众平台](CONTACT.md)
+  - [联系我们](CONTACT.md)
 
 - 开始使用
   - [Druid 介绍](design/index.md)
