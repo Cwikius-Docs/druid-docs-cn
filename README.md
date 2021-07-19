@@ -66,3 +66,5 @@ Druid 可部署在 AWS/GCP/Azure, 混合云, Kubernetes, 以及裸机上，针�
 !> 本 Druid 技术文档结合了很多前期翻译和贡献者的内容，并且根据在实际使用遇到的问题总结，同时参考了官方的文档更新。
 目前托管在 [Github](https://github.com/cwiki-us-docs/) 上，欢迎更多的 Druid 使用者以及爱好者加入翻译行列，您可以 Fork 仓库后创建 PR。
 联系我们的方式，请参考导航栏中的联系我们，同时编译渲染部署后的版本请访问页面：[https://druid.ossez.com/](https://druid.ossez.com/)。
+
+[联系我们](CONTACT.md ':include')
