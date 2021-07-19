@@ -34,7 +34,7 @@ Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的�
 
 ### 摄取之后段存储在哪里
 
-段的存储位置由 `druid.storage.type` 配置决定的，Druid会将段上传到 [深度存储](../Design/Deepstorage.md)。 本地磁盘是默认的深度存储位置。
+段的存储位置由 `druid.storage.type` 配置决定的，Druid会将段上传到 [深度存储](../design/Deepstorage.md)。 本地磁盘是默认的深度存储位置。
 
 ### 流摄取任务没有发生段切换递交
 
@@ -49,11 +49,11 @@ Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的�
 
 ### 如何让HDFS工作
 
-确保在类路径中包含 `druid-hdfs-storage` 和所有的hadoop配置、依赖项（可以通过在安装了hadoop的计算机上运行 `hadoop classpath`命令获得）。并且，提供必要的HDFS设置，如 [深度存储](../Design/Deepstorage.md) 中所述。
+确保在类路径中包含 `druid-hdfs-storage` 和所有的hadoop配置、依赖项（可以通过在安装了hadoop的计算机上运行 `hadoop classpath`命令获得）。并且，提供必要的HDFS设置，如 [深度存储](../design/Deepstorage.md) 中所述。
 
 ### 没有在Historical进程中看到Druid段
 
-您可以查看位于 `<Coordinator_IP>:<PORT>` 的Coordinator控制台, 确保您的段实际上已加载到 [Historical进程](../Design/Historical.md)中。如果段不存在，请检查Coordinator日志中有关复制错误容量的消息。不下载段的一个原因是，Historical进程的 `maxSize` 太小，使它们无法下载更多数据。您可以使用（例如）更改它：
+您可以查看位于 `<Coordinator_IP>:<PORT>` 的Coordinator控制台, 确保您的段实际上已加载到 [Historical进程](../design/Historical.md)中。如果段不存在，请检查Coordinator日志中有关复制错误容量的消息。不下载段的一个原因是，Historical进程的 `maxSize` 太小，使它们无法下载更多数据。您可以使用（例如）更改它：
 
 ```json
 -Ddruid.segmentCache.locations=[{"path":"/tmp/druid/storageLocation","maxSize":"500000000000"}]

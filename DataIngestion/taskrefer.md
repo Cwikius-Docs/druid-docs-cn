@@ -21,7 +21,7 @@
 
 任务API主要在两个地方是可用的：
 
-* [Overlord](../Design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../Operations/api.md) 可以看到完整列表
+* [Overlord](../design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../Operations/api.md) 可以看到完整列表
 * Druid SQL包括了一个 [`sys.tasks`](../Querying/druidsql.md#系统Schema) ，保存了当前任务运行的信息。 此表是只读的，并且可以通过Overlord API查询完整信息的有限制的子集。
   
 ### 任务报告

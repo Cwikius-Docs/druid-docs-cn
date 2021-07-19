@@ -131,7 +131,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 在默认模式(`true`)下，Druid将NULL和空字符串互换处理，而不是根据SQL标准。在这种模式下，Druid SQL只部分支持NULL。例如，表达式 `col IS NULL` 和 `col = ''` 等效，如果 `col` 包含空字符串，则两者的计算结果都为true。类似地，如果`col1`是空字符串，则表达式 `COALESCE(col1，col2)` 将返回 `col2`。当 `COUNT(*)` 聚合器计算所有行时，`COUNT(expr)` 聚合器将计算expr既不为空也不为空字符串的行数。此模式中的数值列不可为空；任何空值或缺少的值都将被视为零。
 
-在SQL兼容模式(`false`)中，NULL的处理更接近SQL标准，该属性同时影响存储和查询，因此为了获得最佳行为，应该在接收时和查询时同时设置该属性。处理空值的能力会带来一些开销；有关更多详细信息，请参阅 [段文档](../Design/Segments.md#SQL兼容的空值处理)。
+在SQL兼容模式(`false`)中，NULL的处理更接近SQL标准，该属性同时影响存储和查询，因此为了获得最佳行为，应该在接收时和查询时同时设置该属性。处理空值的能力会带来一些开销；有关更多详细信息，请参阅 [段文档](../design/Segments.md#SQL兼容的空值处理)。
 
 ### 聚合函数
 
@@ -148,14 +148,14 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `MAX(expr)` | 取数字的最大值 |
 | `AVG(expr)` | 取平均值 |
 | `APPROX_COUNT_DISTINCT(expr)` | 唯一值的计数，该值可以是常规列或hyperUnique。这始终是近似值，而不考虑"useApproximateCountDistinct"的值。该函数使用了Druid内置的"cardinality"或"hyperUnique"聚合器。另请参见 `COUNT(DISTINCT expr)` |
-| `APPROX_COUNT_DISTINCT_DS_HLL(expr, [lgK, tgtHllType])` | 唯一值的计数，该值可以是常规列或[HLL sketch](../Configuration/core-ext/datasketches-hll.md)。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
-| `APPROX_COUNT_DISTINCT_DS_THETA(expr, [size])` | 唯一值的计数，该值可以是常规列或[Theta sketch](../Configuration/core-ext/datasketches-theta.md)。`size` 参数在Theta Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
-| `DS_HLL(expr, [lgK, tgtHllType])` | 在表达式的值上创建一个 [`HLL sketch`](../Configuration/core-ext/datasketches-hll.md), 该值可以是常规列或者包括HLL Sketch的列。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
-| `DS_THETA(expr, [size])` | 在表达式的值上创建一个[`Theta sketch`](../Configuration/core-ext/datasketches-theta.md)，该值可以是常规列或者包括Theta Sketch的列。`size` 参数在Theta Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `APPROX_COUNT_DISTINCT_DS_HLL(expr, [lgK, tgtHllType])` | 唯一值的计数，该值可以是常规列或[HLL sketch](../Configuration/core-ext/datasketches-hll.md)。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `APPROX_COUNT_DISTINCT_DS_THETA(expr, [size])` | 唯一值的计数，该值可以是常规列或[Theta sketch](../Configuration/core-ext/datasketches-theta.md)。`size` 参数在Theta Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `DS_HLL(expr, [lgK, tgtHllType])` | 在表达式的值上创建一个 [`HLL sketch`](../Configuration/core-ext/datasketches-hll.md), 该值可以是常规列或者包括HLL Sketch的列。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `DS_THETA(expr, [size])` | 在表达式的值上创建一个[`Theta sketch`](../Configuration/core-ext/datasketches-theta.md)，该值可以是常规列或者包括Theta Sketch的列。`size` 参数在Theta Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
 | `APPROX_QUANTILE(expr, probability, [resolution])` | 在数值表达式或者[近似图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1），"resolution"是用于计算的centroids，更高的resolution将会获得更精确的结果，默认值为50。使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
-| `APPROX_QUANTILE_DS(expr, probability, [k])` | 在数值表达式或者 [Quantiles sketch](../Configuration/core-ext/datasketches-quantiles.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `APPROX_QUANTILE_DS(expr, probability, [k])` | 在数值表达式或者 [Quantiles sketch](../Configuration/core-ext/datasketches-quantiles.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
 | `APPROX_QUANTILE_FIXED_BUCKETS(expr, probability, numBuckets, lowerLimit, upperLimit, [outlierHandlingMode])` | 在数值表达式或者[fixed buckets直方图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `numBuckets`, `lowerLimit`, `upperLimit` 和 `outlierHandlingMode` 参数在fixed buckets直方图文档中做了描述。 使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
-| `DS_QUANTILES_SKETCH(expr, [k])` | 在表达式的值上创建一个[`Quantiles sketch`](../Configuration/core-ext/datasketches-quantiles.md)，该值可以是常规列或者包括Quantiles Sketch的列。`k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../Development/datasketches-extension.md) |
+| `DS_QUANTILES_SKETCH(expr, [k])` | 在表达式的值上创建一个[`Quantiles sketch`](../Configuration/core-ext/datasketches-quantiles.md)，该值可以是常规列或者包括Quantiles Sketch的列。`k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
 | `BLOOM_FILTER(expr, numEntries)` | 根据`expr`生成的值计算bloom筛选器，其中`numEntries`在假阳性率增加之前具有最大数量的不同值。详细可以参见 [Bloom过滤器扩展](../Configuration/core-ext/bloom-filter.md) |
 | `TDIGEST_QUANTILE(expr, quantileFraction, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch，并返回分位数的值。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
 | `TDIGEST_GENERATE_SKETCH(expr, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
@@ -326,7 +326,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **HLL Sketch函数**
 
-以下函数操作在 [DataSketches HLL sketches](../Configuration/core-ext/datasketches-hll.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+以下函数操作在 [DataSketches HLL sketches](../Configuration/core-ext/datasketches-hll.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -337,7 +337,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **Theta Sketch函数**
 
-以下函数操作在 [theta sketches](../Configuration/core-ext/datasketches-theta.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+以下函数操作在 [theta sketches](../Configuration/core-ext/datasketches-theta.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -349,7 +349,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **Quantiles Sketch函数**
 
-以下函数操作在 [quantiles sketches](../Configuration/core-ext/datasketches-quantiles.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../Development/datasketches-extension.md)
+以下函数操作在 [quantiles sketches](../Configuration/core-ext/datasketches-quantiles.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -647,7 +647,7 @@ try (Connection connection = DriverManager.getConnection(url, connectionProperti
 
 **连接粘性**
 
-Druid的JDBC服务不在Broker之间共享连接状态。这意味着，如果您使用JDBC并且有多个Druid Broker，您应该连接到一个特定的Broker，或者使用启用了粘性会话的负载平衡器。Druid Router进程在平衡JDBC请求时提供连接粘性，即使使用普通的非粘性负载平衡器，也可以用来实现必要的粘性。请参阅 [Router文档](../Design/Router.md) 以了解更多详细信息
+Druid的JDBC服务不在Broker之间共享连接状态。这意味着，如果您使用JDBC并且有多个Druid Broker，您应该连接到一个特定的Broker，或者使用启用了粘性会话的负载平衡器。Druid Router进程在平衡JDBC请求时提供连接粘性，即使使用普通的非粘性负载平衡器，也可以用来实现必要的粘性。请参阅 [Router文档](../design/Router.md) 以了解更多详细信息
 
 注意：非JDBC的 [HTTP POST](#http-post) 是无状态的，不需要粘性
 
@@ -759,10 +759,10 @@ segments表提供了所有Druid段的详细信息，无论该段是否被发布
 | `partition_num` | LONG | 分区号（整数，在数据源+间隔+版本中是唯一的；不一定是连续的） |
 | `num_replicas` | LONG | 当前正在服务的此段的副本数 |
 | `num_rows` | LONG | 当前段中的行数，如果查询时Broker未知，则此值可以为空 |
-| `is_published` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段已发布到元数据存储且 `used=1`。详情查看 [架构页面](../Design/Design.md) |
-| `is_available` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段当前由任何进程（Historical或Realtime）提供服务。详情查看 [架构页面](../Design/Design.md) |
+| `is_published` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段已发布到元数据存储且 `used=1`。详情查看 [架构页面](../design/Design.md) |
+| `is_available` | LONG | 布尔值表示为long类型，其中1=true，0=false。1表示此段当前由任何进程（Historical或Realtime）提供服务。详情查看 [架构页面](../design/Design.md) |
 | `is_realtime` | LONG | 布尔值表示为long类型，其中1=true，0=false。如果此段仅由实时任务提供服务，则为1；如果任何Historical进程正在为此段提供服务，则为0。 |
-| `is_overshadowed` | LONG | 布尔值表示为long类型，其中1=true，0=false。如果此段已发布，并且被其他已发布的段完全覆盖则为1。目前，对于未发布的段，`is_overshadowed` 总是false，尽管这在未来可能会改变。可以通过过滤 `is_published=1` 和 `is_overshadowed=0` 来筛选"应该发布"的段。如果段最近被替换，它们可以短暂地被发布，也可以被掩盖，但还没有被取消发布。详情查看 [架构页面](../Design/Design.md)  |
+| `is_overshadowed` | LONG | 布尔值表示为long类型，其中1=true，0=false。如果此段已发布，并且被其他已发布的段完全覆盖则为1。目前，对于未发布的段，`is_overshadowed` 总是false，尽管这在未来可能会改变。可以通过过滤 `is_published=1` 和 `is_overshadowed=0` 来筛选"应该发布"的段。如果段最近被替换，它们可以短暂地被发布，也可以被掩盖，但还没有被取消发布。详情查看 [架构页面](../design/Design.md)  |
 | `payload` | STRING | JSON序列化数据段负载 |
 
 例如，要检索数据源"wikipedia"的所有段，请使用查询：

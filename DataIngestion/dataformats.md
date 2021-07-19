@@ -132,10 +132,10 @@ TSV `inputFormat` 有以下组件：
 #### ORC
 
 > [!WARNING]
-> 使用ORC输入格式之前，首先需要包含 [druid-orc-extensions](../Development/orc-extensions.md) 
+> 使用ORC输入格式之前，首先需要包含 [druid-orc-extensions](../development/orc-extensions.md) 
 
 > [!WARNING]
-> 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../Development/orc-extensions.md#从contrib扩展迁移)。
+> 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../development/orc-extensions.md#从contrib扩展迁移)。
 
 一个加载ORC格式数据的 `inputFormat` 示例：
 ```json
@@ -169,7 +169,7 @@ ORC `inputFormat` 有以下组件：
 #### Parquet
 
 > [!WARNING]
-> 使用Parquet输入格式之前，首先需要包含 [druid-parquet-extensions](../Development/parquet-extensions.md) 
+> 使用Parquet输入格式之前，首先需要包含 [druid-parquet-extensions](../development/parquet-extensions.md) 
 
 一个加载Parquet格式数据的 `inputFormat` 示例：
 ```json
@@ -277,7 +277,7 @@ Parquet `inputFormat` 有以下组件：
 > [!WARNING]
 > parser在 [本地批任务](native.md), [Kafka索引任务](kafka.md) 和 [Kinesis索引任务](kinesis.md) 中已经废弃，在这些类型的摄入方式中考虑使用 [inputFormat](#数据格式)
 
-该部分列出来了所有默认的以及核心扩展中的解析器。对于社区的扩展解析器，请参见 [社区扩展列表](../Development/extensions.md#社区扩展)
+该部分列出来了所有默认的以及核心扩展中的解析器。对于社区的扩展解析器，请参见 [社区扩展列表](../development/extensions.md#社区扩展)
 
 #### String Parser
 
@@ -291,7 +291,7 @@ Parquet `inputFormat` 有以下组件：
 #### Avro Hadoop Parser
 
 > [!WARNING]
-> 需要添加 [druid-avro-extensions](../Development/avro-extensions.md) 来使用 Avro Hadoop解析器
+> 需要添加 [druid-avro-extensions](../development/avro-extensions.md) 来使用 Avro Hadoop解析器
 
 该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.avro.AvroValueInputFormat`。您可能想在 `tuningConfig` 中的 `jobProperties` 选项设置Avro reader的schema， 例如：`"avro.schema.input.value.path": "/path/to/your/schema.avsc"` 或者 `"avro.schema.input.value": "your_schema_JSON_object"`。如果未设置Avro读取器的schema，则将使用Avro对象容器文件中的schema，详情可以参见 [avro规范](http://avro.apache.org/docs/1.7.7/spec.html#Schema+Resolution)
 
@@ -339,10 +339,10 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 #### ORC Hadoop Parser
 
 > [!WARNING]
-> 需要添加 [druid-orc-extensions](../Development/orc-extensions.md) 来使用ORC Hadoop解析器
+> 需要添加 [druid-orc-extensions](../development/orc-extensions.md) 来使用ORC Hadoop解析器
 
 > [!WARNING]
-> 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../Development/orc-extensions.md#从contrib扩展迁移)。
+> 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../development/orc-extensions.md#从contrib扩展迁移)。
 
 该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.orc.mapreduce.OrcInputFormat`。
 
@@ -564,7 +564,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 #### Parquet Hadoop Parser
 
 > [!WARNING]
-> 需要添加 [druid-parquet-extensions](../Development/parquet-extensions.md) 来使用Parquet Hadoop解析器
+> 需要添加 [druid-parquet-extensions](../development/parquet-extensions.md) 来使用Parquet Hadoop解析器
 
 该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetInputFormat`。
 
@@ -690,7 +690,7 @@ Parquet Hadoop 解析器支持自动字段发现，如果提供了一个带有 `
 > 考虑在该解析器之上使用 [Parquet Hadoop Parser](#parquet-hadoop-parser) 来摄取Parquet文件。 两者之间的不同之处参见 [Parquet Hadoop解析器 vs Parquet Avro Hadoop解析器]() 部分
 
 > [!WARNING]
-> 使用Parquet Avro Hadoop Parser需要同时加入 [druid-parquet-extensions](../Development/parquet-extensions.md) 和 [druid-avro-extensions](../Development/avro-extensions.md)
+> 使用Parquet Avro Hadoop Parser需要同时加入 [druid-parquet-extensions](../development/parquet-extensions.md) 和 [druid-avro-extensions](../development/avro-extensions.md)
 
 该解析器用于 [Hadoop批摄取](hadoopbased.md), 该解析器首先将Parquet数据转换为Avro记录，然后再解析它们后摄入到Druid。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetAvroInputFormat`。
 
@@ -763,7 +763,7 @@ Parquet Avro Hadoop 解析器支持自动字段发现，如果提供了一个带
 #### Avro Stream Parser
 
 > [!WARNING]
-> 需要添加 [druid-avro-extensions](../Development/avro-extensions.md) 来使用Avro Stream解析器
+> 需要添加 [druid-avro-extensions](../development/avro-extensions.md) 来使用Avro Stream解析器
 
 该解析器用于 [流式摄取](streamingest.md), 直接从一个流来读取数据。
 
@@ -909,7 +909,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
 #### Protobuf Parser
 
 > [!WARNING]
-> 需要添加 [druid-protobuf-extensions](../Development/protobuf-extensions.md) 来使用Protobuf解析器
+> 需要添加 [druid-protobuf-extensions](../development/protobuf-extensions.md) 来使用Protobuf解析器
 
 此解析器用于 [流接收](streamingest.md)，并直接从流中读取协议缓冲区数据。
 
@@ -949,7 +949,7 @@ Avro Bytes Decorder首先提取输入消息的 `subject` 和 `id`， 然后使�
   }
 }
 ```
-有关更多详细信息和示例，请参见 [扩展说明](../Development/protobuf-extensions.md)。
+有关更多详细信息和示例，请参见 [扩展说明](../development/protobuf-extensions.md)。
 
 ### ParseSpec
 
@@ -1117,7 +1117,7 @@ JSON数据也可以包含多值维度。维度的多个值必须在接收的数�
 注意: JavaScript解析器必须完全解析数据，并在JS逻辑中以 `{key:value}` 格式返回。这意味着任何展平或解析多维值都必须在这里完成。
 
 > [!WARNING]
-> 默认情况下禁用基于JavaScript的功能。有关使用Druid的JavaScript功能的指南，包括如何启用它的说明，请参阅 [Druid JavaScript编程指南](../Development/JavaScript.md)。
+> 默认情况下禁用基于JavaScript的功能。有关使用Druid的JavaScript功能的指南，包括如何启用它的说明，请参阅 [Druid JavaScript编程指南](../development/JavaScript.md)。
 
 #### 时间和维度解析规范
 

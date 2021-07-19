@@ -113,7 +113,7 @@ postAggregation : {
 ```
 
 > [!WARNING]
-> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../Development/JavaScript.md)。
+> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../development/JavaScript.md)。
 
 ### 超唯一基数后置聚合器(HyperUnique Cardinality post-aggregator)
 

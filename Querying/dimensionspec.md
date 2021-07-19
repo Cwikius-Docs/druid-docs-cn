@@ -60,7 +60,7 @@
 
 该项功能仅仅对多值维度是比较有用的。如果你在Apache Druid中有一个值为 ["v1","v2","v3"] 的行，当发送一个带有对维度值为"v1"进行[查询过滤](filters.md)的GroupBy/TopN查询, 在响应中，将会得到包含"v1","v2","v3"的三行数据。这个行为在大多数场景是不适合的。
 
-之所以会发生这种情况，是因为"查询过滤器"是在位图上内部使用的，并且只用于匹配要包含在查询结果处理中的行。对于多值维度，"查询过滤器"的行为类似于包含检查，它将匹配维度值为["v1"、"v2"、"v3"]的行。有关更多详细信息，请参阅[段](../Design/Segments.md)中"多值列"一节, 然后groupBy/topN处理管道"分解"所有多值维度，得到3行"v1"、"v2"和"v3"。
+之所以会发生这种情况，是因为"查询过滤器"是在位图上内部使用的，并且只用于匹配要包含在查询结果处理中的行。对于多值维度，"查询过滤器"的行为类似于包含检查，它将匹配维度值为["v1"、"v2"、"v3"]的行。有关更多详细信息，请参阅[段](../design/Segments.md)中"多值列"一节, 然后groupBy/topN处理管道"分解"所有多值维度，得到3行"v1"、"v2"和"v3"。
 
 除了有效地选择要处理的行的"查询过滤器"之外，还可以使用带过滤的DimensionSpec来筛选多值维度值中的特定值。这些维度规范采用代理维度规范和筛选条件。从"分解"行中，查询结果中只返回与给定筛选条件匹配的行。
 
@@ -87,7 +87,7 @@
 #### 带Lookup的DimensionSpec
 
 > [!WARNING]
-> Lookups是一个[实验性的特性](../Development/experimental.md)
+> Lookups是一个[实验性的特性](../development/experimental.md)
 
 带Lookup的DimensionSpec可用于将lookup实现直接定义为维度规范。一般来说，有两种不同类型的查找实现。第一种是在查询时像map实现一样传递的。
 
@@ -296,7 +296,7 @@ null字符串被认定为长度为0
 ```
 
 > [!WARNING]
-> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../Development/JavaScript.md)。
+> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../development/JavaScript.md)。
 
 #### 已注册的Lookup提取函数
 

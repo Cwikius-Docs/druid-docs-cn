@@ -2,7 +2,7 @@
 ## Lookups
 
 > [!WARNING]
-> Lookups是一个 [实验性的特性](../Development/experimental.md)
+> Lookups是一个 [实验性的特性](../development/experimental.md)
 
 Lookups是Apache Druid中的一个概念，在Druid中维度值(可选地)被新值替换，从而允许类似join的功能。在Druid中应用Lookup类似于在数据仓库中的联接维度表。有关详细信息，请参见 [维度说明](querydimensions.md)。在这些文档中，"key"是指要匹配的维度值，"value"是指其替换的目标值。所以如果你想把 `appid-12345` 映射到`Super Mega Awesome App`，那么键应该是 `appid-12345`，值就是 `Super Mega Awesome App`。
 
@@ -85,7 +85,7 @@ GROUP BY 1
 ### 动态配置
 
 > [!WARNING]
-> 动态Lookup配置是一个 [实验特性](../Development/experimental.md), 不再支持静态配置。下面的文档说明了集群范围的配置，该配置可以通过Coordinator进行访问。配置通过服务器的"tier"概念传播。"tier"被定义为一个应该接收一组Lookup的服务集合。例如，您可以让所有Historical都是 `_default`，而Peon是它们所负责的数据源的各个层的一部分。Lookups的tier完全独立于Historical tiers。
+> 动态Lookup配置是一个 [实验特性](../development/experimental.md), 不再支持静态配置。下面的文档说明了集群范围的配置，该配置可以通过Coordinator进行访问。配置通过服务器的"tier"概念传播。"tier"被定义为一个应该接收一组Lookup的服务集合。例如，您可以让所有Historical都是 `_default`，而Peon是它们所负责的数据源的各个层的一部分。Lookups的tier完全独立于Historical tiers。
 
 这些配置都可以通过以下URI模板来使用JSON获取到：
 

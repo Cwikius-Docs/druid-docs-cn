@@ -39,7 +39,7 @@ Apache Druid当前支持两种类型的本地批量索引任务， `index_parall
 
 传统的 [`firehose`](#firehoses%e5%b7%b2%e5%ba%9f%e5%bc%83) 支持其他一些云存储类型。下面的 `firehose` 类型也是可拆分的。请注意，`firehose` 只支持文本格式。
 
-* [`static-cloudfiles`](../Development/rackspacecloudfiles.md)
+* [`static-cloudfiles`](../development/rackspacecloudfiles.md)
 
 您可能需要考虑以下事项：
 * 您可能希望控制每个worker进程的输入数据量。这可以使用不同的配置进行控制，具体取决于并行摄取的阶段（有关更多详细信息，请参阅 [`partitionsSpec`](#partitionsspec)。对于从 `inputSource` 读取数据的任务，可以在 `tuningConfig` 中设置 [分割提示规范](#分割提示规范)。对于合并无序段的任务，可以在 `tuningConfig` 中设置`totalNumMergeTasks`。
@@ -235,7 +235,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 
 基于哈希分区的并行任务类似于 [MapReduce](https://en.wikipedia.org/wiki/MapReduce)。任务分为两个阶段运行，即 `部分段生成` 和 `部分段合并`。
 
-* 在 `部分段生成` 阶段，与MapReduce中的Map阶段一样，并行任务根据分割提示规范分割输入数据，并将每个分割分配给一个worker。每个worker（`partial_index_generate` 类型）从 `granularitySpec` 中的`segmentGranularity（主分区键）` 读取分配的分割，然后按`partitionsSpec` 中 `partitionDimensions（辅助分区键）`的哈希值对行进行分区。分区数据存储在 [MiddleManager](../Design/MiddleManager.md) 或 [Indexer](../Design/Indexer.md) 的本地存储中。
+* 在 `部分段生成` 阶段，与MapReduce中的Map阶段一样，并行任务根据分割提示规范分割输入数据，并将每个分割分配给一个worker。每个worker（`partial_index_generate` 类型）从 `granularitySpec` 中的`segmentGranularity（主分区键）` 读取分配的分割，然后按`partitionsSpec` 中 `partitionDimensions（辅助分区键）`的哈希值对行进行分区。分区数据存储在 [MiddleManager](../design/MiddleManager.md) 或 [Indexer](../design/Indexer.md) 的本地存储中。
 * `部分段合并` 阶段类似于MapReduce中的Reduce阶段。并行任务生成一组新的worker（`partial_index_merge` 类型）来合并在前一阶段创建的分区数据。这里，分区数据根据要合并的时间块和分区维度的散列值进行洗牌；每个worker从多个MiddleManager/Indexer进程中读取落在同一时间块和同一散列值中的数据，并将其合并以创建最终段。最后，它们将最后的段一次推送到深层存储。
 
 **基于单一维度范围分区**
@@ -254,7 +254,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 在 `single-dim` 分区下，并行任务分为3个阶段进行，即 `部分维分布`、`部分段生成` 和 `部分段合并`。第一个阶段是收集一些统计数据以找到最佳分区，另外两个阶段是创建部分段并分别合并它们，就像在基于哈希的分区中那样。
 
 * 在 `部分维度分布` 阶段，并行任务分割输入数据，并根据分割提示规范将其分配给worker。每个worker任务（`partial_dimension_distribution` 类型）读取分配的分割并为 `partitionDimension` 构建直方图。并行任务从worker任务收集这些直方图，并根据 `partitionDimension` 找到最佳范围分区，以便在分区之间均匀分布行。请注意，`targetRowsPerSegment` 或 `maxRowsPerSegment` 将用于查找最佳分区。
-* 在 `部分段生成` 阶段，并行任务生成新的worker任务（`partial_range_index_generate` 类型）以创建分区数据。每个worker任务都读取在前一阶段中创建的分割，根据 `granularitySpec` 中的`segmentGranularity（主分区键）`的时间块对行进行分区，然后根据在前一阶段中找到的范围分区对行进行分区。分区数据存储在 [MiddleManager](../Design/MiddleManager.md) 或 [Indexer](../Design/Indexer.md)的本地存储中。
+* 在 `部分段生成` 阶段，并行任务生成新的worker任务（`partial_range_index_generate` 类型）以创建分区数据。每个worker任务都读取在前一阶段中创建的分割，根据 `granularitySpec` 中的`segmentGranularity（主分区键）`的时间块对行进行分区，然后根据在前一阶段中找到的范围分区对行进行分区。分区数据存储在 [MiddleManager](../design/MiddleManager.md) 或 [Indexer](../design/Indexer.md)的本地存储中。
 * 在 `部分段合并` 阶段，并行索引任务生成一组新的worker任务（`partial_index_generic_merge`类型）来合并在上一阶段创建的分区数据。这里，分区数据根据时间块和 `partitionDimension` 的值进行洗牌；每个工作任务从多个MiddleManager/Indexer进程中读取属于同一范围的同一分区中的段，并将它们合并以创建最后的段。最后，它们将最后的段推到深层存储。
 
 > [!WARNING]
@@ -654,7 +654,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 #### S3输入源
 
 > [!WARNING]
-> 您需要添加 [`druid-s3-extensions`](../Development/S3-compatible.md) 扩展以便使用S3输入源。
+> 您需要添加 [`druid-s3-extensions`](../development/S3-compatible.md) 扩展以便使用S3输入源。
 
 S3输入源支持直接从S3读取对象。可以通过S3 URI字符串列表或S3位置前缀列表指定对象，该列表将尝试列出内容并摄取位置中包含的所有对象。S3输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
@@ -734,7 +734,7 @@ S3对象：
 | `accessKeyId` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `secretAccessKey` 被提供的话，则为必须 |
 | `secretAccessKey` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `accessKeyId` 被提供的话，则为必须 |
 
-**注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../Development/S3-compatible.md#S3认证方式)*
+**注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../development/S3-compatible.md#S3认证方式)*
 
 #### 谷歌云存储输入源
 
