@@ -116,7 +116,7 @@ JavaScript函数需要一个维度值的参数，返回值要么是true或者fal
 JavaScript过滤器支持使用提取函数，详情可见 [带提取函数的过滤器](#带提取函数的过滤器)
 
 > [!WARNING]
-> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../Development/JavaScript.md)。
+> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../development/JavaScript.md)。
 
 ### **提取过滤器(Extraction Filter)**
 

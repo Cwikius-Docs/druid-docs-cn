@@ -13,7 +13,7 @@
 
 ## 基于Hadoop的摄入
 
-Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hadoop的批量索引任务， 这些任务被提交到 [Druid Overlord](../Design/Overlord.md)的一个运行实例上。详情可以查看 [基于Hadoop的摄取vs基于本地批摄取的对比](ingestion.md#批量摄取) 来了解基于Hadoop的摄取、本地简单批摄取、本地并行摄取三者的比较。
+Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hadoop的批量索引任务， 这些任务被提交到 [Druid Overlord](../design/Overlord.md)的一个运行实例上。详情可以查看 [基于Hadoop的摄取vs基于本地批摄取的对比](ingestion.md#批量摄取) 来了解基于Hadoop的摄取、本地简单批摄取、本地并行摄取三者的比较。
 
 运行一个基于Hadoop的批量摄取任务，首先需要编写一个如下的摄取规范， 然后提交到Overlord的 [`druid/indexer/v1/task`](../Operations/api.md#overlord) 接口，或者使用Druid软件包中自带的 `bin/post-index-task` 脚本。
 
@@ -388,7 +388,7 @@ Hadoop的 [MapReduce文档](https://hadoop.apache.org/docs/stable/hadoop-mapredu
 ```json
 classification=yarn-site,properties=[mapreduce.reduce.memory.mb=6144,mapreduce.reduce.java.opts=-server -Xms2g -Xmx2g -Duser.timezone=UTC -Dfile.encoding=UTF-8 -XX:+PrintGCDetails -XX:+PrintGCTimeStamps,mapreduce.map.java.opts=758,mapreduce.map.java.opts=-server -Xms512m -Xmx512m -Duser.timezone=UTC -Dfile.encoding=UTF-8 -XX:+PrintGCDetails -XX:+PrintGCTimeStamps,mapreduce.task.timeout=1800000]
 ```
-* 按照 [Hadoop连接配置](../GettingStarted/chapter-4.md#Hadoop连接配置) 指导，使用EMR master中 `/etc/hadoop/conf` 的XML文件。
+* 按照 [Hadoop连接配置](../tutorials/img/chapter-4.md#Hadoop连接配置) 指导，使用EMR master中 `/etc/hadoop/conf` 的XML文件。
 
 ### Kerberized Hadoop集群
 
@@ -472,7 +472,7 @@ spec文件需要包含一个JSON对象，其中的内容与Hadoop索引任务中
 | `password` | String | DB的密码 | 是 |
 | `segmentTable` | String | DB中使用的表 | 是 |
 
-这些属性应该模仿您为 [Coordinator](../Design/Coordinator.md) 配置的内容。
+这些属性应该模仿您为 [Coordinator](../design/Coordinator.md) 配置的内容。
 
 **segmentOutputPath配置**
 

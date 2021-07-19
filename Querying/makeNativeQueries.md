@@ -36,7 +36,7 @@ curl -X POST '<queryable_host>:<port>/druid/v2/?pretty' -H 'Content-Type:applica
 
 Druid的原生查询级别相对较低，与内部执行计算的方式密切相关。Druid查询被设计成轻量级的，并且非常快速地完成。这意味着对于更复杂的分析，或者构建更复杂的可视化，可能需要多个Druid查询。
 
-即使查询通常是向Broker或Router发出的，但是它们也可以被 [Historical进程](../Design/Historical.md) 和运行流摄取任务的 [peon(任务jvm)](../Design/Peons.md) 接受。如果您想查询由特定进程提供服务的特定段的结果，这可能很有价值。
+即使查询通常是向Broker或Router发出的，但是它们也可以被 [Historical进程](../design/Historical.md) 和运行流摄取任务的 [peon(任务jvm)](../design/Peons.md) 接受。如果您想查询由特定进程提供服务的特定段的结果，这可能很有价值。
 
 ### 可用的查询
 

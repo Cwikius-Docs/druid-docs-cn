@@ -23,44 +23,46 @@
   clickhouse 是俄罗斯的搜索引擎（Yandex）公司在 2016 年开源的，一款针对大数据实时分析的高性能分布式数据库，与之对应的有 hadoop 生态 hive，Vertica 和 palo。
   
 ## 源代码与进阶
-* [Apache Druid源码导读--Google Guice DI框架](https://blog.csdn.net/yueguanghaidao/article/details/102531570)
-   在大数据应用组件中，有两款OLAP引擎应用广泛，一款是偏离线处理的Kylin，另一个是偏实时的Druid。Kylin是一款国人开源的优秀离线OLAP引擎，基本上是Hadoop领域离线OLAP事实标准，在离线报表，指标分析领域应用广泛。而Apache Druid则在实时OLAP领域独领风骚，优异的性能、高可用、易扩展。
+* [Apache Druid 源码导读--Google Guice DI框架](https://blog.csdn.net/yueguanghaidao/article/details/102531570) - 
+  在大数据应用组件中，有两款OLAP引擎应用广泛，一款是偏离线处理的Kylin，另一个是偏实时的Druid。
+  Kylin是一款国人开源的优秀离线OLAP引擎，基本上是Hadoop领域离线OLAP事实标准，在离线报表，指标分析领域应用广泛。
+  而Apache Druid则在实时OLAP领域独领风骚，优异的性能、高可用、易扩展。
   
-* [Apache Druid源码解析的一个合集](https://blog.csdn.net/mytobaby00/category_7561069.html)
+* [Apache Druid 源码解析的一个合集](https://blog.csdn.net/mytobaby00/category_7561069.html)
 
-* [Druid中的Extension在启动时是如何加载的](https://blog.csdn.net/mytobaby00/article/details/79857681)
+* [Druid 中的 Extension 在启动时是如何加载的](https://blog.csdn.net/mytobaby00/article/details/79857681)
 
-* [Druid解析之管理用的接口大全](https://blog.csdn.net/mytobaby00/article/details/80088795)
+* [Druid 解析之管理用的接口大全](https://blog.csdn.net/mytobaby00/article/details/80088795)
 
-* [Druid原理分析之内存池管理](https://blog.csdn.net/mytobaby00/article/details/80071101)
+* [Druid 原理分析之内存池管理](https://blog.csdn.net/mytobaby00/article/details/80071101)
 
-* [Druid源码解析之Segment](Druid源码解析之Segment)
+* [Druid 源码解析之 Segment](https://blog.csdn.net/mytobaby00/article/details/80059820)
 
-* [Druid源码解析之Column](https://blog.csdn.net/mytobaby00/article/details/80056826)
+* [Druid 源码解析之 Column](https://blog.csdn.net/mytobaby00/article/details/80056826)
 
-* [Druid源码解析之HDFS存储](https://blog.csdn.net/mytobaby00/article/details/80045662)
+* [Druid 源码解析之 HDFS 存储](https://blog.csdn.net/mytobaby00/article/details/80045662)
 
-* [Druid源码解析之Coordinator](https://blog.csdn.net/mytobaby00/article/details/80041970)
+* [Druid 源码解析之 Coordinator](https://blog.csdn.net/mytobaby00/article/details/80041970)
 
-* [让Druid实现事件设备数留存数的精准计算](https://blog.csdn.net/mytobaby00/article/details/79804685)
+* [让 Druid 实现事件设备数留存数的精准计算](https://blog.csdn.net/mytobaby00/article/details/79804685)
 
-* [在Druid中定制自己的扩展【Extension】](https://blog.csdn.net/mytobaby00/article/details/79803605)
+* [在 Druid 中定制自己的扩展【Extension】](https://blog.csdn.net/mytobaby00/article/details/79803605)
 
-* [Druid原理分析之“批”任务数据流转过程](https://blog.csdn.net/mytobaby00/article/details/79802776)
+* [Druid 原理分析之“批”任务数据流转过程](https://blog.csdn.net/mytobaby00/article/details/79802776)
 
-* [Druid原理分析之“流”任务数据流转过程](https://blog.csdn.net/mytobaby00/article/details/79801614)
+* [Druid 原理分析之“流”任务数据流转过程](https://blog.csdn.net/mytobaby00/article/details/79801614)
 
-* [Druid原理分析之Segment的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
+* [Druid 原理分析之 Segment 的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
 
-* [Druid索引与查询原理简析](https://blog.csdn.net/mytobaby00/article/details/79800553)
+* [Druid 索引与查询原理简析](https://blog.csdn.net/mytobaby00/article/details/79800553)
 
-* [Druid中的负载均衡策略分析](https://blog.csdn.net/mytobaby00/article/details/79860836)
+* [Druid 中的负载均衡策略分析](https://blog.csdn.net/mytobaby00/article/details/79860836)
 
-* [Druid中的Kafka Indexing Service源码分析](https://blog.csdn.net/mytobaby00/article/details/79858403)
+* [Druid 中的 Kafka Indexing Service 源码分析](https://blog.csdn.net/mytobaby00/article/details/79858403)
 
-* [Druid源码分析之Query -- Sequence与Yielder](https://blog.csdn.net/mytobaby00/article/details/80103230)
+* [Druid 源码分析之 Query -- Sequence 与 Yielder](https://blog.csdn.net/mytobaby00/article/details/80103230)
 
-* [Druid原理分析之Segment的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
+* [Druid 原理分析之 Segment 的存储结构](https://blog.csdn.net/mytobaby00/article/details/79801425)
 
 
 ## 优化与实践
@@ -73,15 +75,19 @@
   爱奇艺大数据服务团队评估了市面上主流的OLAP引擎，最终选择Apache Druid时序数据库来满足业务的实时分析需求。
   本文将介绍Druid在爱奇艺的实践情况、优化经验以及平台化建设的一些思考。
 
-* [熵简技术谈 | 实时OLAP引擎之Apache Druid：架构、原理和应用实践](https://zhuanlan.zhihu.com/p/178572172)
-  本文以实时 OLAP 引擎的优秀代表 Druid 为研究对象，详细介绍 Druid 的架构思想和核心特性。在此基础上，我们介绍了熵简科技在数据智能分析场景下，针对私有化部署与实时响应优化的实践经验。
+* [实时 OLAP 引擎之 Apache Druid：架构、原理和应用实践](https://www.ossez.com/t/olap-apache-druid/13581) - 
+  本文以实时 OLAP 引擎的优秀代表 Druid 为研究对象，详细介绍 Druid 的架构思想和核心特性。
+  在此基础上，我们介绍了熵简科技在数据智能分析场景下，针对私有化部署与实时响应优化的实践经验。
 
-* [Apache Druid性能测评-云栖社区-阿里云](https://developer.aliyun.com/article/712725)
+* [Apache Druid 性能测评](https://www.ossez.com/t/apache-druid/13580) - 
+  模拟生产由 5000 个 agent、5000 个 URL 和 2 类请求方式做为聚合字段的1亿条明细数据，来测试Druid集群在配置不同 TaksCount数时，Druid聚合任务的执行时长。
 
-* [Druid在有赞的实践](https://www.cnblogs.com/oldtrafford/p/10301581.html)
-  有赞作为一家 SaaS 公司，有很多的业务的场景和非常大量的实时数据和离线数据。在没有是使用 Druid 之前，一些 OLAP 场景的场景分析，开发的同学都是使用 SparkStreaming 或者 Storm 做的。用这类方案会除了需要写实时任务之外，还需要为了查询精心设计存储。带来问题是：开发的周期长；初期的存储设计很难满足需求的迭代发展；不可扩展。
+* [Druid 在有赞的实践](https://www.ossez.com/t/druid/13579) - 
+  有赞作为一家 SaaS 公司，有很多的业务的场景和非常大量的实时数据和离线数据。
+  在没有是使用 Druid 之前，一些 OLAP 场景的场景分析，开发的同学都是使用 SparkStreaming 或者 Storm 做的。
+  用这类方案会除了需要写实时任务之外，还需要为了查询精心设计存储。带来问题是：开发的周期长；初期的存储设计很难满足需求的迭代发展；不可扩展。
 
-* [Druid 在小米公司的技术实践](https://zhuanlan.zhihu.com/p/25593670) - 
+* [Druid 在小米公司的技术实践](https://www.ossez.com/t/druid/13578) - 
   Druid 作为一款开源的实时大数据分析软件，自诞生以来，凭借着自己优秀的特质，逐渐在技术圈收获了越来越多的知名度与口碑，
   并陆续成为了很多技术团队解决方案中的关键一环，从而真正在很多公司的技术栈中赢得了一席之地。
   

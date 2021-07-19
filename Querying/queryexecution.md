@@ -23,7 +23,7 @@ Druid的查询执行方法因查询的 [数据源类型](#数据源类型) 而�
 
 直接在 [表数据源](datasource.md#table) 上操作的查询使用由Broker进程引导的**分散-聚集**方法执行。过程如下：
 
-1. Broker根据 `"interval"` 参数确定哪些 [段](../Design/Segments.md) 与查询相关。段总是按时间划分的，因此任何间隔与查询间隔重叠的段都可能是相关的。
+1. Broker根据 `"interval"` 参数确定哪些 [段](../design/Segments.md) 与查询相关。段总是按时间划分的，因此任何间隔与查询间隔重叠的段都可能是相关的。
 2. 如果输入数据使用 [`single_dim` partitionsSpec](../DataIngestion/native.md#partitionsSpec) 按范围分区，并且过滤器与用于分区的维度匹配，则Broker还可以根据 `"filter"` 进一步修剪段列表。
 3. Broker在删除了查询的段列表之后，将查询转发到当前为这些段提供服务的数据服务器（如Historical或者运行在MiddleManagers的任务）。
 4. 对于除 [Scan](scan.md) 之外的所有查询类型，数据服务器并行处理每个段，并为每个段生成部分结果。所做的具体处理取决于查询类型。如果启用了 [查询缓存](querycached.md)，则可以缓存这些部分结果。对于Scan查询，段由单个线程按顺序处理，结果不被缓存。

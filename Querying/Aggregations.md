@@ -306,7 +306,7 @@ Double/Float/Long/String的ANY聚合器不能够使用在摄入规范中，只�
 ```
 
 > [!WARNING]
-> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../Development/JavaScript.md)。
+> 基于JavaScript的功能默认是禁用的。 如何启用它以及如何使用Druid JavaScript功能，参考 [JavaScript编程指南](../development/JavaScript.md)。
 
 ### 近似聚合(Approximate Aggregations)
 #### 唯一计数(Count distinct)
