@@ -1095,7 +1095,7 @@ Druid输入源支持直接从现有的Druid段读取数据，可能使用新的�
 | `interval` | ISO-8601时间间隔的字符串，它定义了获取数据的时间范围。 | 是 |
 | `dimensions` | 包含要从Druid数据源中选择的维度列名称的字符串列表。如果列表为空，则不返回维度。如果为空，则返回所有维度。 | 否 |
 | `metrics` | 包含要选择的Metric列名称的字符串列表。如果列表为空，则不返回任何度量。如果为空，则返回所有Metric。 | 否 |
-| `filter` | 详情请查看 [filters](../Querying/filters.html) 如果指定，则只返回与筛选器匹配的行。 | 否 |
+| `filter` | 详情请查看 [filters](../querying/filters.html) 如果指定，则只返回与筛选器匹配的行。 | 否 |
 
 DruidInputSource规范的最小示例如下所示：
 ```json

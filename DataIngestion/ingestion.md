@@ -102,7 +102,7 @@ Rollup由 `granularitySpec` 中的 `rollup` 配置项控制。 默认情况下�
 有关如何配置Rollup以及该特性将如何修改数据的示例，请参阅[Rollup教程](../tutorials/chapter-5.md)。
 
 #### 最大化rollup比率
-通过比较Druid中的行数和接收的事件数，可以测量数据源的汇总率。这个数字越高，从汇总中获得的好处就越多。一种方法是使用[Druid SQL](../Querying/druidsql.md)查询，比如：
+通过比较Druid中的行数和接收的事件数，可以测量数据源的汇总率。这个数字越高，从汇总中获得的好处就越多。一种方法是使用[Druid SQL](../querying/druidsql.md)查询，比如：
 ```json
 SELECT SUM("cnt") / COUNT(*) * 1.0 FROM datasource
 ```
@@ -162,7 +162,7 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 > 
 > 注意，当然，划分数据的一种方法是将其加载到分开的数据源中。这是一种完全可行的方法，当数据源的数量不会导致每个数据源的开销过大时，它可以很好地工作。如果使用这种方法，那么可以忽略这一部分，因为这部分描述了如何在单个数据源中设置分区。
 > 
-> 有关将数据拆分为单独数据源的详细信息以及潜在的操作注意事项，请参阅 [多租户注意事项](../Querying/multitenancy.md)。
+> 有关将数据拆分为单独数据源的详细信息以及潜在的操作注意事项，请参阅 [多租户注意事项](../querying/multitenancy.md)。
 
 ### 摄入规范
 
@@ -347,7 +347,7 @@ Druid数据源总是按时间划分为*时间块*，每个时间块包含一个�
 |-|-|-|
 | dimensions | 维度名称或者对象的列表，在 `dimensions` 和 `dimensionExclusions` 中不能包含相同的列。 <br><br> 如果该配置为一个空数组，Druid将会把所有未出现在 `dimensionExclusions` 中的非时间、非指标列当做字符串类型的维度列，参见[Inclusions and exclusions](#Inclusions-and-exclusions)。 | `[]` |
 | dimensionExclusions | 在摄取中需要排除的列名称，在该配置中只支持名称，不支持对象。在 `dimensions` 和 `dimensionExclusions` 中不能包含相同的列。 | `[]` |
-| spatialDimensions | 一个[空间维度](../Querying/spatialfilter.md)的数组 | `[]` |
+| spatialDimensions | 一个[空间维度](../querying/spatialfilter.md)的数组 | `[]` |
 
 ###### `Dimension objects`
 在 `dimensions` 列的每一个维度可以是一个名称，也可以是一个对象。 提供一个名称等价于提供了一个给定名称的 `string` 类型的维度对象。例如： `page` 等价于 `{"name": "page", "type": "string"}`。
@@ -378,7 +378,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 
 ##### `metricsSpec`
 
-`metricsSpec` 位于 `dataSchema` -> `metricsSpec` 中，是一个在摄入阶段要应用的 [聚合器](../Querying/Aggregations.md) 列表。 在启用了 [rollup](#rollup) 时是很有用的，因为它将配置如何在摄入阶段进行聚合。
+`metricsSpec` 位于 `dataSchema` -> `metricsSpec` 中，是一个在摄入阶段要应用的 [聚合器](../querying/Aggregations.md) 列表。 在启用了 [rollup](#rollup) 时是很有用的，因为它将配置如何在摄入阶段进行聚合。
 
 一个 `metricsSpec` 实例如下：
 ```json
@@ -389,7 +389,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 ]
 ```
 > [!WARNING]
-> 通常，当 [rollup](#rollup) 被禁用时，应该有一个空的 `metricsSpec`（因为没有rollup，Druid不会在摄取时进行任何的聚合，所以没有理由包含摄取时聚合器）。但是，在某些情况下，定义Metrics仍然是有意义的：例如，如果要创建一个复杂的列作为 [近似聚合](../Querying/Aggregations.md#近似聚合) 的预计算部分，则只能通过在 `metricsSpec` 中定义度量来实现
+> 通常，当 [rollup](#rollup) 被禁用时，应该有一个空的 `metricsSpec`（因为没有rollup，Druid不会在摄取时进行任何的聚合，所以没有理由包含摄取时聚合器）。但是，在某些情况下，定义Metrics仍然是有意义的：例如，如果要创建一个复杂的列作为 [近似聚合](../querying/Aggregations.md#近似聚合) 的预计算部分，则只能通过在 `metricsSpec` 中定义度量来实现
 
 ##### `granularitySpec`
 
@@ -419,7 +419,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 |-|-|-|
 | type | `uniform` 或者 `arbitrary` ，大多数时候使用 `uniform` | `uniform` |
 | segmentGranularity | 数据源的 [时间分块](../design/Design.md#数据源和段) 粒度。每个时间块可以创建多个段, 例如，当设置为 `day` 时，同一天的事件属于同一时间块，该时间块可以根据其他配置和输入大小进一步划分为多个段。这里可以提供任何粒度。请注意，同一时间块中的所有段应具有相同的段粒度。 <br><br> 如果 `type` 字段设置为 `arbitrary` 则忽略 | `day` |
-| queryGranularity | 每个段内时间戳存储的分辨率, 必须等于或比 `segmentGranularity` 更细。这将是您可以查询的最细粒度，并且仍然可以查询到合理的结果。但是请注意，您仍然可以在比此粒度更粗的场景进行查询，例如 "`minute`"的值意味着记录将以分钟的粒度存储，并且可以在分钟的任意倍数（包括分钟、5分钟、小时等）进行查询。<br><br> 这里可以提供任何 [粒度](../Querying/AggregationGranularity.md) 。使用 `none` 按原样存储时间戳，而不进行任何截断。请注意，即使将 `queryGranularity` 设置为 `none`，也将应用 `rollup`。 | `none` |
+| queryGranularity | 每个段内时间戳存储的分辨率, 必须等于或比 `segmentGranularity` 更细。这将是您可以查询的最细粒度，并且仍然可以查询到合理的结果。但是请注意，您仍然可以在比此粒度更粗的场景进行查询，例如 "`minute`"的值意味着记录将以分钟的粒度存储，并且可以在分钟的任意倍数（包括分钟、5分钟、小时等）进行查询。<br><br> 这里可以提供任何 [粒度](../querying/AggregationGranularity.md) 。使用 `none` 按原样存储时间戳，而不进行任何截断。请注意，即使将 `queryGranularity` 设置为 `none`，也将应用 `rollup`。 | `none` |
 | rollup | 是否在摄取时使用 [rollup](#rollup)。 注意：即使 `queryGranularity` 设置为 `none`，rollup也仍然是有效的，当数据具有相同的时间戳时数据将被汇总 | `true` |
 | interval | 描述应该创建段的时间块的间隔列表。如果 `type` 设置为`uniform`，则此列表将根据 `segmentGranularity` 进行拆分和舍入。如果 `type` 设置为 `arbitrary` ，则将按原样使用此列表。<br><br> 如果该值不提供或者为空值，则批处理摄取任务通常会根据在输入数据中找到的时间戳来确定要输出的时间块。<br><br> 如果指定，批处理摄取任务可以跳过确定分区阶段，这可能会导致更快的摄取。批量摄取任务也可以预先请求它们的所有锁，而不是逐个请求。批处理摄取任务将丢弃任何时间戳超出指定间隔的记录。<br><br> 在任何形式的流摄取中忽略该配置。 | `null` |
 

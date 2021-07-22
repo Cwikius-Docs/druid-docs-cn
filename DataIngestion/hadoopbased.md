@@ -203,7 +203,7 @@ s3n://billy-bucket/the/data/is/here/y=2012/m=06/d=01/H=23
 | `dataSource` | String | Druid数据源名称，从该数据源读取数据 | 是 |
 | `intervals` | List |  ISO-8601时间间隔的字符串List | 是 |
 | `segments` | List | 从中读取数据的段的列表，默认情况下自动获取。您可以通过向Coordinator的接口 `/druid/Coordinator/v1/metadata/datasources/segments?full` 进行POST查询来获取要放在这里的段列表。例如["2012-01-01T00:00:00.000/2012-01-03T00:00:00.000"，"2012-01-05T00:00:00.000/2012-01-07T00:00:00.000"]. 您可能希望手动提供此列表，以确保读取的段与任务提交时的段完全相同，如果用户提供的列表与任务实际运行时的数据库状态不匹配，则任务将失败 | 否 |
-| `filter` | JSON | 查看 [Filter](../Querying/filters.md) | 否 |
+| `filter` | JSON | 查看 [Filter](../querying/filters.md) | 否 |
 | `dimensions` | String数组 | 要加载的维度列的名称。默认情况下，列表将根据 `parseSpec` 构造。如果 `parseSpec` 没有维度的显式列表，则将读取存储数据中的所有维度列。 | 否 |
 | `metrics` | String数组 | 要加载的Metric列的名称。默认情况下，列表将根据所有已配置聚合器的"name"构造。 | 否 |
 | `ignoreWhenNoSegments` | boolean | 如果找不到段，是否忽略此 `ingestionSpec`。默认行为是在找不到段时引发错误。| 否 |

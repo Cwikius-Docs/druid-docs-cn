@@ -59,7 +59,7 @@ jvm.config         runtime.properties
 
 在我们的所有进程中有四个需要配置的JVM参数
 
-1. `-Duser.timezone=UTC` 该参数将JVM的默认时区设置为UTC。我们总是这样设置，不使用其他默认时区进行测试，因此本地时区可能会工作，但它们也可能会发现奇怪和有趣的错误。要在非UTC时区中发出查询，请参阅 [查询粒度](../Querying/granularity.md)
+1. `-Duser.timezone=UTC` 该参数将JVM的默认时区设置为UTC。我们总是这样设置，不使用其他默认时区进行测试，因此本地时区可能会工作，但它们也可能会发现奇怪和有趣的错误。要在非UTC时区中发出查询，请参阅 [查询粒度](../querying/granularity.md)
 2. `-Dfile.encoding=UTF-8` 这类似于时区，我们假设UTF-8进行测试。本地编码可能有效，但也可能导致奇怪和有趣的错误。
 3. `-Djava.io.tmpdir=<a path>` 系统中与文件系统交互的各个部分都是通过临时文件完成的，这些文件可能会变得有些大。许多生产系统都被设置为具有小的（但是很快的）`/tmp`目录，这对于Druid来说可能是个问题，因此我们建议将JVM的tmp目录指向一些有更多内容的目录。此目录不应为volatile tmpfs。这个目录还应该具有良好的读写速度，因此应该强烈避免NFS挂载。
 4. `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` 这允许log4j2处理使用标准java日志的非log4j2组件（如jetty）的日志。

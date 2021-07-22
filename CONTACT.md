@@ -6,12 +6,14 @@
 |---|---|
 | 电子邮件  | [service@ossez.com](mailto:service@ossez.com)  |
 | QQ 或微信  | 103899765  |
-| QQ 交流群 Spring | 15186112 |
+| QQ 交流群  | 15186112 |
 | 社区论坛 | [https://www.ossez.com/](https://www.ossez.com/) |
+| WIKI 维基 | [https://www.cwiki.us/](https://www.cwiki.us/) |
+| CN 博客 | [https://www.cwikius.cn/](https://www.cwikius.cn/) |
 
 ## 公众平台
 
-我们建议您通过社区论坛来和我们进行沟通，请关注我们公众平台上的账号
+我们建议您通过社区论坛来和我们进行沟通，请关注我们公众平台上的账号。
 
 ### 微信公众号
 ![](https://cdn.ossez.com/img/cwikius/cwikius-qr-wechat-search-w400.png)
