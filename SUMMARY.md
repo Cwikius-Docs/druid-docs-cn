@@ -14,7 +14,6 @@
   * [官方原版英文文档](https://druid.apache.org/docs/latest/design/)
 
 * [新手入门]()
-  * [Druid介绍](GettingStarted/chapter-1.md)
   * [快速开始](GettingStarted/chapter-2.md)
   * [Docker](tutorials/docker.md)
   * [单服务器部署](GettingStarted/chapter-3.md)
