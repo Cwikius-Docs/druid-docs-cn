@@ -154,12 +154,11 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
    Druid 要求所有数据必须有一个 timestamp 的主键字段（这个主键字段被定义和存储在 `__time`）中。
    如果你需要导入的数据没有时间字段的话，那么请选择  `Constant value`。在我们现在的示例中，数据载入器确定 `time` 字段是唯一可以被用来作为数据时间字段的数据。
 
-7. 单击 **下一步：转换（Transform）**, **下一步：过滤器（Filter）**，然后再  **下一步：配置摘要（schema ）**，跳过一些步骤
+7. 单击 **下一步：转换（Transform）**, **下一步：过滤器（Filter）**，然后再  **下一步：配置摘要（schema）**，跳过一些步骤
    因为针对本教程来说，你并不需要对导入时间进行换行，所以你不需要调整 转换（Transform） 和 过滤器（Filter） 的配置。
 
-8. The Configure schema settings are where you configure what [dimensions](../ingestion/index.md#dimensions) 
-   and [metrics](../ingestion/index.md#metrics) are ingested. The outcome of this configuration represents exactly how the 
-   data will appear in Druid after ingestion. 
+8. 配置摘要（schema） 是你对 [dimensions](../ingestion/index.md#dimensions) 和 [metrics](../ingestion/index.md#metrics) 在导入数据的时候配置的地方。
+   这个界面显示的是当我们对数据在 Druid 中进行导入的时候，数据是如何在 Druid 中进行存储和表现的。
 
    Since our dataset is very small, you can turn off [rollup](../ingestion/index.md#rollup) 
    by unsetting the **Rollup** switch and confirming the change when prompted.
@@ -167,7 +166,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
    ![Data loader schema](../assets/tutorial-batch-data-loader-05.png "Data loader schema")
 
 
-10. Click **Next: Partition** to configure how the data will be split into segments. In this case, choose `DAY` as 
+10. 单击 **Next: Partition** to configure how the data will be split into segments. In this case, choose `DAY` as 
     the **Segment granularity**. 
 
     ![Data loader partition](../assets/tutorial-batch-data-loader-06.png "Data loader partition")
