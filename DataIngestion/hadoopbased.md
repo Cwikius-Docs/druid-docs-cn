@@ -15,7 +15,7 @@
 
 Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hadoop的批量索引任务， 这些任务被提交到 [Druid Overlord](../design/Overlord.md)的一个运行实例上。详情可以查看 [基于Hadoop的摄取vs基于本地批摄取的对比](ingestion.md#批量摄取) 来了解基于Hadoop的摄取、本地简单批摄取、本地并行摄取三者的比较。
 
-运行一个基于Hadoop的批量摄取任务，首先需要编写一个如下的摄取规范， 然后提交到Overlord的 [`druid/indexer/v1/task`](../Operations/api.md#overlord) 接口，或者使用Druid软件包中自带的 `bin/post-index-task` 脚本。
+运行一个基于Hadoop的批量摄取任务，首先需要编写一个如下的摄取规范， 然后提交到Overlord的 [`druid/indexer/v1/task`](../operations/api.md#overlord) 接口，或者使用Druid软件包中自带的 `bin/post-index-task` 脚本。
 
 ### 教程
 
@@ -318,7 +318,7 @@ s3n://billy-bucket/the/data/is/here/y=2012/m=06/d=01/H=23
 ```
 Hadoop的 [MapReduce文档](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/mapred-default.xml) 列出来了所有可能的配置参数。
 
-在一些Hadoop分布式环境中，可能需要设置 `mapreduce.job.classpath` 或者 `mapreduce.job.user.classpath.first` 来避免类加载相关的问题。 更多详细信息可以参见 [使用不同Hadoop版本的文档](../Operations/other-hadoop.md) 
+在一些Hadoop分布式环境中，可能需要设置 `mapreduce.job.classpath` 或者 `mapreduce.job.user.classpath.first` 来避免类加载相关的问题。 更多详细信息可以参见 [使用不同Hadoop版本的文档](../operations/other-hadoop.md) 
 
 #### `partitionsSpec`
 
@@ -376,7 +376,7 @@ Hadoop的 [MapReduce文档](https://hadoop.apache.org/docs/stable/hadoop-mapredu
 
 如果已经有了一个远程的Hadoop集群，确保在Druid的 `_common` 配置目录中包含 `*.xml` 文件。
 
-如果Hadoop与Druid的版本存在依赖等问题，请查看 [这些文档](../Operations/other-hadoop.md)
+如果Hadoop与Druid的版本存在依赖等问题，请查看 [这些文档](../operations/other-hadoop.md)
 
 ### Elastic MapReduce
 
@@ -420,7 +420,7 @@ classification=yarn-site,properties=[mapreduce.reduce.memory.mb=6144,mapreduce.r
 
 Druid在许多Hadoop发行版中都是开箱即用的。
 
-如果Druid与您当前使用的Hadoop版本发生依赖冲突时，您可以尝试在 [Druid用户组](https://groups.google.com/forum/#!forum/druid-user) 中搜索解决方案， 或者阅读 [Druid不同版本Hadoop文档](../Operations/other-hadoop.md)
+如果Druid与您当前使用的Hadoop版本发生依赖冲突时，您可以尝试在 [Druid用户组](https://groups.google.com/forum/#!forum/druid-user) 中搜索解决方案， 或者阅读 [Druid不同版本Hadoop文档](../operations/other-hadoop.md)
 
 ### 命令行版本
 

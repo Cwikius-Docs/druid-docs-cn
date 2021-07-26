@@ -15,13 +15,13 @@
 
 任务在Druid中完成所有与 [摄取](ingestion.md) 相关的工作。
 
-对于批量摄取，通常使用 [任务api](../Operations/api.md#Overlord) 直接将任务提交给Druid。对于流式接收，任务通常被提交给supervisor。
+对于批量摄取，通常使用 [任务api](../operations/api.md#Overlord) 直接将任务提交给Druid。对于流式接收，任务通常被提交给supervisor。
 
 ### 任务API
 
 任务API主要在两个地方是可用的：
 
-* [Overlord](../design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../Operations/api.md) 可以看到完整列表
+* [Overlord](../design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../operations/api.md) 可以看到完整列表
 * Druid SQL包括了一个 [`sys.tasks`](../querying/druidsql.md#系统Schema) ，保存了当前任务运行的信息。 此表是只读的，并且可以通过Overlord API查询完整信息的有限制的子集。
   
 ### 任务报告

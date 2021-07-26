@@ -42,7 +42,7 @@
     * [Historical](design/Historical.md)
     * [MiddleManager](design/MiddleManager.md)
     * [Broker](design/Broker.md)
-    * [Router](design/Router.md)
+    * [Router](design/router.md)
     * [Indexer](design/Indexer.md)
     * [Peon](design/Peons.md)
   * [深度存储](design/Deepstorage.md)
@@ -103,7 +103,7 @@
   * [配置列表](Configuration/configuration.md)
 
 * [操作指南]()
-  * [操作指南](Operations/index.md)
+  * [操作指南](operations/index.md)
 
 * [开发指南]()
   * [开发指南](development/index.md)

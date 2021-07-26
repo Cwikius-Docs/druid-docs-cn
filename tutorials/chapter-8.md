@@ -15,7 +15,7 @@
 
 本教程演示如何将现有段合并为较少但更大的段
 
-因为每一个段都有一些内存和处理开销，所以有时减少段的总数是有益的。有关详细信息，请查阅[段大小优化](../Operations/segmentSizeOpt.md)。
+因为每一个段都有一些内存和处理开销，所以有时减少段的总数是有益的。有关详细信息，请查阅[段大小优化](../operations/segmentSizeOpt.md)。
 
 本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
 
@@ -149,4 +149,4 @@ Coordinator将旧的输入段标记为未使用需要一段时间，因此您可
 ### 进一步阅读
 [任务文档](../DataIngestion/taskrefer.md)
 
-[段优化](../Operations/segmentSizeOpt.md)
+[段优化](../operations/segmentSizeOpt.md)

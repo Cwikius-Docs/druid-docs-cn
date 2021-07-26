@@ -36,29 +36,38 @@ Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到
 
 ## 第 1 步：安装 Druid
 
-After confirming the [requirements](#requirements), follow these steps: 
+当你确定你的系统已经满足 [安装要求](#安装要求) 的所有内容后，请按照下面的步骤： 
 
-1. Download
-the [{{DRUIDVERSION}} release](https://www.apache.org/dyn/closer.cgi?path=/druid/{{DRUIDVERSION}}/apache-druid-{{DRUIDVERSION}}-bin.tar.gz).
-2. In your terminal, extract Druid and change directories to the distribution directory:
-
+1. 下载
+下载地址为： [{{DRUIDVERSION}} 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/{{DRUIDVERSION}}/apache-druid-{{DRUIDVERSION}}-bin.tar.gz).
+2. 在你的控制台中，将下载的压缩包进行解压到当前目录，并且进入到解压的目录，或者你将目录移动到你希望部署的的目录中：
    ```bash
    tar -xzf apache-druid-{{DRUIDVERSION}}-bin.tar.gz
    cd apache-druid-{{DRUIDVERSION}}
    ```
-In the directory, you'll find `LICENSE` and `NOTICE` files and subdirectories for executable files, configuration files, sample data and more.
+在解压后的目录中，你会看到 `LICENSE` 和 `NOTICE` 文件，以及一些子目录，在这些子目录中保存有可执行文件，配置文件，示例数据和其他的内容。
+
+在安装包中可能有下面的文件和用途供参考：
+
+* `LICENSE`和`NOTICE` - 文件
+* `bin/*` - 启动或停止的脚本
+* `conf/*` - 用于单节点部署和集群部署的示例配置
+* `extensions/*` - Druid 核心扩展
+* `hadoop-dependencies/*` - Druid Hadoop 依赖
+* `lib/*` - Druid 核心库和依赖
+* `quickstart/*` - 配置文件，样例数据，以及快速入门教材的其他文件
 
 ## 第 2 步：启动 Druid 服务
 
-Start up Druid services using the `micro-quickstart` single-machine configuration. 
+针对一台计算机，你可以使用 `micro-quickstart` 配置来启动所有 Druid 的服务。 
 
-From the apache-druid-{{DRUIDVERSION}} package root, run the following command:
+在 apache-druid-{{DRUIDVERSION}} 包的根目录下，运行下面的命令：
 
 ```bash
 ./bin/start-micro-quickstart
 ```
 
-This brings up instances of ZooKeeper and the Druid services:
+上面的命令将会启动 ZooKeeper 和 Druid 服务：
 
 ```bash
 $ ./bin/start-micro-quickstart
@@ -70,23 +79,29 @@ $ ./bin/start-micro-quickstart
 [Fri May  3 11:40:50 2019] Running command[middleManager], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/middleManager.log]: bin/run-druid middleManager conf/druid/single-server/micro-quickstart
 ```
 
-All persistent state, such as the cluster metadata store and segments for the services, are kept in the `var` directory under 
-the Druid root directory, apache-druid-{{DRUIDVERSION}}. Each service writes to a log file under `var/sv`, as noted in the startup script output above.
+如上面输出的内容表示的，集群元数据存储（cluster metadata store） 和服务段（segments for the service）都会保存在 Druid 根目录下面的 `var` 目录中。
+这个 Druid 的根目录就是 apache-druid-{{DRUIDVERSION}}，换句话说就是你最开始解压并且既然怒的目录。
 
-At any time, you can revert Druid to its original, post-installation state by deleting the entire `var` directory. You may
-want to do this, for example, between Druid tutorials or after experimentation, to start with a fresh instance. 
+所有的服务将会把日志写入到 `var/sv` 目录中，同时也会将脚本的控制台输出按照上面的格式进行输出。
 
-To stop Druid at any time, use CTRL-C in the terminal. This exits the `bin/start-micro-quickstart` script and 
-terminates all Druid processes. 
+在任何时候，如果你删除 `var` 目录的话，那你按照的 Druid 实例将会返回到原始初始化后的状态。
+
+例如，如果你在完成了一个 Druid 的展示或者数据处理后希望开始一个全新完整的实例，那么你可以直接删除 `var` 目录就可以了。 
+
+如果你希望推出当前 Druid 的实例的话，在终端中使用快捷键 CTRL-C 来退出当前运行的模式。这个命令将会退出 `bin/start-micro-quickstart` 脚本，并且终止所有 Druid 的进程。
 
 
 ## 第 3 步：访问 Druid 控制台 
 
-After the Druid services finish startup, open the [Druid console](../operations/druid-console.md) at [http://localhost:8888](http://localhost:8888). 
+当 Druid 的进程完全启动后，打开  [Druid 控制台（console）](../operations/druid-console.md) 。访问的地址为： [http://localhost:8888](http://localhost:8888) 默认的使用端口为 8888。 
 
 ![Druid console](../assets/tutorial-quickstart-01.png "Druid console")
 
-It may take a few seconds for all Druid services to finish starting, including the [Druid router](../design/router.md), which serves the console. If you attempt to open the Druid console before startup is complete, you may see errors in the browser. Wait a few moments and try again. 
+整个过程可能还需要耗费几秒钟的时间等待所有的 Druid 服务启动，包括 [Druid router](../design/router.md) 这个服务。
+
+在 Druid 中 router 服务是提供控制台访问的的服务。
+
+如果在所有 Druid 服务器都完全启动之前尝试访问控制台的话，那么很有可能会得到浏览器的房屋错误提示信息，请等待一些时间再尝试访问。
 
 
 ## 第 4 步：导入数据
@@ -240,65 +255,7 @@ running the `bin/start-micro-quickstart` script again. You will likely want to d
 since in them you will create the same wikipedia datasource. 
 
 
-##### 硬件
 
-Druid安装包提供了几个[单服务器配置](./chapter-3.md)的示例，以及使用这些配置启动Druid进程的脚本。
-
-如果您正在使用便携式等小型计算机上运行服务，则配置为4CPU/16GB RAM环境的`micro-quickstart`配置是一个不错的选择。
-
-如果您打算在本教程之外使用单机部署进行进一步试验评估，则建议使用比`micro-quickstart`更大的配置。
-
-#### 入门开始
-
-[下载](https://www.apache.org/dyn/closer.cgi?path=/druid/0.17.0/apache-druid-0.17.0-bin.tar.gz)Druid最新0.17.0release安装包
-
-在终端中运行以下命令来提取Druid
-
-```json
-tar -xzf apache-druid-0.17.0-bin.tar.gz
-cd apache-druid-0.17.0
-```
-
-在安装包中有以下文件：
-
-* `LICENSE`和`NOTICE`文件
-* `bin/*` - 启停等脚本
-* `conf/*` - 用于单节点部署和集群部署的示例配置
-* `extensions/*` - Druid核心扩展
-* `hadoop-dependencies/*` - Druid Hadoop依赖
-* `lib/*` - Druid核心库和依赖
-* `quickstart/*` - 配置文件，样例数据，以及快速入门教材的其他文件
-
-#### 启动服务
-
-以下命令假定您使用的是`micro-quickstart`单机配置，如果使用的是其他配置，在`bin`目录下有每一种配置对应的脚本，如`bin/start-single-server-small`
-
-在`apache-druid-0.17.0`安装包的根目录下执行命令：
-
-```json
-./bin/start-micro-quickstart
-```
-然后将在本地计算机上启动Zookeeper和Druid服务实例，例如：
-
-```json
-$ ./bin/start-micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[zk], logging to[/apache-druid-0.17.0/var/sv/zk.log]: bin/run-zk conf
-[Fri May  3 11:40:50 2019] Running command[coordinator-overlord], logging to[/apache-druid-0.17.0/var/sv/coordinator-overlord.log]: bin/run-druid coordinator-overlord conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[broker], logging to[/apache-druid-0.17.0/var/sv/broker.log]: bin/run-druid broker conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[router], logging to[/apache-druid-0.17.0/var/sv/router.log]: bin/run-druid router conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[historical], logging to[/apache-druid-0.17.0/var/sv/historical.log]: bin/run-druid historical conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[middleManager], logging to[/apache-druid-0.17.0/var/sv/middleManager.log]: bin/run-druid middleManager conf/druid/single-server/micro-quickstart
-```
-
-所有的状态（例如集群元数据存储和服务的segment文件）将保留在`apache-druid-0.17.0`软件包根目录下的`var`目录中, 服务的日志位于 `var/sv`。
-
-稍后，如果您想停止服务，请按`CTRL-C`退出`bin/start-micro-quickstart`脚本，该脚本将终止Druid进程。
-
-集群启动后，可以访问[http://localhost:8888](http://localhost:8888)来Druid控制台，控制台由Druid Router进程启动。
-
-![tutorial-quickstart](img/tutorial-quickstart-01.png)
-
-所有Druid进程完全启动需要花费几秒钟。 如果在启动服务后立即打开控制台，则可能会看到一些可以安全忽略的错误。
 
 #### 加载数据
 ##### 教程使用的数据集
@@ -368,7 +325,7 @@ $ ./bin/start-micro-quickstart
 
 一旦每个服务都启动，您就可以加载数据了。
 
-##### 重置Kafka
+##### 重置 Kafka
 
 如果您完成了[教程：从Kafka加载流数据](../Tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
 

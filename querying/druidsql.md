@@ -647,7 +647,7 @@ try (Connection connection = DriverManager.getConnection(url, connectionProperti
 
 **连接粘性**
 
-Druid的JDBC服务不在Broker之间共享连接状态。这意味着，如果您使用JDBC并且有多个Druid Broker，您应该连接到一个特定的Broker，或者使用启用了粘性会话的负载平衡器。Druid Router进程在平衡JDBC请求时提供连接粘性，即使使用普通的非粘性负载平衡器，也可以用来实现必要的粘性。请参阅 [Router文档](../design/Router.md) 以了解更多详细信息
+Druid的JDBC服务不在Broker之间共享连接状态。这意味着，如果您使用JDBC并且有多个Druid Broker，您应该连接到一个特定的Broker，或者使用启用了粘性会话的负载平衡器。Druid Router进程在平衡JDBC请求时提供连接粘性，即使使用普通的非粘性负载平衡器，也可以用来实现必要的粘性。请参阅 [Router文档](../design/router.md) 以了解更多详细信息
 
 注意：非JDBC的 [HTTP POST](#http-post) 是无状态的，不需要粘性
 

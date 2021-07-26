@@ -235,7 +235,7 @@ GroupBy查询可以使用两种不同的策略执行。默认策略由Broker上�
 
 如果`maxOnDiskStorage`大于0，则超出内存限制的查询将开始使用磁盘进行聚合。在这种情况下，当堆内字典或堆外哈希表填满时，部分聚合的记录将被排序并刷新到磁盘。然后，两个内存中的结构都将被清除，以便进一步聚合。然后继续超过`maxOnDiskStorage`的查询将失败，并出现"Resource limit exceeded"错误，指示它们的磁盘空间不足。
 
-对于groupBy v2，集群操作符应该确保堆外哈希表和堆内合并字典不会超过最大可能并发查询负载的可用内存（由`druid.processing.numMergeBuffers`控制)。有关直接内存使用（按Druid进程类型组织）的更多详细信息，请参阅[基本集群调优指南](../Operations/basicClusterTuning.md)。
+对于groupBy v2，集群操作符应该确保堆外哈希表和堆内合并字典不会超过最大可能并发查询负载的可用内存（由`druid.processing.numMergeBuffers`控制)。有关直接内存使用（按Druid进程类型组织）的更多详细信息，请参阅[基本集群调优指南](../operations/basicClusterTuning.md)。
 
 Broker对基础的groupBy查询不需要合并缓冲区。包含子查询的查询（使用`query`数据源）需要一个合并缓冲区（如果有一个子查询），如果有多个嵌套子查询层，则需要两个合并缓冲区。包含[`subtotals`](#关于subtotalSpec)的查询需要一个合并缓冲区。它们可以相互堆叠：一个包含多层嵌套子查询的groupBy查询，也使用小计，将需要三个合并缓冲区。
 

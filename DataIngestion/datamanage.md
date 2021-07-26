@@ -173,9 +173,9 @@ Druid支持永久的将标记为"unused"状态（详情可见架构设计中的 
 1. 段必须首先标记为"未使用"。当用户通过Coordinator API手动禁用段时，就会发生这种情况
 2. 在段被标记为"未使用"之后，一个Kill任务将从Druid的元数据存储和深层存储中删除任何“未使用”的段
 
-对于数据保留规则的文档，可以详细看 [数据保留](../Operations/retainingOrDropData.md)
+对于数据保留规则的文档，可以详细看 [数据保留](../operations/retainingOrDropData.md)
 
-对于通过Coordinator API来禁用段的文档，可以详细看 [Coordinator数据源API](../Operations/api.md#coordinator)
+对于通过Coordinator API来禁用段的文档，可以详细看 [Coordinator数据源API](../operations/api.md#coordinator)
 
 在本文档中已经包含了一个删除删除的教程，请看 [数据删除教程](../tutorials/chapter-9.md)
 
@@ -199,4 +199,4 @@ Druid还支持将Historical进程分成不同的层，并且可以将保留规�
 
 这些特性对于性能/成本管理非常有用；一个常见的场景是将Historical进程分为"热(hot)"层和"冷(cold)"层。
 
-有关详细信息，请参阅 [加载规则](../Operations/retainingOrDropData.md)。
+有关详细信息，请参阅 [加载规则](../operations/retainingOrDropData.md)。
