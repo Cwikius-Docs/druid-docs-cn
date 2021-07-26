@@ -19,7 +19,7 @@
 
 Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到 _X-Large_ 配置（64 CPU, 512GB RAM）。
 
-有关更多的配置信息，请参考 [独立服务器部署](../operations/single-server.md ':size=620') 页面中的内容
+有关更多的配置信息，请参考 [独立服务器部署](../operations/single-server.md) 页面中的内容
 另外，如果你希望对 Druid 进行集群部署的话，请参考  [集群服务器部署](./cluster.md) 页面中的内容来了解更多有关 Druid 集群部署中的配置。
 
 针对运行 Druid 的计算机，你需要完成下面的软件配置：
@@ -98,7 +98,7 @@ $ ./bin/start-micro-quickstart
 
 当 Druid 的进程完全启动后，打开  [Druid 控制台（console）](../operations/druid-console.md) 。访问的地址为： [http://localhost:8888](http://localhost:8888) 默认的使用端口为 8888。 
 
-![Druid console](../assets/tutorial-quickstart-01.png "Druid console")
+![Druid console](../assets/tutorial-quickstart-01.png ':size=690')
 
 整个过程可能还需要耗费几秒钟的时间等待所有的 Druid 服务启动，包括 [Druid router](../design/router.md) 这个服务。
 
@@ -108,66 +108,54 @@ $ ./bin/start-micro-quickstart
 
 
 ## 第 4 步：导入数据
+Druid 是通过读取和存储有关导入数据的摘要（schema）来完成导入的。
+你可以完全手写一个数据导入参数摘要，或者使用 _data loader_ 来替你完成对数据摘要的定义。在这里我们通过使用 Druid 的原生批量数据导入来进行演示操作。
 
+在 Druid 的发行包中还打包了一个可以供测试的样例数据。这个样例数据位于在 Druid 根目录下面的 `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` 路径下。
+这个文件包含有给定日期（2015年9月12日）发生在 Wikipedia 上的所有页面编辑事件。
 
-Ingestion specs define the schema of the data Druid reads and stores. You can write ingestion specs by hand or using the _data loader_, 
-as we'll do here to perform batch file loading with Druid's native batch ingestion.
+1. 从 Druid 的控制台顶部，单击 **载入数据（Load data）**  (![Load data](../assets/tutorial-batch-data-loader-00.png))。
 
-The Druid distribution bundles sample data we can use. The sample data located in `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` 
-in the Druid root directory represents Wikipedia page edits for a given day. 
+2. 然后选择 **从磁盘载入（Local disk）** ，然后再单击选择 **连接数据（Connect data）**。
 
-1. Click **Load data** from the Druid console header (![Load data](../assets/tutorial-batch-data-loader-00.png)).
+   ![Data loader init](../assets/tutorial-batch-data-loader-01.png ':size=690')
 
-2. Select the **Local disk** tile and then click **Connect data**.
+3. 输入下面的指定参数：
+   - **基础目录（Base directory）**: `quickstart/tutorial/`
 
-   ![Data loader init](../assets/tutorial-batch-data-loader-01.png "Data loader init")
+   - **文件过滤器（File filter）**: `wikiticker-2015-09-12-sampled.json.gz` 
 
-3. Enter the following values: 
+   ![Data location](../assets/tutorial-batch-data-loader-015.png ':size=690')
+   在给定的 UI 界面中，输入基础的目录名称和 [通配文件过滤器](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/filefilter/WildcardFileFilter.html) , 这种配置方式是为了能够让你在一次导入的过程中选择多个文件。
 
-   - **Base directory**: `quickstart/tutorial/`
+4. 单击 **应用（Apply）**
+   数据载入器将会显示原始数据（raw data），在这里能够为你对数据检查提供一个机会，你可以通过数据载入器查看给出的数据结构是不是自己想要的数据结构。
 
-   - **File filter**: `wikiticker-2015-09-12-sampled.json.gz` 
+   ![Data loader sample](../assets/tutorial-batch-data-loader-02.png ':size=690')
 
-   ![Data location](../assets/tutorial-batch-data-loader-015.png "Data location")
-
-   Entering the base directory and [wildcard file filter](https://commons.apache.org/proper/commons-io/apidocs/org/apache/commons/io/filefilter/WildcardFileFilter.html) separately, as afforded by the UI, allows you to specify multiple files for ingestion at once.
-
-4. Click **Apply**. 
-
-   The data loader displays the raw data, giving you a chance to verify that the data 
-   appears as expected. 
-
-   ![Data loader sample](../assets/tutorial-batch-data-loader-02.png "Data loader sample")
-
-   Notice that your position in the sequence of steps to load data, **Connect** in our case, appears at the top of the console, as shown below. 
-   You can click other steps to move forward or backward in the sequence at any time.
+   请注意到当前我们对数据进行导入的步骤，在现在这个过程中的步骤为 **Connect**，这个将会显示在控制台的顶部，具体的菜单栏如下图显示的样式。
    
-   ![Load data](../assets/tutorial-batch-data-loader-12.png)  
+   ![Load data](../assets/tutorial-batch-data-loader-12.png ':size=690')
    
+   你可以在当前的界面中对需要进行的步骤进行调整，你可以向前移动步骤，你也可以向后移动步骤。
 
-5. Click **Next: Parse data**. 
+5. 单击 **下一步：处理数据（Parse data）**.
+   数据载入工具将会根据载入的数据格式尝试自动确定需要使用的数据处理器。在现在的这个案例中，数据载入工具将会需要载入的数据认定为 `json` 格式。
+   认定的结果显示在页面的 **Input format** 字段内。 
 
-   The data loader tries to determine the parser appropriate for the data format automatically. In this case 
-   it identifies the data format as `json`, as shown in the **Input format** field at the bottom right.
+   ![Data loader parse data](../assets/tutorial-batch-data-loader-03.png ':size=690')
 
-   ![Data loader parse data](../assets/tutorial-batch-data-loader-03.png "Data loader parse data")
+   你也可以对这个格式进行调整，在 **Input format** 的选项中选择数据应该使用的格式，这样将会帮助 Druid 调用不同的数据格式处理器。
 
-   Feel free to select other **Input format** options to get a sense of their configuration settings 
-   and how Druid parses other types of data.  
+6. 当 JSON 数据处理器被选择后，单击 **下一步：处理日期（Parse time）**。这个 **Parse time** 的设置就是让你能够查看和调整数据中针对时间的主键设置。
 
-6. With the JSON parser selected, click **Next: Parse time**. The **Parse time** settings are where you view and adjust the 
-   primary timestamp column for the data.
+   ![Data loader parse time](../assets/tutorial-batch-data-loader-04.png ':size=690')
 
-   ![Data loader parse time](../assets/tutorial-batch-data-loader-04.png "Data loader parse time")
+   Druid 要求所有数据必须有一个 timestamp 的主键字段（这个主键字段被定义和存储在 `__time`）中。
+   如果你需要导入的数据没有时间字段的话，那么请选择  `Constant value`。在我们现在的示例中，数据载入器确定 `time` 字段是唯一可以被用来作为数据时间字段的数据。
 
-   Druid requires data to have a primary timestamp column (internally stored in a column called `__time`).
-   If you do not have a timestamp in your data, select `Constant value`. In our example, the data loader 
-   determines that the `time` column is the only candidate that can be used as the primary time column.
-
-7. Click **Next: Transform**, **Next: Filter**, and then **Next: Configure schema**, skipping a few steps.
-
-   You do not need to adjust transformation or filtering settings, as applying ingestion time transforms and 
-   filters are out of scope for this tutorial.
+7. 单击 **下一步：转换（Transform）**, **下一步：过滤器（Filter）**，然后再  **下一步：配置摘要（schema ）**，跳过一些步骤
+   因为针对本教程来说，你并不需要对导入时间进行换行，所以你不需要调整 转换（Transform） 和 过滤器（Filter） 的配置。
 
 8. The Configure schema settings are where you configure what [dimensions](../ingestion/index.md#dimensions) 
    and [metrics](../ingestion/index.md#metrics) are ingested. The outcome of this configuration represents exactly how the 
