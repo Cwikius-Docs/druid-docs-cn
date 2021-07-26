@@ -174,7 +174,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
     Since this is a small dataset, we can have just a single segment, which is what selecting `DAY` as the 
     segment granularity gives us. 
 
-11. Click **Next: Tune** and **Next: Publish**.
+11. 单击 **Next: Tune** and **Next: Publish**.
 
 12. The Publish settings are where you specify the datasource name in Druid. Let's change the default name from 
 `wikiticker-2015-09-12-sampled` to `wikipedia`. 
