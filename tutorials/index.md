@@ -160,7 +160,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 8. 配置摘要（schema） 是你对 [dimensions](../ingestion/index.md#dimensions) 和 [metrics](../ingestion/index.md#metrics) 在导入数据的时候配置的地方。
    这个界面显示的是当我们对数据在 Druid 中进行导入的时候，数据是如何在 Druid 中进行存储和表现的。
 
-   因为我们提交的数据集非常小，因此我们可以关闭 [回滚（rollup）](../ingestion/index.md#rollup) 
+   因为我们提交的数据集非常小，因此我们可以关闭 [回滚（rollup）](../ingestion/index.md#rollup) ，这样的话
    by unsetting the **Rollup** switch and confirming the change when prompted.
 
    ![Data loader schema](../assets/tutorial-batch-data-loader-05.png "Data loader schema")
