@@ -16,7 +16,7 @@
 对于Apache Druid Broker的配置，请参见 [Broker配置](../Configuration/configuration.md#Broker)
 
 ### HTTP
-对于Broker的API的列表，请参见 [Broker API](../Operations/api.md#Broker)
+对于Broker的API的列表，请参见 [Broker API](../operations/api.md#Broker)
 
 ### 综述
 

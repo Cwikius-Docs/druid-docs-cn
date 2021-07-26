@@ -5,9 +5,11 @@
 
 ---
 
+[中文社区](https://www.ossez.com/tag/druid) |
 [中文文档](https://druid.ossez.com/) |
-[官方网站](https://druid.apache.org/) |
+[官方社区（英文）](https://www.druidforum.org/) |
 [官方文档（英文）](https://druid.apache.org/docs/latest/design/) |
+[官方网站](https://druid.apache.org/) |
 [开发者邮件地址](https://lists.apache.org/list.html?dev@druid.apache.org) |
 [用户邮件地址](https://groups.google.com/forum/#!forum/druid-user) |
 [Slack](https://s.apache.org/slack-invite) |

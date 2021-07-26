@@ -21,7 +21,7 @@ Druid有以下几种进程类型：
 * [Historical](./Historical.md)
 * [MiddleManager](./MiddleManager.md) 和 [Peons](./Peons.md)
 * [Indexer(可选)](./Indexer.md)
-* [Router(可选)](./Router.md)
+* [Router(可选)](router.md)
 
 ### 服务类型
 
@@ -62,7 +62,7 @@ Query服务提供用户和客户端应用程序交互，将查询路由到Data�
 
 Router进程是*可选*的进程，相当于是为Druid Broker、Overlord和Coordinator提供一个统一的API网关。Router是可选的，因为也可以直接与Druid的Broker、Overlord和Coordinator。
 
-Router还运行着[Druid控制台](../Operations/manageui.md)，一个用于数据源、段、任务、数据进程（Historical和MiddleManager）和Coordinator动态配置的管理UI。用户还可以在控制台中运行SQL和本地Druid查询。
+Router还运行着[Druid控制台](../operations/manageui.md)，一个用于数据源、段、任务、数据进程（Historical和MiddleManager）和Coordinator动态配置的管理UI。用户还可以在控制台中运行SQL和本地Druid查询。
 
 #### Data服务
 

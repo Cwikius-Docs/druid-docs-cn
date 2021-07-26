@@ -42,7 +42,7 @@ Druid中的数据源等价于关系型数据库中的表。 对于多租户场�
 
 ### 定制数据的分布
 
-Druid还通过提供可配置的数据分发方式来支持多租户。Druid的Historical进程可以配置成多个[层次(tier)](../Operations/role-configuration.md)，并且可以设置 [规则(rule)](../Operations/role-configuration.md) 来决定哪些部分进入哪些层。其中一个场景是最近的数据比旧的数据更容易被访问，分层使较新的数据段能够托管在功能更强大的硬件上，以获得更好的性能。最近的段的第二个副本可以复制到更便宜的硬件上（另一层），旧的段也可以存储在这个层上。
+Druid还通过提供可配置的数据分发方式来支持多租户。Druid的Historical进程可以配置成多个[层次(tier)](../operations/role-configuration.md)，并且可以设置 [规则(rule)](../operations/role-configuration.md) 来决定哪些部分进入哪些层。其中一个场景是最近的数据比旧的数据更容易被访问，分层使较新的数据段能够托管在功能更强大的硬件上，以获得更好的性能。最近的段的第二个副本可以复制到更便宜的硬件上（另一层），旧的段也可以存储在这个层上。
 
 ### 支持高查询并发
 
@@ -52,4 +52,4 @@ Druid在内部将扫描段的请求存储在优先队列中。如果一个给定
 
 Druid查询可以选择在[查询上下文](query-context.md)中设置`priority`标志。已知速度较慢的查询（下载或报告样式的查询）可以取消优先级，交互程度更高的查询可以具有更高的优先级。
 
-Broker进程也可以专用于给定的层。例如，一组Broker进程可以专用于快速交互查询，另一组Broker进程可以专用于较慢的报告查询。Druid还提供了一个[Router](../design/Router.md)进程，可以根据各种查询参数（datasource、interval等）将查询路由到不同的Broker。
+Broker进程也可以专用于给定的层。例如，一组Broker进程可以专用于快速交互查询，另一组Broker进程可以专用于较慢的报告查询。Druid还提供了一个[Router](../design/router.md)进程，可以根据各种查询参数（datasource、interval等）将查询路由到不同的Broker。

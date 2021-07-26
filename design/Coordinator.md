@@ -16,7 +16,7 @@
 对于Apache Druid的Coordinator进程配置，详见 [Coordinator配置](../Configuration/configuration.md#Coordinator)
 
 ### HTTP
-对于Coordinator的API接口，详见 [Coordinator API](../Operations/api.md#Coordinator)
+对于Coordinator的API接口，详见 [Coordinator API](../operations/api.md#Coordinator)
 
 ### 综述
 Druid Coordinator程序主要负责段管理和分发。更具体地说，Druid Coordinator进程与Historical进程通信，根据配置加载或删除段。Druid Coordinator负责加载新段、删除过时段、管理段复制和平衡段负载。
@@ -30,7 +30,7 @@ Druid Coordinator定期运行，每次运行之间的时间是一个可配置的
 org.apache.druid.cli.Main server coordinator
 ```
 ### 规则
-可以根据一组规则自动从集群中加载和删除段。有关规则的详细信息，请参阅[规则配置](../Operations/retainingOrDropData.md)。
+可以根据一组规则自动从集群中加载和删除段。有关规则的详细信息，请参阅[规则配置](../operations/retainingOrDropData.md)。
 
 ### 清理段
 每次运行时，Druid Coordinator都会将数据库中可用段的列表与集群中的当前段进行比较,不在数据库中但仍在集群中服务的段将被标记并附加到删除列表中,被遮蔽的段（它们的版本太旧，它们的数据被更新的段替换）也会被丢弃。
@@ -43,9 +43,9 @@ org.apache.druid.cli.Main server coordinator
 
 ### 合并段
 
-每次运行时，Druid Coordinator都通过合并小段或拆分大片段来压缩段。当您的段没有进行段大小（可能会导致查询性能下降）优化时，该操作非常有用。有关详细信息，请参见[段大小优化](../Operations/segmentSizeOpt.md)。
+每次运行时，Druid Coordinator都通过合并小段或拆分大片段来压缩段。当您的段没有进行段大小（可能会导致查询性能下降）优化时，该操作非常有用。有关详细信息，请参见[段大小优化](../operations/segmentSizeOpt.md)。
 
-Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../DataIngestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../Operations/api.md#Coordinator)和[压缩配置](../Configuration/configuration.md#Coordinator)以启用压缩。
+Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../DataIngestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../Configuration/configuration.md#Coordinator)以启用压缩。
 
 压缩任务可能由于以下原因而失败:
 
@@ -83,7 +83,7 @@ Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段�
 
 ### Coordinator控制台
 
-Druid Coordinator公开了一个web GUI，用于显示集群信息和规则配置。有关详细信息，请参阅[Coordinator控制台](../Operations/manageui.md)。
+Druid Coordinator公开了一个web GUI，用于显示集群信息和规则配置。有关详细信息，请参阅[Coordinator控制台](../operations/manageui.md)。
 
 ### FAQ
 

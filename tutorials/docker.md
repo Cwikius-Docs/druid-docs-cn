@@ -41,7 +41,7 @@ Druid  `docker-compose.yml` 示例使用单个环境文件来指定完整的Drui
 
 运行 `docker-compose up` 启动附加shell的集群，或运行 `docker-compose up -d` 在后台运行集群。如果直接使用示例文件，这个命令应该从Druid安装目录中的 `distribution/docker/` 运行。
 
-启动集群后，可以导航到 [http://localhost:8888](http://localhost/) 。服务于 [Druid控制台](../Operations/druid-console.md) 的 [Druid路由进程](../design/Router.md) 位于这个地址。
+启动集群后，可以导航到 [http://localhost:8888](http://localhost/) 。服务于 [Druid控制台](../operations/druid-console.md) 的 [Druid路由进程](../design/router.md) 位于这个地址。
 
 ![](img/tutorial-quickstart-01.png)
 

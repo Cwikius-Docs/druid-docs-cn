@@ -16,7 +16,7 @@
 对于Apache Druid Historical的配置，请参见 [Historical配置](../Configuration/configuration.md#Historical)
 
 ### HTTP
-Historical的API列表，请参见 [Historical API](../Operations/api.md#Historical)
+Historical的API列表，请参见 [Historical API](../operations/api.md#Historical)
 
 ### 运行
 ```json

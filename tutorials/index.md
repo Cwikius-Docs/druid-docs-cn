@@ -1,89 +1,73 @@
----
-id: index
-title: "Quickstart"
----
+# 快速开始
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+在本快速开始的内容部分，将向你介绍有关如何开始使用 Apache Druid 和一些相关的基本特性。
+当你按照给出的步骤完成操作后，你将能够安装并且运行 Druid 和使用自带的批量数据摄取（ingestion）特性向安装成功的 Druid 实例中导入数据。
+
+在开始我们下面的步骤之前，请先阅读 [Druid 概述](../design/index.md) 和 [数据摄取（ingestion）概述](../ingestion/index.md) 中的内容。
+因为下面使用的步骤将会参照在前面 2 个 页面中提到过的一些概念和定义。
+
+## 安装要求
+
+你可以按照后续的步骤在一个相对机器性能比较小的计算机上进行安装。例如我们说的笔记本电脑（4 CPU 和 16 GB 的内存）。 
+
+针对不同的机器性能和安装条件，Druid 有一系列的安装配置属性。例如, `micro-quickstart` 配置属性对需要进行 Druid 评估时候的计算机性能进行了配置。
+如果你希望对 Druid 的计算性能进行评估或者对计算能力进行调整的话，你可能需要更大和更好性能的计算机并且配置属性（profile）。
+
+Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到 _X-Large_ 配置（64 CPU, 512GB RAM）。
+
+有关更多的配置信息，请参考 [独立服务器部署](../operations/single-server.md) 页面中的内容
+另外，如果你希望对 Druid 进行集群部署的话，请参考  [集群服务器部署](./cluster.md) 页面中的内容来了解更多有关 Druid 集群部署中的配置。
+
+针对运行 Druid 的计算机，你需要完成下面的软件配置：
+
+* Linux， Mac OS X， 或者其他基于 Unix 的操作系统（**不能部署在 Windows 上**）
+* Java 8, Update 92 或者后续版本 (8u92+)
+
+> Druid 官方只支持 Java 8 only。对其他主要的 Java 版本进行支持目前还主要是实验性的。
+
+> Druid 通过计算机中的环境变量 `JAVA_HOME` 或者 `DRUID_JAVA_HOME` 来找到安装的 Java 版本。如果你的计算机中安装有多个版本的 Java，那么你可以通过
+> 设置环境变量 `DRUID_JAVA_HOME` 来让你安装的 Druid 实例找到相应的 Java 版本。
+> 可以运行 Druid 程序中的 `bin/verify-java` 脚本来查看当前运行的 Java 版本。
+
+在将 Druid 安装到生产环境的时候，你需要注意 Druid 实例运行的用户账号是什么。因为 Druid 控制台用户的权限和当前 Druid 实例运行的用户权限是相同的。
+例如，如果你使用 Druid 的控制台对文件进行浏览的话，那么操作系统通只显示这个用户能够访问到的文件，或者说有权限进行查看的文件进行显示。
+一般来说，我们是不希望 Druid 以 root 用户的权限来运行的。因此针对 Druid 的安装环境，可以考虑针对 Druid 实例，在操作系统中创建一个只供 Druid 运行的用户。
 
 
-This quickstart gets you started with Apache Druid and introduces you to some of its basic features. 
-Following these steps, you will install Druid and load sample 
-data using its native batch ingestion feature. 
+## 第 1 步：安装 Druid
 
-Before starting, you may want to read the [general Druid overview](../design/index.md) and
-[ingestion overview](../ingestion/index.md), as the tutorials refer to concepts discussed on those pages.
+当你确定你的系统已经满足 [安装要求](#安装要求) 的所有内容后，请按照下面的步骤： 
 
-## Requirements
-
-You can follow these steps on a relatively small machine, such as a laptop with around 4 CPU and 16 GB of RAM. 
-
-Druid comes with several startup configuration profiles for a range of machine sizes. 
-The `micro-quickstart`configuration profile shown here is suitable for evaluating Druid. If you want to 
-try out Druid's performance or scaling capabilities, you'll need a larger machine and configuration profile.
-
-The configuration profiles included with Druid range from the even smaller _Nano-Quickstart_ configuration (1 CPU, 4GB RAM) 
-to the _X-Large_ configuration (64 CPU, 512GB RAM). For more information, see 
-[Single server deployment](../operations/single-server.md). Alternatively, see [Clustered deployment](./cluster.md) for 
-information on deploying Druid services across clustered machines. 
-
-The software requirements for the installation machine are:
-
-* Linux, Mac OS X, or other Unix-like OS (Windows is not supported)
-* Java 8, Update 92 or later (8u92+)
-
-> Druid officially supports Java 8 only. Support for later major versions of Java is currently in experimental status.
-
-> Druid relies on the environment variables `JAVA_HOME` or `DRUID_JAVA_HOME` to find Java on the machine. You can set 
-`DRUID_JAVA_HOME` if there is more than one instance of Java. To verify Java requirements for your environment, run the 
-`bin/verify-java` script.
-
-Before installing a production Druid instance, be sure to consider the user account on the operating system under 
-which Druid will run. This is important because any Druid console user will have, effectively, the same permissions as 
-that user. So, for example, the file browser UI will show console users the files that the underlying user can 
-access. In general, avoid running Druid as root user. Consider creating a dedicated user account for running Druid.   
-
-## Step 1. Install Druid
-
-After confirming the [requirements](#requirements), follow these steps: 
-
-1. Download
-the [{{DRUIDVERSION}} release](https://www.apache.org/dyn/closer.cgi?path=/druid/{{DRUIDVERSION}}/apache-druid-{{DRUIDVERSION}}-bin.tar.gz).
-2. In your terminal, extract Druid and change directories to the distribution directory:
-
+1. 下载
+下载地址为： [{{DRUIDVERSION}} 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/{{DRUIDVERSION}}/apache-druid-{{DRUIDVERSION}}-bin.tar.gz).
+2. 在你的控制台中，将下载的压缩包进行解压到当前目录，并且进入到解压的目录，或者你将目录移动到你希望部署的的目录中：
    ```bash
    tar -xzf apache-druid-{{DRUIDVERSION}}-bin.tar.gz
    cd apache-druid-{{DRUIDVERSION}}
    ```
-In the directory, you'll find `LICENSE` and `NOTICE` files and subdirectories for executable files, configuration files, sample data and more.
+在解压后的目录中，你会看到 `LICENSE` 和 `NOTICE` 文件，以及一些子目录，在这些子目录中保存有可执行文件，配置文件，示例数据和其他的内容。
 
-## Step 2: Start up Druid services
+在安装包中可能有下面的文件和用途供参考：
 
-Start up Druid services using the `micro-quickstart` single-machine configuration. 
+* `LICENSE`和`NOTICE` - 文件
+* `bin/*` - 启动或停止的脚本
+* `conf/*` - 用于单节点部署和集群部署的示例配置
+* `extensions/*` - Druid 核心扩展
+* `hadoop-dependencies/*` - Druid Hadoop 依赖
+* `lib/*` - Druid 核心库和依赖
+* `quickstart/*` - 配置文件，样例数据，以及快速入门教材的其他文件
 
-From the apache-druid-{{DRUIDVERSION}} package root, run the following command:
+## 第 2 步：启动 Druid 服务
+
+针对一台计算机，你可以使用 `micro-quickstart` 配置来启动所有 Druid 的服务。 
+
+在 apache-druid-{{DRUIDVERSION}} 包的根目录下，运行下面的命令：
 
 ```bash
 ./bin/start-micro-quickstart
 ```
 
-This brings up instances of ZooKeeper and the Druid services:
+上面的命令将会启动 ZooKeeper 和 Druid 服务：
 
 ```bash
 $ ./bin/start-micro-quickstart
@@ -95,26 +79,32 @@ $ ./bin/start-micro-quickstart
 [Fri May  3 11:40:50 2019] Running command[middleManager], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/middleManager.log]: bin/run-druid middleManager conf/druid/single-server/micro-quickstart
 ```
 
-All persistent state, such as the cluster metadata store and segments for the services, are kept in the `var` directory under 
-the Druid root directory, apache-druid-{{DRUIDVERSION}}. Each service writes to a log file under `var/sv`, as noted in the startup script output above.
+如上面输出的内容表示的，集群元数据存储（cluster metadata store） 和服务段（segments for the service）都会保存在 Druid 根目录下面的 `var` 目录中。
+这个 Druid 的根目录就是 apache-druid-{{DRUIDVERSION}}，换句话说就是你最开始解压并且既然怒的目录。
 
-At any time, you can revert Druid to its original, post-installation state by deleting the entire `var` directory. You may
-want to do this, for example, between Druid tutorials or after experimentation, to start with a fresh instance. 
+所有的服务将会把日志写入到 `var/sv` 目录中，同时也会将脚本的控制台输出按照上面的格式进行输出。
 
-To stop Druid at any time, use CTRL-C in the terminal. This exits the `bin/start-micro-quickstart` script and 
-terminates all Druid processes. 
+在任何时候，如果你删除 `var` 目录的话，那你按照的 Druid 实例将会返回到原始初始化后的状态。
+
+例如，如果你在完成了一个 Druid 的展示或者数据处理后希望开始一个全新完整的实例，那么你可以直接删除 `var` 目录就可以了。 
+
+如果你希望推出当前 Druid 的实例的话，在终端中使用快捷键 CTRL-C 来退出当前运行的模式。这个命令将会退出 `bin/start-micro-quickstart` 脚本，并且终止所有 Druid 的进程。
 
 
-## Step 3. Open the Druid console 
+## 第 3 步：访问 Druid 控制台 
 
-After the Druid services finish startup, open the [Druid console](../operations/druid-console.md) at [http://localhost:8888](http://localhost:8888). 
+当 Druid 的进程完全启动后，打开  [Druid 控制台（console）](../operations/druid-console.md) 。访问的地址为： [http://localhost:8888](http://localhost:8888) 默认的使用端口为 8888。 
 
 ![Druid console](../assets/tutorial-quickstart-01.png "Druid console")
 
-It may take a few seconds for all Druid services to finish starting, including the [Druid router](../design/router.md), which serves the console. If you attempt to open the Druid console before startup is complete, you may see errors in the browser. Wait a few moments and try again. 
+整个过程可能还需要耗费几秒钟的时间等待所有的 Druid 服务启动，包括 [Druid router](../design/router.md) 这个服务。
+
+在 Druid 中 router 服务是提供控制台访问的的服务。
+
+如果在所有 Druid 服务器都完全启动之前尝试访问控制台的话，那么很有可能会得到浏览器的房屋错误提示信息，请等待一些时间再尝试访问。
 
 
-## Step 4. Load data
+## 第 4 步：导入数据
 
 
 Ingestion specs define the schema of the data Druid reads and stores. You can write ingestion specs by hand or using the _data loader_, 
@@ -224,7 +214,7 @@ in the Druid root directory represents Wikipedia page edits for a given day.
     A successful task means that one or more segments have been built and are now picked up by our data servers.
 
 
-## Step 5. Query the data 
+## 第 5 步：查询数据
 
 You can now see the data as a datasource in the console and try out a query, as follows: 
 
@@ -248,7 +238,7 @@ Congratulations! You've gone from downloading Druid to querying data in just one
 section for what to do next. 
 
 
-## Next steps
+## 下一步
 
 After finishing the quickstart, check out the [query tutorial](../tutorials/tutorial-query.md) to further explore 
 Query features in the Druid console. 
@@ -266,3 +256,81 @@ since in them you will create the same wikipedia datasource.
 
 
 
+
+#### 加载数据
+##### 教程使用的数据集
+
+对于以下数据加载教程，我们提供了一个示例数据文件，其中包含2015年9月12日发生的Wikipedia页面编辑事件。
+
+该样本数据位于Druid包根目录的`quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz`中,页面编辑事件作为JSON对象存储在文本文件中。
+
+示例数据包含以下几列，示例事件如下所示：
+
+* added
+* channel
+* cityName
+* comment
+* countryIsoCode
+* countryName
+* deleted
+* delta
+* isAnonymous
+* isMinor
+* isNew
+* isRobot
+* isUnpatrolled
+* metroCode
+* namespace
+* page
+* regionIsoCode
+* regionName
+* user
+
+```json
+{
+  "timestamp":"2015-09-12T20:03:45.018Z",
+  "channel":"#en.wikipedia",
+  "namespace":"Main",
+  "page":"Spider-Man's powers and equipment",
+  "user":"foobar",
+  "comment":"/* Artificial web-shooters */",
+  "cityName":"New York",
+  "regionName":"New York",
+  "regionIsoCode":"NY",
+  "countryName":"United States",
+  "countryIsoCode":"US",
+  "isAnonymous":false,
+  "isNew":false,
+  "isMinor":false,
+  "isRobot":false,
+  "isUnpatrolled":false,
+  "added":99,
+  "delta":99,
+  "deleted":0,
+}
+```
+
+##### 数据加载
+
+以下教程演示了将数据加载到Druid的各种方法，包括批处理和流处理用例。 所有教程均假定您使用的是上面提到的`micro-quickstart`单机配置。
+
+* [加载本地文件](../Tutorials/chapter-1.md) - 本教程演示了如何使用Druid的本地批处理摄取来执行批文件加载
+* [从Kafka加载流数据](../Tutorials/chapter-2.md) - 本教程演示了如何从Kafka主题加载流数据
+* [从Hadoop加载数据](../Tutorials/chapter-3.md) - 本教程演示了如何使用远程Hadoop集群执行批处理文件加载
+* [编写一个自己的数据摄取规范](../Tutorials/chapter-10.md) - 本教程演示了如何编写新的数据摄取规范并使用它来加载数据
+
+##### 重置集群状态
+
+如果要在清理服务后重新启动，请删除`var`目录，然后再次运行`bin/start-micro-quickstart`脚本。
+
+一旦每个服务都启动，您就可以加载数据了。
+
+##### 重置 Kafka
+
+如果您完成了[教程：从Kafka加载流数据](../Tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
+
+在停止ZooKeeper和Druid服务之前，使用`CTRL-C`关闭`Kafka Broker`，然后删除`/tmp/kafka-logs`中的Kafka日志目录：
+
+```
+rm -rf /tmp/kafka-logs
+```

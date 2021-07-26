@@ -16,11 +16,11 @@
 > [!WARNING]
 > Router是一个可选的和实验性的特性，因为它在Druid集群架构中的推荐位置仍在不断发展。然而，它已经在生产中经过了测试，并且承载了强大的Druid控制台，所以您应该放心地部署它。
 
-Apache Druid Router用于将查询路由到不同的Broker。默认情况下，Broker根据 [规则](../Operations/retainingOrDropData.md) 设置路由查询。例如，如果将最近1个月的数据加载到一个 `热集群` 中，则可以将最近一个月内的查询路由到一组专用的Broker,超出此范围的查询将路由到另一组Broker。该设置的主要功能是为了提供查询隔离，以便对较重要数据的查询不会受到对较不重要数据的查询的影响。
+Apache Druid Router用于将查询路由到不同的Broker。默认情况下，Broker根据 [规则](../operations/retainingOrDropData.md) 设置路由查询。例如，如果将最近1个月的数据加载到一个 `热集群` 中，则可以将最近一个月内的查询路由到一组专用的Broker,超出此范围的查询将路由到另一组Broker。该设置的主要功能是为了提供查询隔离，以便对较重要数据的查询不会受到对较不重要数据的查询的影响。
 
 出于查询路由的目的，如果您有一个TB数据规模的Druid集群，您应该只使用Router进程。
 
-除了查询路由，Router还运行 [Druid控制台](../Operations/manageui.md), 一个用于数据源、段、任务、数据进程（Historical和MiddleManager）和Coordinator动态配置的管理UI。用户还可以在控制台中运行SQL和本地Druid查询。
+除了查询路由，Router还运行 [Druid控制台](../operations/manageui.md), 一个用于数据源、段、任务、数据进程（Historical和MiddleManager）和Coordinator动态配置的管理UI。用户还可以在控制台中运行SQL和本地Druid查询。
 
 ### 配置
 
@@ -28,7 +28,7 @@ Apache Druid Router用于将查询路由到不同的Broker。默认情况下，B
 
 ### HTTP
 
-对于Router的API列表，请参见 [Router API](../Operations/api.md#Router)
+对于Router的API列表，请参见 [Router API](../operations/api.md#Router)
 
 ### 运行
 

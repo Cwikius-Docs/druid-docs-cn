@@ -96,4 +96,4 @@ bin/post-index-task --file quickstart/tutorial/retention-index.json --url http:/
 相反，如果希望根据数据的生命周期保留数据（例如，保留从过去3个月到现在3个月的数据），则应定义一个周期性加载规则(Period Load Rule)。
 
 ### 进一步阅读
-[加载规则](../Operations/retainingOrDropData.md)
+[加载规则](../operations/retainingOrDropData.md)

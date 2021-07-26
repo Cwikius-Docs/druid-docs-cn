@@ -731,8 +731,8 @@ S3对象：
 
 | 属性 | 描述 | 默认 | 是否必须 |
 |-|-|-|-|
-| `accessKeyId` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `secretAccessKey` 被提供的话，则为必须 |
-| `secretAccessKey` | S3输入源访问密钥的 [Password Provider](../Operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `accessKeyId` 被提供的话，则为必须 |
+| `accessKeyId` | S3输入源访问密钥的 [Password Provider](../operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `secretAccessKey` 被提供的话，则为必须 |
+| `secretAccessKey` | S3输入源访问密钥的 [Password Provider](../operations/passwordproviders.md) 或纯文本字符串 | None | 如果 `accessKeyId` 被提供的话，则为必须 |
 
 **注意**： *如果 `accessKeyId` 和 `secretAccessKey` 未被指定的话， 则将使用默认的 [S3认证](../development/S3-compatible.md#S3认证方式)*
 

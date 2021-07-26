@@ -28,7 +28,7 @@ Druid可以摄取JSON、CSV、TSV和其他分隔数据。Druid支持一维值或
 
 ### 并非所有的事件都被摄取了
 
-Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的最佳方式是查看 [Druid摄取指标](../Operations/metrics.md)
+Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的最佳方式是查看 [Druid摄取指标](../operations/metrics.md)
 
 如果摄取的事件数似乎正确，请确保查询的格式正确。如果在摄取规范中包含 `count` 聚合器，则需要使用 `longSum` 聚合器查询此聚合的结果。使用count聚合器发出查询将计算Druid行的数量，包括 [rollup](ingestion.md#rollup)。
 

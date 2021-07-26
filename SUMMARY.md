@@ -14,7 +14,6 @@
   * [官方原版英文文档](https://druid.apache.org/docs/latest/design/)
 
 * [新手入门]()
-  * [Druid介绍](GettingStarted/chapter-1.md)
   * [快速开始](GettingStarted/chapter-2.md)
   * [Docker](tutorials/docker.md)
   * [单服务器部署](GettingStarted/chapter-3.md)
@@ -43,7 +42,7 @@
     * [Historical](design/Historical.md)
     * [MiddleManager](design/MiddleManager.md)
     * [Broker](design/Broker.md)
-    * [Router](design/Router.md)
+    * [Router](design/router.md)
     * [Indexer](design/Indexer.md)
     * [Peon](design/Peons.md)
   * [深度存储](design/Deepstorage.md)
@@ -104,7 +103,7 @@
   * [配置列表](Configuration/configuration.md)
 
 * [操作指南]()
-  * [操作指南](Operations/index.md)
+  * [操作指南](operations/index.md)
 
 * [开发指南]()
   * [开发指南](development/index.md)

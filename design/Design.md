@@ -9,7 +9,7 @@ Druid有若干不同类型的进程，简单描述如下：
 * [Coordinator](Coordinator.md) 进程管理集群中数据的可用性
 * [Overlord](Overlord.md) 进程控制数据摄取负载的分配
 * [Broker](Broker.md) 进程处理来自外部客户端的查询请求
-* [Router](Router.md) 进程是一个可选进程，可以将请求路由到Brokers、Coordinators和Overlords
+* [Router](router.md) 进程是一个可选进程，可以将请求路由到Brokers、Coordinators和Overlords
 * [Historical](Historical.md) 进程存储可查询的数据
 * [MiddleManager](MiddleManager.md) 进程负责摄取数据
 
