@@ -3,6 +3,10 @@
 在本快速开始的内容部分，将向你介绍有关如何开始使用 Apache Druid 和一些相关的基本特性。
 当你按照给出的步骤完成操作后，你将能够安装并且运行 Druid 和使用自带的批量数据摄取（ingestion）特性向安装成功的 Druid 实例中导入数据。
 
+!> 当前翻译基于的 Druid 版本为 apache-druid-0.21.1，本页面中的有关下载链接可能会随着版本更新而失效。
+请自行根据官方办法的发行进度进行搜索更新和下载。
+
+
 在开始我们下面的步骤之前，请先阅读 [Druid 概述](../design/index.md) 和 [数据摄取（ingestion）概述](../ingestion/index.md) 中的内容。
 因为下面使用的步骤将会参照在前面 2 个 页面中提到过的一些概念和定义。
 
@@ -15,7 +19,7 @@
 
 Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到 _X-Large_ 配置（64 CPU, 512GB RAM）。
 
-有关更多的配置信息，请参考 [独立服务器部署](../operations/single-server.md) 页面中的内容
+有关更多的配置信息，请参考 [独立服务器部署](../operations/single-server.md ':size=620') 页面中的内容
 另外，如果你希望对 Druid 进行集群部署的话，请参考  [集群服务器部署](./cluster.md) 页面中的内容来了解更多有关 Druid 集群部署中的配置。
 
 针对运行 Druid 的计算机，你需要完成下面的软件配置：
@@ -33,17 +37,16 @@ Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到
 例如，如果你使用 Druid 的控制台对文件进行浏览的话，那么操作系统通只显示这个用户能够访问到的文件，或者说有权限进行查看的文件进行显示。
 一般来说，我们是不希望 Druid 以 root 用户的权限来运行的。因此针对 Druid 的安装环境，可以考虑针对 Druid 实例，在操作系统中创建一个只供 Druid 运行的用户。
 
-
 ## 第 1 步：安装 Druid
 
 当你确定你的系统已经满足 [安装要求](#安装要求) 的所有内容后，请按照下面的步骤： 
 
 1. 下载
-下载地址为： [{{DRUIDVERSION}} 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/{{DRUIDVERSION}}/apache-druid-{{DRUIDVERSION}}-bin.tar.gz).
+下载地址为： [apache-druid-0.21.1 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz).
 2. 在你的控制台中，将下载的压缩包进行解压到当前目录，并且进入到解压的目录，或者你将目录移动到你希望部署的的目录中：
    ```bash
-   tar -xzf apache-druid-{{DRUIDVERSION}}-bin.tar.gz
-   cd apache-druid-{{DRUIDVERSION}}
+   tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz
+   cd apache-druid-apache-druid-0.21.1
    ```
 在解压后的目录中，你会看到 `LICENSE` 和 `NOTICE` 文件，以及一些子目录，在这些子目录中保存有可执行文件，配置文件，示例数据和其他的内容。
 
@@ -61,7 +64,7 @@ Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到
 
 针对一台计算机，你可以使用 `micro-quickstart` 配置来启动所有 Druid 的服务。 
 
-在 apache-druid-{{DRUIDVERSION}} 包的根目录下，运行下面的命令：
+在 apache-druid-apache-druid-0.21.1 包的根目录下，运行下面的命令：
 
 ```bash
 ./bin/start-micro-quickstart
@@ -71,16 +74,16 @@ Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到
 
 ```bash
 $ ./bin/start-micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[zk], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/zk.log]: bin/run-zk conf
-[Fri May  3 11:40:50 2019] Running command[coordinator-overlord], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/coordinator-overlord.log]: bin/run-druid coordinator-overlord conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[broker], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/broker.log]: bin/run-druid broker conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[router], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/router.log]: bin/run-druid router conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[historical], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/historical.log]: bin/run-druid historical conf/druid/single-server/micro-quickstart
-[Fri May  3 11:40:50 2019] Running command[middleManager], logging to[/apache-druid-{{DRUIDVERSION}}/var/sv/middleManager.log]: bin/run-druid middleManager conf/druid/single-server/micro-quickstart
+[Fri May  3 11:40:50 2019] Running command[zk], logging to[/apache-druid-apache-druid-0.21.1/var/sv/zk.log]: bin/run-zk conf
+[Fri May  3 11:40:50 2019] Running command[coordinator-overlord], logging to[/apache-druid-apache-druid-0.21.1/var/sv/coordinator-overlord.log]: bin/run-druid coordinator-overlord conf/druid/single-server/micro-quickstart
+[Fri May  3 11:40:50 2019] Running command[broker], logging to[/apache-druid-apache-druid-0.21.1/var/sv/broker.log]: bin/run-druid broker conf/druid/single-server/micro-quickstart
+[Fri May  3 11:40:50 2019] Running command[router], logging to[/apache-druid-apache-druid-0.21.1/var/sv/router.log]: bin/run-druid router conf/druid/single-server/micro-quickstart
+[Fri May  3 11:40:50 2019] Running command[historical], logging to[/apache-druid-apache-druid-0.21.1/var/sv/historical.log]: bin/run-druid historical conf/druid/single-server/micro-quickstart
+[Fri May  3 11:40:50 2019] Running command[middleManager], logging to[/apache-druid-apache-druid-0.21.1/var/sv/middleManager.log]: bin/run-druid middleManager conf/druid/single-server/micro-quickstart
 ```
 
 如上面输出的内容表示的，集群元数据存储（cluster metadata store） 和服务段（segments for the service）都会保存在 Druid 根目录下面的 `var` 目录中。
-这个 Druid 的根目录就是 apache-druid-{{DRUIDVERSION}}，换句话说就是你最开始解压并且既然怒的目录。
+这个 Druid 的根目录就是 apache-druid-apache-druid-0.21.1，换句话说就是你最开始解压并且既然怒的目录。
 
 所有的服务将会把日志写入到 `var/sv` 目录中，同时也会将脚本的控制台输出按照上面的格式进行输出。
 
