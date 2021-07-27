@@ -165,61 +165,56 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
    ![Data loader schema](../assets/tutorial-batch-data-loader-05.png ':size=690')
 
 
-10. 单击 **下一步：分区（Partition）** 来配置数据是如何在段（segments）中进行拆分的，选择  `DAY` 做为 **Segment granularity**
+10. 单击 **下一步：分区（Partition）** 来配置数据是如何在段（segments）中进行拆分的，选择  `DAY` 做为 **段粒度（Segment granularity）**
 
-    ![Data loader partition](../assets/tutorial-batch-data-loader-06.png "Data loader partition")
+    ![Data loader partition](../assets/tutorial-batch-data-loader-06.png ':size=690')
 
-    Since this is a small dataset, we can have just a single segment, which is what selecting `DAY` as the 
-    segment granularity gives us. 
+    因为当前的数据集是一个非常小的数据库，我们可以只使用单一段（segment）就可以了，简单来说就是使用 `DAY` 来作为 段粒度（Segment granularity）。
 
 11. 单击 **下一步：调整（Tune）** 和 **下一步：发布（Publish）**
 
 12. 在发布（Publish）的设置中，你需要在 Druid 的数据源的名称，我们可以选择默认的名字，这个名字将数据源的名称从 `wikiticker-2015-09-12-sampled` 修改为 `wikipedia`。 
 
-    ![Data loader publish](../assets/tutorial-batch-data-loader-07.png "Data loader publish")
+    ![Data loader publish](../assets/tutorial-batch-data-loader-07.png ':size=690')
 
 
-13. 单击 **下一步：编辑特性（ Edit spec）** to review the ingestion spec we've constructed with the data loader. 
+13. 单击 **下一步：编辑特性（ Edit spec）** 来在数据导入器中查看需要导入的数据特性。 
 
-    ![Data loader spec](../assets/tutorial-batch-data-loader-08.png "Data loader spec")
+    ![Data loader spec](../assets/tutorial-batch-data-loader-08.png ':size=690')
 
-    Feel free to go back and change settings from previous steps to see how doing so updates the spec.
-    Similarly, you can edit the spec directly and see it reflected in the previous steps. 
+    你可以随意的通过页面中的导航返回到前面的页面中对配置进行调整。简单来说你可以对特性目录进行编辑，来查看编辑后的配置是如何对前面的步骤产生影响的。
 
-    > For other ways to load ingestion specs in Druid, see [Tutorial: Loading a file](./tutorial-batch.md). 
+    > 针对更多有关在 Druid 中载入导入数据配置的方法，请参考页面： [教程：载入一个文件](tutorial-batch.md). 
 
-14. Once you are satisfied with the spec, click **Submit**.
+14. 当你对所有的配置都满意并且觉得没有问题的时候，单击 **提交（Submit）**.
 
-    The new task for our wikipedia datasource now appears in the Ingestion view. 
+    针对我们需要向 Druid 中导入 wikipedia 数据的任务将会显示在 导入视图（Ingestion view）中。 
 
-    ![Tasks view](../assets/tutorial-batch-data-loader-09.png "Tasks view")
+    ![Tasks view](../assets/tutorial-batch-data-loader-09.png ':size=690')
 
-    The task may take a minute or two to complete. When done, the task status should be "SUCCESS", with
-    the duration of the task indicated. Note that the view is set to automatically 
-    refresh, so you do not need to refresh the browser to see the status change.
+    整个导入的过程可能需要耗费 1 到 2 分钟。当导入完成后，任务的状态将会显示为 "SUCCESS"，这表示的是导入的过程已经完成，任务已经结束了。
+    需要注意的是，导入过程的视图是自动刷新的，所以你不需要通过刷新浏览器来刷新页面后来查看状态的改变。
 
-    A successful task means that one or more segments have been built and are now picked up by our data servers.
-
+    一个成功的任务表达的意思是：一个或者多个段（segments）被创建，同时从数据服务器上获取了数据。
 
 ## 第 5 步：查询数据
 
-You can now see the data as a datasource in the console and try out a query, as follows: 
+现在你就可以在 Druid 的控制台中的 datasource 标签页查看数据，同时你可以尝试使用下面的查询： 
 
-1. Click **Datasources** from the console header. 
+1. 从控制台的顶部单击 **数据源（Datasources）**  
   
-   If the wikipedia datasource doesn't appear, wait a few moments for the segment to finish loading. A datasource is 
-   queryable once it is shown to be "Fully available" in the **Availability** column. 
+   如果 wikipedia 的数据源没有显示的话，请等待一会让导入的段完成数据载入。一个数据源如果在 **Availability** 列中被定义显示为 "Fully available"， 
+   那么这个数据源就可以进行查询了。
 
-2. When the datasource is available, open the Actions menu (![Actions](../assets/datasources-action-button.png)) for that 
-   datasource and choose **Query with SQL**.
+2. 但一个数据源显示为可用的时候，针对这个数据源打开 Actions (![Actions](../assets/datasources-action-button.png)) 菜单，然后选择  **使用 SQL 进行查询（Query with SQL）**。
 
    ![Datasource view](../assets/tutorial-batch-data-loader-10.png "Datasource view")
 
-   > Notice the other actions you can perform for a datasource, including configuring retention rules, compaction, and more. 
+   > 请注意，你还可以对数据源进行一些其他的操作，包括有配置，保留时间规则，压缩等。
 
-3. Run the prepopulated query, `SELECT * FROM "wikipedia"` to see the results.
+3. 运行下面的查询语句，`SELECT * FROM "wikipedia"` 来查看查询结果。
 
-   ![Query view](../assets/tutorial-batch-data-loader-11.png "Query view")
+   ![Query view](../assets/tutorial-batch-data-loader-11.png ':size=690')
 
 Congratulations! You've gone from downloading Druid to querying data in just one quickstart. See the following
 section for what to do next. 
