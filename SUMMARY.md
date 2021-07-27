@@ -34,8 +34,8 @@
 
 * [架构设计]()
   * [整体设计](design/Design.md)
-  * [段设计](design/Segments.md)
-  * [进程与服务](design/Processes.md)
+  * [段设计](design/segments.md)
+  * [进程与服务](design/processes.md)
     * [Coordinator](design/Coordinator.md)
     * [Overlord](design/Overlord.md)
     * [Historical](design/Historical.md)

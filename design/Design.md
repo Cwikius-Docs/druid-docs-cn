@@ -19,7 +19,7 @@ Druid进程可以按照您喜欢的方式部署，但是为了便于部署，我
 * **Query**: 运行Broker和可选的Router进程，处理来自外部客户端的请求
 * **Data**: 运行Historical和MiddleManager进程，执行摄取负载和存储所有可查询的数据
 
-关于进程和服务组织的更多信息，可以查看[Druid进程与服务](Processes.md)
+关于进程和服务组织的更多信息，可以查看[Druid进程与服务](processes.md)
 
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -77,7 +77,7 @@ Druid数据被存储在"datasources"中，类似于传统RDBMS中的表。每一
 
 周期性地，段被提交和发布，此时，它们将被写入到深度存储且变得不可更改，同时从MiddleManager移动到Historical进程。有关段的信息也写入到元数据存储中，这个信息是一个自描述的信息，包括段的schema、大小以及在深度存储中的位置，Coordinator可以根据这些信息来知道集群上应该有哪些数据是可用的
 
-有关段文件格式的信息，请参见[段文件](Segments.md)
+有关段文件格式的信息，请参见[段文件](segments.md)
 
 有关数据在Druid的建模，请参见[schema设计](../DataIngestion/schemadesign.md)
 
