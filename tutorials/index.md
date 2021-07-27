@@ -216,8 +216,8 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
    ![Query view](../assets/tutorial-batch-data-loader-11.png ':size=690')
 
-Congratulations! You've gone from downloading Druid to querying data in just one quickstart. See the following
-section for what to do next. 
+祝贺你！当你完成上面的步骤，并且能够从查询窗口中看到查询结果的话，那么你就完成了对 Druid 进行快速部署并且导入数据的全过程。
+请参考下面页面中的内容来对 Druid 进行后续步骤的操作。
 
 
 ## 下一步
@@ -234,85 +234,4 @@ Alternatively, learn about other ways to ingest data in one of these tutorials:
 
 Remember that after stopping Druid services, you can start clean next time by deleting the `var` directory from the Druid root directory and 
 running the `bin/start-micro-quickstart` script again. You will likely want to do this before taking other data ingestion tutorials, 
-since in them you will create the same wikipedia datasource. 
-
-
-
-
-#### 加载数据
-##### 教程使用的数据集
-
-对于以下数据加载教程，我们提供了一个示例数据文件，其中包含2015年9月12日发生的Wikipedia页面编辑事件。
-
-该样本数据位于Druid包根目录的`quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz`中,页面编辑事件作为JSON对象存储在文本文件中。
-
-示例数据包含以下几列，示例事件如下所示：
-
-* added
-* channel
-* cityName
-* comment
-* countryIsoCode
-* countryName
-* deleted
-* delta
-* isAnonymous
-* isMinor
-* isNew
-* isRobot
-* isUnpatrolled
-* metroCode
-* namespace
-* page
-* regionIsoCode
-* regionName
-* user
-
-```json
-{
-  "timestamp":"2015-09-12T20:03:45.018Z",
-  "channel":"#en.wikipedia",
-  "namespace":"Main",
-  "page":"Spider-Man's powers and equipment",
-  "user":"foobar",
-  "comment":"/* Artificial web-shooters */",
-  "cityName":"New York",
-  "regionName":"New York",
-  "regionIsoCode":"NY",
-  "countryName":"United States",
-  "countryIsoCode":"US",
-  "isAnonymous":false,
-  "isNew":false,
-  "isMinor":false,
-  "isRobot":false,
-  "isUnpatrolled":false,
-  "added":99,
-  "delta":99,
-  "deleted":0,
-}
-```
-
-##### 数据加载
-
-以下教程演示了将数据加载到Druid的各种方法，包括批处理和流处理用例。 所有教程均假定您使用的是上面提到的`micro-quickstart`单机配置。
-
-* [加载本地文件](../Tutorials/chapter-1.md) - 本教程演示了如何使用Druid的本地批处理摄取来执行批文件加载
-* [从Kafka加载流数据](../Tutorials/chapter-2.md) - 本教程演示了如何从Kafka主题加载流数据
-* [从Hadoop加载数据](../Tutorials/chapter-3.md) - 本教程演示了如何使用远程Hadoop集群执行批处理文件加载
-* [编写一个自己的数据摄取规范](../Tutorials/chapter-10.md) - 本教程演示了如何编写新的数据摄取规范并使用它来加载数据
-
-##### 重置集群状态
-
-如果要在清理服务后重新启动，请删除`var`目录，然后再次运行`bin/start-micro-quickstart`脚本。
-
-一旦每个服务都启动，您就可以加载数据了。
-
-##### 重置 Kafka
-
-如果您完成了[教程：从Kafka加载流数据](../Tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
-
-在停止ZooKeeper和Druid服务之前，使用`CTRL-C`关闭`Kafka Broker`，然后删除`/tmp/kafka-logs`中的Kafka日志目录：
-
-```
-rm -rf /tmp/kafka-logs
-```
+since in them you will create the same wikipedia datasource.
