@@ -16,6 +16,12 @@
   - [查询数据](tutorials/tutorial-query.md)
   - [回滚](tutorials/tutorial-rollup.md)
   - [配置数据保存时间](tutorials/tutorial-retention.md)
+  - [更新已经存在的数据](tutorials/tutorial-update-data.md)
+  - [压缩段](tutorials/tutorial-compaction.md)
+  - [删除数据](tutorials/tutorial-delete-data.md)
+  - [写入数据导入属性](tutorials/tutorial-ingestion-spec.md)
+  - [转换导入数据](tutorials/tutorial-transform-spec.md)
+  - [Kerberized HDFS 深度存储](tutorials/tutorial-kerberos-hadoop.md)
   
 - 设计（Design）
   - [设计](design/architecture.md)
