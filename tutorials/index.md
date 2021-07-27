@@ -222,16 +222,17 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
 ## 下一步
 
-After finishing the quickstart, check out the [query tutorial](../tutorials/tutorial-query.md) to further explore 
-Query features in the Druid console. 
+在完成上面步骤中的快速导航后，请查看 [query 教程](tutorial-query.md) 页面中的内容来了解如何在 Druid 的控制台中使用查询语句。
 
-Alternatively, learn about other ways to ingest data in one of these tutorials: 
+还有，如果你还希望从其他的数据导入方式中导入数据到 Druid，请参考下面的页面链接： 
 
-- [Loading stream data from Apache Kafka](./tutorial-kafka.md) – How to load streaming data from a Kafka topic.
-- [Loading a file using Apache Hadoop](./tutorial-batch-hadoop.md) – How to perform a batch file load, using a remote Hadoop cluster.
-- [Writing your own ingestion spec](./tutorial-ingestion-spec.md) – How to write a new ingestion spec and use it to load data.
+- [从 Apache Kafka 中加载流式数据](tutorial-kafka.md) – 如何从 Kafka 的主题中加载流式数据。
+- [使用 Apache Hadoop 载入一个文件](tutorial-batch-hadoop.md) – 如何使用远程 Hadoop 集群执行批处理文件加载
+- [编写一个你自己的数据导入规范](tutorial-ingestion-spec.md) – 如何编写新的数据导入规范并使用它来加载数据
 
 
 Remember that after stopping Druid services, you can start clean next time by deleting the `var` directory from the Druid root directory and 
 running the `bin/start-micro-quickstart` script again. You will likely want to do this before taking other data ingestion tutorials, 
 since in them you will create the same wikipedia datasource.
+
+如果要在清理服务后重新启动，请删除`var`目录，然后再次运行`bin/start-micro-quickstart`脚本。
