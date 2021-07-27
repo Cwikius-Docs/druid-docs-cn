@@ -179,7 +179,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
     ![Data loader publish](../assets/tutorial-batch-data-loader-07.png "Data loader publish")
 
 
-13. 单击 **Next: Edit spec** to review the ingestion spec we've constructed with the data loader. 
+13. 单击 **下一步：编辑特性（ Edit spec）** to review the ingestion spec we've constructed with the data loader. 
 
     ![Data loader spec](../assets/tutorial-batch-data-loader-08.png "Data loader spec")
 
