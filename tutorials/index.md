@@ -165,159 +165,71 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
    ![Data loader schema](../assets/tutorial-batch-data-loader-05.png ':size=690')
 
 
-10. 单击 **下一步：分区（Partition）** 来配置数据是如何在段（segments）中进行拆分的，选择  `DAY` 做为 **Segment granularity**
+10. 单击 **下一步：分区（Partition）** 来配置数据是如何在段（segments）中进行拆分的，选择  `DAY` 做为 **段粒度（Segment granularity）**
 
-    ![Data loader partition](../assets/tutorial-batch-data-loader-06.png "Data loader partition")
+    ![Data loader partition](../assets/tutorial-batch-data-loader-06.png ':size=690')
 
-    Since this is a small dataset, we can have just a single segment, which is what selecting `DAY` as the 
-    segment granularity gives us. 
+    因为当前的数据集是一个非常小的数据库，我们可以只使用单一段（segment）就可以了，简单来说就是使用 `DAY` 来作为 段粒度（Segment granularity）。
 
 11. 单击 **下一步：调整（Tune）** 和 **下一步：发布（Publish）**
 
 12. 在发布（Publish）的设置中，你需要在 Druid 的数据源的名称，我们可以选择默认的名字，这个名字将数据源的名称从 `wikiticker-2015-09-12-sampled` 修改为 `wikipedia`。 
 
-    ![Data loader publish](../assets/tutorial-batch-data-loader-07.png "Data loader publish")
+    ![Data loader publish](../assets/tutorial-batch-data-loader-07.png ':size=690')
 
 
-13. 单击 **下一步：编辑特性（ Edit spec）** to review the ingestion spec we've constructed with the data loader. 
+13. 单击 **下一步：编辑特性（ Edit spec）** 来在数据导入器中查看需要导入的数据特性。 
 
-    ![Data loader spec](../assets/tutorial-batch-data-loader-08.png "Data loader spec")
+    ![Data loader spec](../assets/tutorial-batch-data-loader-08.png ':size=690')
 
-    Feel free to go back and change settings from previous steps to see how doing so updates the spec.
-    Similarly, you can edit the spec directly and see it reflected in the previous steps. 
+    你可以随意的通过页面中的导航返回到前面的页面中对配置进行调整。简单来说你可以对特性目录进行编辑，来查看编辑后的配置是如何对前面的步骤产生影响的。
 
-    > For other ways to load ingestion specs in Druid, see [Tutorial: Loading a file](./tutorial-batch.md). 
+    > 针对更多有关在 Druid 中载入导入数据配置的方法，请参考页面： [教程：载入一个文件](tutorial-batch.md). 
 
-14. Once you are satisfied with the spec, click **Submit**.
+14. 当你对所有的配置都满意并且觉得没有问题的时候，单击 **提交（Submit）**.
 
-    The new task for our wikipedia datasource now appears in the Ingestion view. 
+    针对我们需要向 Druid 中导入 wikipedia 数据的任务将会显示在 导入视图（Ingestion view）中。 
 
-    ![Tasks view](../assets/tutorial-batch-data-loader-09.png "Tasks view")
+    ![Tasks view](../assets/tutorial-batch-data-loader-09.png ':size=690')
 
-    The task may take a minute or two to complete. When done, the task status should be "SUCCESS", with
-    the duration of the task indicated. Note that the view is set to automatically 
-    refresh, so you do not need to refresh the browser to see the status change.
+    整个导入的过程可能需要耗费 1 到 2 分钟。当导入完成后，任务的状态将会显示为 "SUCCESS"，这表示的是导入的过程已经完成，任务已经结束了。
+    需要注意的是，导入过程的视图是自动刷新的，所以你不需要通过刷新浏览器来刷新页面后来查看状态的改变。
 
-    A successful task means that one or more segments have been built and are now picked up by our data servers.
-
+    一个成功的任务表达的意思是：一个或者多个段（segments）被创建，同时从数据服务器上获取了数据。
 
 ## 第 5 步：查询数据
 
-You can now see the data as a datasource in the console and try out a query, as follows: 
+现在你就可以在 Druid 的控制台中的 datasource 标签页查看数据，同时你可以尝试使用下面的查询： 
 
-1. Click **Datasources** from the console header. 
+1. 从控制台的顶部单击 **数据源（Datasources）**  
   
-   If the wikipedia datasource doesn't appear, wait a few moments for the segment to finish loading. A datasource is 
-   queryable once it is shown to be "Fully available" in the **Availability** column. 
+   如果 wikipedia 的数据源没有显示的话，请等待一会让导入的段完成数据载入。一个数据源如果在 **Availability** 列中被定义显示为 "Fully available"， 
+   那么这个数据源就可以进行查询了。
 
-2. When the datasource is available, open the Actions menu (![Actions](../assets/datasources-action-button.png)) for that 
-   datasource and choose **Query with SQL**.
+2. 但一个数据源显示为可用的时候，针对这个数据源打开 Actions (![Actions](../assets/datasources-action-button.png)) 菜单，然后选择  **使用 SQL 进行查询（Query with SQL）**。
 
    ![Datasource view](../assets/tutorial-batch-data-loader-10.png "Datasource view")
 
-   > Notice the other actions you can perform for a datasource, including configuring retention rules, compaction, and more. 
+   > 请注意，你还可以对数据源进行一些其他的操作，包括有配置，保留时间规则，压缩等。
 
-3. Run the prepopulated query, `SELECT * FROM "wikipedia"` to see the results.
+3. 运行下面的查询语句，`SELECT * FROM "wikipedia"` 来查看查询结果。
 
-   ![Query view](../assets/tutorial-batch-data-loader-11.png "Query view")
+   ![Query view](../assets/tutorial-batch-data-loader-11.png ':size=690')
 
-Congratulations! You've gone from downloading Druid to querying data in just one quickstart. See the following
-section for what to do next. 
+祝贺你！当你完成上面的步骤，并且能够从查询窗口中看到查询结果的话，那么你就完成了对 Druid 进行快速部署并且导入数据的全过程。
+请参考下面页面中的内容来对 Druid 进行后续步骤的操作。
 
 
 ## 下一步
 
-After finishing the quickstart, check out the [query tutorial](../tutorials/tutorial-query.md) to further explore 
-Query features in the Druid console. 
+在完成上面步骤中的快速导航后，请查看 [query 教程](tutorial-query.md) 页面中的内容来了解如何在 Druid 的控制台中使用查询语句。
 
-Alternatively, learn about other ways to ingest data in one of these tutorials: 
+还有，如果你还希望从其他的数据导入方式中导入数据到 Druid，请参考下面的页面链接： 
 
-- [Loading stream data from Apache Kafka](./tutorial-kafka.md) – How to load streaming data from a Kafka topic.
-- [Loading a file using Apache Hadoop](./tutorial-batch-hadoop.md) – How to perform a batch file load, using a remote Hadoop cluster.
-- [Writing your own ingestion spec](./tutorial-ingestion-spec.md) – How to write a new ingestion spec and use it to load data.
-
-
-Remember that after stopping Druid services, you can start clean next time by deleting the `var` directory from the Druid root directory and 
-running the `bin/start-micro-quickstart` script again. You will likely want to do this before taking other data ingestion tutorials, 
-since in them you will create the same wikipedia datasource. 
+- [从 Apache Kafka 中加载流式数据](tutorial-kafka.md) – 如何从 Kafka 的主题中加载流式数据。
+- [使用 Apache Hadoop 载入一个文件](tutorial-batch-hadoop.md) – 如何使用远程 Hadoop 集群执行批处理文件加载
+- [编写一个你自己的数据导入规范](tutorial-ingestion-spec.md) – 如何编写新的数据导入规范并使用它来加载数据
 
 
-
-
-#### 加载数据
-##### 教程使用的数据集
-
-对于以下数据加载教程，我们提供了一个示例数据文件，其中包含2015年9月12日发生的Wikipedia页面编辑事件。
-
-该样本数据位于Druid包根目录的`quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz`中,页面编辑事件作为JSON对象存储在文本文件中。
-
-示例数据包含以下几列，示例事件如下所示：
-
-* added
-* channel
-* cityName
-* comment
-* countryIsoCode
-* countryName
-* deleted
-* delta
-* isAnonymous
-* isMinor
-* isNew
-* isRobot
-* isUnpatrolled
-* metroCode
-* namespace
-* page
-* regionIsoCode
-* regionName
-* user
-
-```json
-{
-  "timestamp":"2015-09-12T20:03:45.018Z",
-  "channel":"#en.wikipedia",
-  "namespace":"Main",
-  "page":"Spider-Man's powers and equipment",
-  "user":"foobar",
-  "comment":"/* Artificial web-shooters */",
-  "cityName":"New York",
-  "regionName":"New York",
-  "regionIsoCode":"NY",
-  "countryName":"United States",
-  "countryIsoCode":"US",
-  "isAnonymous":false,
-  "isNew":false,
-  "isMinor":false,
-  "isRobot":false,
-  "isUnpatrolled":false,
-  "added":99,
-  "delta":99,
-  "deleted":0,
-}
-```
-
-##### 数据加载
-
-以下教程演示了将数据加载到Druid的各种方法，包括批处理和流处理用例。 所有教程均假定您使用的是上面提到的`micro-quickstart`单机配置。
-
-* [加载本地文件](../Tutorials/chapter-1.md) - 本教程演示了如何使用Druid的本地批处理摄取来执行批文件加载
-* [从Kafka加载流数据](../Tutorials/chapter-2.md) - 本教程演示了如何从Kafka主题加载流数据
-* [从Hadoop加载数据](../Tutorials/chapter-3.md) - 本教程演示了如何使用远程Hadoop集群执行批处理文件加载
-* [编写一个自己的数据摄取规范](../Tutorials/chapter-10.md) - 本教程演示了如何编写新的数据摄取规范并使用它来加载数据
-
-##### 重置集群状态
-
-如果要在清理服务后重新启动，请删除`var`目录，然后再次运行`bin/start-micro-quickstart`脚本。
-
-一旦每个服务都启动，您就可以加载数据了。
-
-##### 重置 Kafka
-
-如果您完成了[教程：从Kafka加载流数据](../Tutorials/chapter-2.md)并希望重置集群状态，则还应该清除所有Kafka状态。
-
-在停止ZooKeeper和Druid服务之前，使用`CTRL-C`关闭`Kafka Broker`，然后删除`/tmp/kafka-logs`中的Kafka日志目录：
-
-```
-rm -rf /tmp/kafka-logs
-```
+请注意，当你停止了 Druid 的服务后，可以通过删除 Druid 根目录下的 `var` 目录，并且再次运行 `bin/start-micro-quickstart` 脚本来让 Druid 启动一个完全新的实例 。
+如果你还希望导入相同的 Wikipedia 数据，并且使用不同的数据导入方式的话，你需要完成上面的删除步骤，然后再次启动 Druid，这是因为你可能会使用相同的数据导入。
