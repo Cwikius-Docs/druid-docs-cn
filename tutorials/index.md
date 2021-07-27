@@ -165,8 +165,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
    ![Data loader schema](../assets/tutorial-batch-data-loader-05.png ':size=690')
 
 
-10. 单击 **Next: Partition** to configure how the data will be split into segments. In this case, choose `DAY` as 
-    the **Segment granularity**. 
+10. 单击 **下一步：分区（Partition）** 来配置数据是如何在段（segments）中进行拆分的，选择  `DAY` 做为 **Segment granularity**
 
     ![Data loader partition](../assets/tutorial-batch-data-loader-06.png "Data loader partition")
 
