@@ -162,7 +162,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
    因为我们提交的数据集非常小，因此我们可以关闭 [回滚（rollup）](../ingestion/index.md#rollup) ，**Rollup** 的开关将不会在这个时候显示来供你选择。
 
-   ![Data loader schema](../assets/tutorial-batch-data-loader-05.png "Data loader schema")
+   ![Data loader schema](../assets/tutorial-batch-data-loader-05.png ':size=690')
 
 
 10. 单击 **Next: Partition** to configure how the data will be split into segments. In this case, choose `DAY` as 
