@@ -3,7 +3,7 @@
 
 Apache Druid支持多值字符串维度。当输入字段中包括一个数组值而非单一值（例如，JSON数组，或者包括多个 `listDelimiter` 分割的TSV字段）时即可生成多值维度。
 
-本文档描述了对一个维度进行聚合时，多值维度上的GroupBy查询行为（TopN很类似）。对于多值维度的内部详细信息可以查看 [Segments](../design/Segments.md) 文档的多值列部分。本文档中的示例都为 [原生Druid查询](makeNativeQueries.md)格式，对于多值维度在SQL中的使用情况请查阅 [Druid SQL 文档](druidsql.md)
+本文档描述了对一个维度进行聚合时，多值维度上的GroupBy查询行为（TopN很类似）。对于多值维度的内部详细信息可以查看 [Segments](../design/segments.md) 文档的多值列部分。本文档中的示例都为 [原生Druid查询](makeNativeQueries.md)格式，对于多值维度在SQL中的使用情况请查阅 [Druid SQL 文档](druidsql.md)
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"

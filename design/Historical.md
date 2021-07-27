@@ -29,7 +29,7 @@ org.apache.druid.cli.Main server historical
 
 [Coordinator](./Coordinator.md) 负责通过在与Historical关联的加载队列路径下创建一个短暂的Zookeeper条目来将新的段分配给Historical。有关Coordinator如何将段分配给Historical的更多信息，请参阅 [Coordinator](./Coordinator.md)。
 
-当Historical在其加载队列路径中注意到新的加载队列条目时，它将首先检查本地磁盘目录（缓存）以获取有关段的信息。如果缓存中不存在有关段的信息，Historical将从Zookeeper下载有关新段的元数据，此元数据包括段在深层存储中的位置以及如何解压缩和处理段的规范。有关段的元数据和一般的Druid段的更多信息，请参见 [段](./Segments.md)。一旦一个Historical完成了对一个段的处理，这个段就会在Zookeeper中与该进程相关联的服务段路径下被宣布，同时，该段可供查询。
+当Historical在其加载队列路径中注意到新的加载队列条目时，它将首先检查本地磁盘目录（缓存）以获取有关段的信息。如果缓存中不存在有关段的信息，Historical将从Zookeeper下载有关新段的元数据，此元数据包括段在深层存储中的位置以及如何解压缩和处理段的规范。有关段的元数据和一般的Druid段的更多信息，请参见 [段](segments.md)。一旦一个Historical完成了对一个段的处理，这个段就会在Zookeeper中与该进程相关联的服务段路径下被宣布，同时，该段可供查询。
 
 ### 从缓存加载和服务段
 
