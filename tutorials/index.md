@@ -231,8 +231,5 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 - [编写一个你自己的数据导入规范](tutorial-ingestion-spec.md) – 如何编写新的数据导入规范并使用它来加载数据
 
 
-Remember that after stopping Druid services, you can start clean next time by deleting the `var` directory from the Druid root directory and 
-running the `bin/start-micro-quickstart` script again. You will likely want to do this before taking other data ingestion tutorials, 
-since in them you will create the same wikipedia datasource.
-
-如果要在清理服务后重新启动，请删除`var`目录，然后再次运行`bin/start-micro-quickstart`脚本。
+请注意，当你停止了 Druid 的服务后，可以通过删除 Druid 根目录下的 `var` 目录，并且再次运行 `bin/start-micro-quickstart` 脚本来让 Druid 启动一个完全新的实例 。
+如果你还希望导入相同的 Wikipedia 数据，并且使用不同的数据导入方式的话，你需要完成上面的删除步骤，然后再次启动 Druid，这是因为你可能会使用相同的数据导入。
