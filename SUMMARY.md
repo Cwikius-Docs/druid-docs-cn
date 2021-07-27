@@ -2,7 +2,6 @@
 
 * [优质书籍分享]()
   * [产品类](book/product.md)
-  * [技术类](book/tech.md)
 
 * [优质技术文章合集]()
   * [分析调研类](misc/learning.md)
