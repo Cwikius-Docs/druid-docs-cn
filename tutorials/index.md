@@ -175,8 +175,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
 11. 单击 **下一步：调整（Tune）** 和 **下一步：发布（Publish）**
 
-12. The Publish settings are where you specify the datasource name in Druid. Let's change the default name from 
-`wikiticker-2015-09-12-sampled` to `wikipedia`. 
+12. 在发布（Publish）的设置中，你需要在 Druid 的数据源的名称，我们可以选择默认的名字，这个名字将数据源的名称从 `wikiticker-2015-09-12-sampled` 修改为 `wikipedia`。 
 
     ![Data loader publish](../assets/tutorial-batch-data-loader-07.png "Data loader publish")
 
