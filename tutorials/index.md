@@ -42,7 +42,7 @@ Druid 配置属性包括有从 _Nano-Quickstart_ 配置 （1 CPU, 4GB RAM） 到
 当你确定你的系统已经满足 [安装要求](#安装要求) 的所有内容后，请按照下面的步骤： 
 
 1. 下载
-下载地址为： [apache-druid-0.21.1 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz).
+下载地址为： [apache-druid-0.21.1 发布（release）](https://www.apache.org/dyn/closer.cgi?path=/druid/0.21.1/apache-druid-0.21.1-bin.tar.gz).
 2. 在你的控制台中，将下载的压缩包进行解压到当前目录，并且进入到解压的目录，或者你将目录移动到你希望部署的的目录中：
    ```bash
    tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz
