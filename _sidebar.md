@@ -34,7 +34,19 @@
 - 摄取（Ingestion）
   - [面试问题和经验](interview/index.md)
   - [算法题](algorithm/index.md)
+  
 - 查询（Querying）
+  - [Druid SQL](querying/sql.md)
+  - [原生查询](querying/querying.md)
+  - [查询执行](querying/query-execution.md)
+  - 概念
+    - [数据源](querying/datasource.md)
+    - [连接（joins）](querying/joins.md)
+  - 原生查询类型
+    - [Timeseries 查询](querying/timeseriesquery.md)
+    - [TopN 查询](querying/topnquery.md)
+    - [GroupBy 查询](querying/groupbyquery.md)
+ 
   
 - 开发（Development）
   - [在 Druid 中进行开发](development/index.md)

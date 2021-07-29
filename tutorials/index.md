@@ -208,7 +208,7 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
 2. 但一个数据源显示为可用的时候，针对这个数据源打开 Actions (![Actions](../assets/datasources-action-button.png)) 菜单，然后选择  **使用 SQL 进行查询（Query with SQL）**。
 
-   ![Datasource view](../assets/tutorial-batch-data-loader-10.png "Datasource view")
+   ![Datasource view](../assets/tutorial-batch-data-loader-10.png ':size=690')
 
    > 请注意，你还可以对数据源进行一些其他的操作，包括有配置，保留时间规则，压缩等。
 
@@ -222,13 +222,13 @@ Druid 是通过读取和存储有关导入数据的摘要（schema）来完成�
 
 ## 下一步
 
-在完成上面步骤中的快速导航后，请查看 [query 教程](./tutorial-query.md) 页面中的内容来了解如何在 Druid 的控制台中使用查询语句。
+在完成上面步骤中的快速导航后，请查看 [query 教程](../tutorials/tutorial-query.md) 页面中的内容来了解如何在 Druid 的控制台中使用查询语句。
 
 还有，如果你还希望从其他的数据导入方式中导入数据到 Druid，请参考下面的页面链接： 
 
-- [从 Apache Kafka 中加载流式数据](./tutorial-kafka.md) – 如何从 Kafka 的主题中加载流式数据。
-- [使用 Apache Hadoop 载入一个文件](./tutorial-batch-hadoop.md) – 如何使用远程 Hadoop 集群执行批处理文件加载
-- [编写一个你自己的数据导入规范](./tutorial-ingestion-spec.md) – 如何编写新的数据导入规范并使用它来加载数据
+- [从 Apache Kafka 中加载流式数据](../tutorials/tutorial-kafka.md) – 如何从 Kafka 的主题中加载流式数据。
+- [使用 Apache Hadoop 载入一个文件](../tutorials/tutorial-batch-hadoop.md) – 如何使用远程 Hadoop 集群执行批处理文件加载
+- [编写一个你自己的数据导入规范](../tutorials/tutorial-ingestion-spec.md) – 如何编写新的数据导入规范并使用它来加载数据
 
 
 请注意，当你停止了 Druid 的服务后，可以通过删除 Druid 根目录下的 `var` 目录，并且再次运行 `bin/start-micro-quickstart` 脚本来让 Druid 启动一个完全新的实例 。
