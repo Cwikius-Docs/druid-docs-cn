@@ -13,9 +13,9 @@ Roll-up 是第一级对选定列集的一级聚合操作，通过这个操作我
 * [教程：载入一个文件](../tutorials/tutorial-batch.md)
 * [教程：查询数据](../tutorials/tutorial-query.md)
 
-## Example data
+## 示例数据
 
-For this tutorial, we'll use a small sample of network flow event data, representing packet and byte counts for traffic from a source to a destination IP address that occurred within a particular second.
+针对对于本教程，我们将使用一个网络事件流数据的小样本。如下面表格中使用的数据，这个数据是在特定时间内从源到目标 IP 地址的流量的数据包和字节的事件。
 
 ```json
 {"timestamp":"2018-01-01T01:01:35Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":20,"bytes":9024}
@@ -29,9 +29,9 @@ For this tutorial, we'll use a small sample of network flow event data, represen
 {"timestamp":"2018-01-02T21:35:45Z","srcIP":"7.7.7.7", "dstIP":"8.8.8.8","packets":12,"bytes":2818}
 ```
 
-A file containing this sample input data is located at `quickstart/tutorial/rollup-data.json`.
+包含有这个样本数据的 JSON 文件位于 `quickstart/tutorial/rollup-data.json`。
 
-We'll ingest this data using the following ingestion task spec, located at `quickstart/tutorial/rollup-index.json`.
+我们将使用下面描述的数据导入任务描述规范，将上面的 JSON 数据导入到 Druid 中，有关这个任务描述配置位于 `quickstart/tutorial/rollup-index.json` 中。
 
 ```json
 {
@@ -83,11 +83,11 @@ We'll ingest this data using the following ingestion task spec, located at `quic
 }
 ```
 
-Roll-up has been enabled by setting `"rollup" : true` in the `granularitySpec`.
+通过在 `granularitySpec` 选项中设置 `rollup : true` 来启用 Roll-up。
 
-Note that we have `srcIP` and `dstIP` defined as dimensions, a longSum metric is defined for the `packets` and `bytes` columns, and the `queryGranularity` has been defined as `minute`.
+请注意，我们将 `srcIP` 和 `dstIP` 定义为 **维度（dimensions）**，将 `packets` 和 `bytes` 列定义为了 longSum 类型的**指标（metric）**，并将 `queryGranularity` 配置定义为 `minute`。
 
-We will see how these definitions are used after we load this data.
+在加载这些数据后，我们将看到如何使用这些定义。
 
 ## Load the example data
 
@@ -176,90 +176,12 @@ For the last event recording traffic between 1.1.1.1 and 2.2.2.2, no roll-up too
 Note that the `count` metric shows how many rows in the original input data contributed to the final "rolled up" row.
 
 
-## Roll-up
-
-Apache Druid可以通过roll-up在数据摄取阶段对原始数据进行汇总。 Roll-up是对选定列集的一级聚合操作，它可以减小存储数据的大小。
-
-本教程中将讨论在一个示例数据集上进行roll-up的结果。
-
-本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
-
-完成[加载本地文件](tutorial-batch.md)和[数据查询](./chapter-4.md)两部分内容也是非常有帮助的。
 
 ### 示例数据
 
-对于本教程，我们将使用一个网络流事件数据的小样本，表示在特定时间内从源到目标IP地址的流量的数据包和字节计数。
 
-```json
-{"timestamp":"2018-01-01T01:01:35Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":20,"bytes":9024}
-{"timestamp":"2018-01-01T01:01:51Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":255,"bytes":21133}
-{"timestamp":"2018-01-01T01:01:59Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":11,"bytes":5780}
-{"timestamp":"2018-01-01T01:02:14Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":38,"bytes":6289}
-{"timestamp":"2018-01-01T01:02:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":377,"bytes":359971}
-{"timestamp":"2018-01-01T01:03:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":49,"bytes":10204}
-{"timestamp":"2018-01-02T21:33:14Z","srcIP":"7.7.7.7", "dstIP":"8.8.8.8","packets":38,"bytes":6289}
-{"timestamp":"2018-01-02T21:33:45Z","srcIP":"7.7.7.7", "dstIP":"8.8.8.8","packets":123,"bytes":93999}
-{"timestamp":"2018-01-02T21:35:45Z","srcIP":"7.7.7.7", "dstIP":"8.8.8.8","packets":12,"bytes":2818}
-```
-位于 `quickstart/tutorial/rollup-data.json` 的文件包含了样例输入数据
 
-我们将使用 `quickstart/tutorial/rollup-index.json` 的摄入数据规范来摄取数据
 
-```json
-{
-  "type" : "index_parallel",
-  "spec" : {
-    "dataSchema" : {
-      "dataSource" : "rollup-tutorial",
-      "dimensionsSpec" : {
-        "dimensions" : [
-          "srcIP",
-          "dstIP"
-        ]
-      },
-      "timestampSpec": {
-        "column": "timestamp",
-        "format": "iso"
-      },
-      "metricsSpec" : [
-        { "type" : "count", "name" : "count" },
-        { "type" : "longSum", "name" : "packets", "fieldName" : "packets" },
-        { "type" : "longSum", "name" : "bytes", "fieldName" : "bytes" }
-      ],
-      "granularitySpec" : {
-        "type" : "uniform",
-        "segmentGranularity" : "week",
-        "queryGranularity" : "minute",
-        "intervals" : ["2018-01-01/2018-01-03"],
-        "rollup" : true
-      }
-    },
-    "ioConfig" : {
-      "type" : "index_parallel",
-      "inputSource" : {
-        "type" : "local",
-        "baseDir" : "quickstart/tutorial",
-        "filter" : "rollup-data.json"
-      },
-      "inputFormat" : {
-        "type" : "json"
-      },
-      "appendToExisting" : false
-    },
-    "tuningConfig" : {
-      "type" : "index_parallel",
-      "maxRowsPerSegment" : 5000000,
-      "maxRowsInMemory" : 25000
-    }
-  }
-}
-```
-
-通过在 `granularitySpec` 选项中设置 `rollup : true` 来启用Roll-up
-
-注意，我们将`srcIP`和`dstIP`定义为**维度**，将`packets`和`bytes`列定义为了`longSum`类型的**指标**，并将 `queryGranularity` 配置定义为 `minute`。
-
-加载这些数据后，我们将看到如何使用这些定义。
 
 ### 加载示例数据
 
