@@ -83,13 +83,13 @@ Roll-up 是第一级对选定列集的一级聚合操作，通过这个操作我
 }
 ```
 
-Roll-up has been enabled by setting `"rollup" : true` in the `granularitySpec`.
+通过在 `granularitySpec` 选项中设置 `rollup : true` 来启用 Roll-up。
 
-Note that we have `srcIP` and `dstIP` defined as dimensions, a longSum metric is defined for the `packets` and `bytes` columns, and the `queryGranularity` has been defined as `minute`.
+请注意，我们将 `srcIP` 和 `dstIP` 定义为 **维度（dimensions）**，将 `packets` 和 `bytes` 列定义为了 longSum 类型的**指标（metric）**，并将 `queryGranularity` 配置定义为 `minute`。
 
-We will see how these definitions are used after we load this data.
+加载这些数据后，我们将看到如何使用这些定义。
 
-## Load the example data
+## 载入示例数据
 
 From the apache-druid-apache-druid-0.21.1 package root, run the following command:
 
