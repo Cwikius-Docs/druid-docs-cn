@@ -1,5 +1,6 @@
+## 独立服务器部署
 
-Druid includes a set of reference configurations and launch scripts for single-machine deployments:
+Druid 包含有一组可用的参考配置和用于单机部署的启动脚本：
 
 - `nano-quickstart`
 - `micro-quickstart`
@@ -8,7 +9,7 @@ Druid includes a set of reference configurations and launch scripts for single-m
 - `large`
 - `xlarge`
 
-The `micro-quickstart` is sized for small machines like laptops and is intended for quick evaluation use-cases.
+`micro-quickstart` 适合于笔记本电脑等小型计算机，主要用于能够快速评估 Druid 的使用场景。
 
 The `nano-quickstart` is an even smaller configuration, targeting a machine with 1 CPU and 4GiB memory. It is meant for limited evaluations in resource constrained environments, such as small Docker containers.
 
@@ -20,50 +21,39 @@ The example configurations run the Druid Coordinator and Overlord together in a 
 
 While example configurations are provided for very large single machines, at higher scales we recommend running Druid in a [clustered deployment](../tutorials/cluster.md), for fault-tolerance and reduced resource contention.
 
-## Single server reference configurations
+
 
 ### Nano-Quickstart: 1 CPU, 4GiB RAM
 
-- Launch command: `bin/start-nano-quickstart`
-- Configuration directory: `conf/druid/single-server/nano-quickstart`
+- 启动命令： `bin/start-nano-quickstart`
+- 配置目录： `conf/druid/single-server/nano-quickstart`
 
 ### Micro-Quickstart: 4 CPU, 16GiB RAM
 
-- Launch command: `bin/start-micro-quickstart`
-- Configuration directory: `conf/druid/single-server/micro-quickstart`
+- 启动命令： `bin/start-micro-quickstart`
+- 配置目录： `conf/druid/single-server/micro-quickstart`
 
 ### Small: 8 CPU, 64GiB RAM (~i3.2xlarge)
 
-- Launch command: `bin/start-small`
-- Configuration directory: `conf/druid/single-server/small`
+- 启动命令： `bin/start-small`
+- 配置目录： `conf/druid/single-server/small`
 
 ### Medium: 16 CPU, 128GiB RAM (~i3.4xlarge)
 
-- Launch command: `bin/start-medium`
-- Configuration directory: `conf/druid/single-server/medium`
+- 启动命令： `bin/start-medium`
+- 配置目录： `conf/druid/single-server/medium`
 
 ### Large: 32 CPU, 256GiB RAM (~i3.8xlarge)
 
-- Launch command: `bin/start-large`
-- Configuration directory: `conf/druid/single-server/large`
+- 启动命令： `bin/start-large`
+- 配置目录： `conf/druid/single-server/large`
 
 ### X-Large: 64 CPU, 512GiB RAM (~i3.16xlarge)
 
-- Launch command: `bin/start-xlarge`
-- Configuration directory: `conf/druid/single-server/xlarge`
+- 启动命令： `bin/start-xlarge`
+- 配置目录： `conf/druid/single-server/xlarge`
 
 
-### 单服务器部署
-
-Druid包括一组参考配置和用于单机部署的启动脚本：
-
-* `nano-quickstart`
-* `micro-quickstart`
-* `small`
-* `medium`
-* `large`
-* `large`
-* `xlarge`
 
 `micro-quickstart`适合于笔记本电脑等小型机器，旨在用于快速评估测试使用场景。
 
@@ -76,35 +66,3 @@ Druid包括一组参考配置和用于单机部署的启动脚本：
 通过[Coordinator配置文档](../../Configuration/configuration.md#Coordinator)中描述的可选配置`druid.coordinator.asOverlord.enabled = true`可以在单个进程中同时运行Druid Coordinator和Overlord。
 
 虽然为大型单台计算机提供了示例配置，但在更高规模下，我们建议在集群部署中运行Druid，以实现容错和减少资源争用。
-
-#### 单服务器参考配置
-##### Nano-Quickstart: 1 CPU, 4GB 内存
-
-* 启动命令: `bin/start-nano-quickstart`
-* 配置目录: `conf/druid/single-server/nano-quickstart`
-
-##### Micro-Quickstart: 4 CPU, 16GB 内存
-
-* 启动命令: `bin/start-micro-quickstart`
-* 配置目录: `conf/druid/single-server/micro-quickstart`
-
-##### Small: 8 CPU, 64GB 内存 (~i3.2xlarge)
-
-* 启动命令: `bin/start-small`
-* 配置目录: `conf/druid/single-server/small`
-
-##### Medium: 16 CPU, 128GB 内存 (~i3.4xlarge)
-
-* 启动命令: `bin/start-medium`
-* 配置目录: `conf/druid/single-server/medium`
-
-##### Large: 32 CPU, 256GB 内存 (~i3.8xlarge)
-
-* 启动命令: `bin/start-large`
-* 配置目录: `conf/druid/single-server/large`
-
-##### X-Large: 64 CPU, 512GB 内存 (~i3.16xlarge)
-
-* 启动命令: `bin/start-xlarge`
-* 配置目录: `conf/druid/single-server/xlarge`
-

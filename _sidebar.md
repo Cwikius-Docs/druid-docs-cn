@@ -14,7 +14,7 @@
   - [从 Apache Kafka 载入数据](tutorials/tutorial-kafka.md)
   - [从 Apache Hadoop 载入数据](tutorials/tutorial-batch-hadoop.md)
   - [查询数据](tutorials/tutorial-query.md)
-  - [回滚](tutorials/tutorial-rollup.md)
+  - [Roll-up](tutorials/tutorial-rollup.md)
   - [配置数据保存时间](tutorials/tutorial-retention.md)
   - [更新已经存在的数据](tutorials/tutorial-update-data.md)
   - [压缩段](tutorials/tutorial-compaction.md)
@@ -34,7 +34,19 @@
 - 摄取（Ingestion）
   - [面试问题和经验](interview/index.md)
   - [算法题](algorithm/index.md)
+  
 - 查询（Querying）
+  - [Druid SQL](querying/sql.md)
+  - [原生查询](querying/querying.md)
+  - [查询执行](querying/query-execution.md)
+  - 概念
+    - [数据源](querying/datasource.md)
+    - [连接（joins）](querying/joins.md)
+  - 原生查询类型
+    - [Timeseries 查询](querying/timeseriesquery.md)
+    - [TopN 查询](querying/topnquery.md)
+    - [GroupBy 查询](querying/groupbyquery.md)
+ 
   
 - 开发（Development）
   - [在 Druid 中进行开发](development/index.md)

@@ -2,8 +2,8 @@
 
 本教程文档主要为了对如何在 Apache Druid 使用 SQL 进行查询进行说明。  
 
-假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容的内容。因为在 Apache Druid 中进行查询之前，
-你需要将注入导入到 Druid 后才能够让进行下一步的操作：
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容。因为在 Apache Druid 中进行查询之前，
+你需要将数据导入到 Druid 后才能够让进行下一步的操作：
 
 * [教程：载入一个文件](../tutorials/tutorial-batch.md)
 * [教程：从 Kafka 中载入流数据](../tutorials/tutorial-kafka.md)
