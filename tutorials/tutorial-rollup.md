@@ -1,12 +1,17 @@
 # Roll-up
-Apache Druid can summarize raw data at ingestion time using a process we refer to as "roll-up". Roll-up is a first-level aggregation operation over a selected set of columns that reduces the size of stored data.
 
-This tutorial will demonstrate the effects of roll-up on an example dataset.
+Apache Druid 可以在数据摄取阶段对原始数据进行汇总，这个过程我们称为 "roll-up"。 
+Roll-up 是第一级对选定列集的一级聚合操作，通过这个操作我们能够减少存储数据的大小。
 
-For this tutorial, we'll assume you've already downloaded Druid as described in
-the [single-machine quickstart](index.html) and have it running on your local machine.
+本教程中将讨论在一个示例数据集上进行 roll-up 的示例。
 
-It will also be helpful to have finished [Tutorial: Loading a file](../tutorials/tutorial-batch.md) and [Tutorial: Querying data](../tutorials/tutorial-query.md).
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容，并且你的 Druid 实例已经在你的本地的计算机上运行了。
+
+
+同时，如果你已经完成了下面内容的阅读的话将会更好的帮助你理解 Roll-up 的相关内容
+
+* [教程：载入一个文件](../tutorials/tutorial-batch.md)
+* [教程：查询数据](../tutorials/tutorial-query.md)
 
 ## Example data
 
