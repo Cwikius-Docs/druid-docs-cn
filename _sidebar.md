@@ -14,7 +14,7 @@
   - [从 Apache Kafka 载入数据](tutorials/tutorial-kafka.md)
   - [从 Apache Hadoop 载入数据](tutorials/tutorial-batch-hadoop.md)
   - [查询数据](tutorials/tutorial-query.md)
-  - [回滚](tutorials/tutorial-rollup.md)
+  - [Roll-up](tutorials/tutorial-rollup.md)
   - [配置数据保存时间](tutorials/tutorial-retention.md)
   - [更新已经存在的数据](tutorials/tutorial-update-data.md)
   - [压缩段](tutorials/tutorial-compaction.md)
