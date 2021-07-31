@@ -1,76 +1,47 @@
----
-id: tutorial-query
-title: "Tutorial: Querying data"
-sidebar_label: "Querying data"
----
+# 查询数据
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+本教程文档主要为了对如何在 Apache Druid 使用 SQL 进行查询进行说明。  
+
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容的内容。因为在 Apache Druid 中进行查询之前，
+你需要将注入导入到 Druid 后才能够让进行下一步的操作：
+
+* [教程：载入一个文件](../tutorials/tutorial-batch.md)
+* [教程：从 Kafka 中载入流数据](../tutorials/tutorial-kafka.md)
+* [教程：使用 Hadoop 载入一个文件](../tutorials/tutorial-batch-hadoop.md)
+
+有多种方法能在 Druid 中运行 SQL 查询：从 Druid 控制台中进行查询；使用命令行工具（command line utility）进行查询查询；使用 HTTP 方式进行查询。
+
+下面我们将会针对各种查询方式进行说明。
 
 
-This tutorial demonstrates how to query data in Apache Druid using SQL.  
+## 从 Druid 控制台（Druid console）中进行查询
 
-It assumes that you've completed the [Quickstart](../tutorials/index.md) 
-or one of the following tutorials, since we'll query datasources that you would have created
-by following one of them:
+Druid 控制台提供了视图能够让用户更加容易的在 Druid 进行查询测试，并且查看查询返回的结果。
 
-* [Tutorial: Loading a file](../tutorials/tutorial-batch.md)
-* [Tutorial: Loading stream data from Kafka](../tutorials/tutorial-kafka.md)
-* [Tutorial: Loading a file using Hadoop](../tutorials/tutorial-batch-hadoop.md)
+1. 如果你的 Druid 没有启动的话，你需要先行启动 Druid 集群，然后通过你的浏览器访问 Druid 控制台。
 
-There are various ways to run Druid SQL queries: from the Druid console, using a command line utility
-and by posting the query by HTTP. We'll look at each of these. 
-
-
-## Query SQL from the Druid console
-
-The Druid console includes a view that makes it easier to build and test queries, and 
-view their results. 
-
-1. Start up the Druid cluster, if it's not already running, and open the Druid console in your web
-browser. 
-
-2. Click **Query** from the header to open the Query view:  
+2. 单击顶部的 **查询（Query）** 导航进入查询界面：  
 
    ![Query view](../assets/tutorial-query-01.png "Query view")
 
-   You can always write queries directly in the edit pane, but the Query view also provides 
-   facilities to help you construct SQL queries, which we will use to generate a starter query. 
+   你可以在编辑器中直接写查询语句和脚本，同时 Query 查询输入对话框也提供了代码自动完成功能帮助你完成需要使用的查询语句。
 
-3. Expand the wikipedia datasource tree in the left pane. We'll
-create a query for the page dimension.  
+3. 从左侧的面板中打开 wikipedia 数据源，我们将会从这里对数据源中的 page 进行查询。  
 
-4. Click `page` and then **Show:page** from the menu: 
+4. 单击 `page` 然后从菜单中选项 **Show:page** ： 
 
    ![Query select page](../assets/tutorial-query-02.png "Query select page")
 
-   A SELECT query appears in the query edit pane and immediately runs. However, in this case, the query 
-   returns no data, since by default the query filters for data from the last day, while our data is considerably
-   older than that. Let's remove the filter.  
+   SELECT 查询语句将会在查询编辑器中显示。但是，现在如果你进行查询的话是没有任何返回数据的，这是因为默认的查询时间为最近的一天，
+   但是我们的数据已经远比这个数据老。因此我们需要删除这个过滤器（filter）。  
 
-5. In the datasource tree, click `__time` and **Remove Filter**. 
+5. 在 datasource 的树中，单击 `__time` 然后选择 **Remove Filter** 
 
    ![Clear WHERE filter](../assets/tutorial-query-03.png "Clear WHERE filter")
 
-6. Click **Run** to run the query.   
+6. 单击 **Run** 来运行这个查询。
 
-   You should now see two columns of data, a page name and the count:
+   你应该在返回的对话框中看到 2 列的数据，这个包括有 page name 和 count:
 
    ![Query results](../assets/tutorial-query-04.png "Query results")
 
@@ -111,7 +82,7 @@ returns the number of edits for the page. Make the same column name change in th
 8. Click the countryName dimension in the left pane and choose the first filtering option. It's not exactly what we want, but
 we'll edit it by hand. The new WHERE clause should appear in your query. 
 
-8. Modify the WHERE clause to exclude results that do not have a value for countryName: 
+9. Modify the WHERE clause to exclude results that do not have a value for countryName: 
 
    ```sql
    WHERE "countryName" IS NOT NULL
@@ -120,29 +91,29 @@ we'll edit it by hand. The new WHERE clause should appear in your query.
 
    ![Finished query](../assets/tutorial-query-035.png "Finished query")
 
-9. Under the covers, every Druid SQL query is translated into a query in the JSON-based _Druid native query_ format before it runs
+10. Under the covers, every Druid SQL query is translated into a query in the JSON-based _Druid native query_ format before it runs
  on data nodes. You can view the native query for this query by clicking `...` and **Explain SQL Query**. 
 
-   While you can use Druid SQL for most purposes, familiarity with native query is useful for composing complex queries and for troubleshooting 
+    While you can use Druid SQL for most purposes, familiarity with native query is useful for composing complex queries and for troubleshooting 
 performance issues. For more information, see [Native queries](../querying/querying.md). 
 
-   ![Explain query](../assets/tutorial-query-06.png "Explain query")
+    ![Explain query](../assets/tutorial-query-06.png "Explain query")
 
-    > Another way to view the explain plan is by adding EXPLAIN PLAN FOR to the front of your query, as follows:
-    >
-    >```sql
-    >EXPLAIN PLAN FOR
-    >SELECT
-    >  "page",
-    >  "countryName",
-    >  COUNT(*) AS "Edits"
-    >FROM "wikipedia"
-    >WHERE "countryName" IS NOT NULL
-    >GROUP BY 1, 2
-    >ORDER BY "Edits" DESC
-    >```
-    >This is particularly useful when running queries 
-    from the command line or over HTTP.
+     > Another way to view the explain plan is by adding EXPLAIN PLAN FOR to the front of your query, as follows:
+     >
+     >```sql
+     >EXPLAIN PLAN FOR
+     >SELECT
+     >  "page",
+     >  "countryName",
+     >  COUNT(*) AS "Edits"
+     >FROM "wikipedia"
+     >WHERE "countryName" IS NOT NULL
+     >GROUP BY 1, 2
+     >ORDER BY "Edits" DESC
+     >```
+     >This is particularly useful when running queries 
+     from the command line or over HTTP.
 
 
 9. Finally, click  `...`  and **Edit context** to see how you can add additional parameters controlling the execution of the query execution. In the field, enter query context options as JSON key-value pairs, as described in [Context flags](../querying/query-context.md).  
