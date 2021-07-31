@@ -179,7 +179,7 @@ Retrieved 10 rows in 0.06s.
 ```
 
 
-### Query SQL over HTTP
+### 通过 HTTP 进行查询
 
 你可以通过 HTTP 协议将你的查询直接提交给 Druid Broker 进行处理。
 
@@ -236,16 +236,9 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipe
 ]
 ```
 
-## Further reading
+## 延伸阅读
 
-See the [Druid SQL documentation](../querying/sql.md) for more information on using Druid SQL queries.
+[Druid SQL 文档](../querying/sql.md)  - 使用 Druid SQL 进行查询更多信息。
 
-See the [Queries documentation](../querying/querying.md) for more information on Druid native queries.
+[查询文档](../querying/querying.md) 使用 Druid native 进行查询更多信息。
 
-
-
-
-### 进一步阅读
-
-[查询文档](../querying/makeNativeQueries.md)有更多关于Druid原生JSON查询的信息
-[Druid SQL文档](../querying/druidsql.md)有更多关于Druid SQL查询的信息
