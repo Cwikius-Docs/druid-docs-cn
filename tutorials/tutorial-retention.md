@@ -1,41 +1,52 @@
 # 数据保留规则
+本教程对如何在数据源上配置数据保留规则进行了说明，数据保留规则主要定义为数据的保留（retained）或者卸载（dropped）的时间。
 
-This tutorial demonstrates how to configure retention rules on a datasource to set the time intervals of data that will be retained or dropped.
+本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
 
-For this tutorial, we'll assume you've already downloaded Apache Druid as described in
-the [single-machine quickstart](index.html) and have it running on your local machine.
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容，并且你的 Druid 实例已经在你的本地的计算机上运行了。
 
-It will also be helpful to have finished [Tutorial: Loading a file](../tutorials/tutorial-batch.md) and [Tutorial: Querying data](../tutorials/tutorial-query.md).
+同时，如果你已经完成了下面内容的阅读的话将会更好的帮助你理解 Roll-up 的相关内容
 
-## Load the example data
+* [教程：载入一个文件](../tutorials/tutorial-batch.md)
+* [教程：查询数据](../tutorials/tutorial-query.md)
 
-For this tutorial, we'll be using the Wikipedia edits sample data, with an ingestion task spec that will create a separate segment for each hour in the input data.
 
-The ingestion spec can be found at `quickstart/tutorial/retention-index.json`. Let's submit that spec, which will create a datasource called `retention-tutorial`:
+## 载入示例数据
+
+在本教程中，我们将使用W Wikipedia 编辑的示例数据，其中包含一个摄取任务规范，它将为输入数据每个小时创建一个单独的段。
+
+数据摄取导入规范位于 `quickstart/tutorial/retention-index.json` 文件中。让我们提交这个规范，将创建一个名称为 `retention-tutorial` 的数据源。
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/retention-index.json --url http://localhost:8081
 ```
 
-After the ingestion completes, go to [http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources) in a browser to access the Druid Console's datasource view.
+摄取完成后，在浏览器中访问 http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources) 
+然后访问 Druid 的控制台数据源视图。
 
-This view shows the available datasources and a summary of the retention rules for each datasource:
+此视图显示可用的数据源以及每个数据源定义的数据保留规则摘要。
+
 
 ![Summary](../assets/tutorial-retention-01.png "Summary")
 
-Currently there are no rules set for the `retention-tutorial` datasource. Note that there are default rules for the cluster: load forever with 2 replicas in `_default_tier`.
+当前，针对 `retention-tutorial` 数据源还没有设置数据保留规则。
 
-This means that all data will be loaded regardless of timestamp, and each segment will be replicated to two Historical processes in the default tier.
+需要注意的是，针对集群部署方式会配置一个默认的数据保留规则：永久载入 2 个副本并且替换进 `_default_tier`（load forever with 2 replicas in `_default_tier`）。ith 2 replicas in `_default_tier`.
 
-In this tutorial, we will ignore the tiering and redundancy concepts for now.
+这意味着无论时间戳如何，所有数据都将加载，并且每个段将复制到两个 Historical 进程的默认层（default tier）中。
 
-Let's view the segments for the `retention-tutorial` datasource by clicking the "24 Segments" link next to "Fully Available".
+在本教程中，我们将暂时忽略分层（tiering）和冗余（redundancy）的概念。
 
-The segments view ([http://localhost:8888/unified-console.html#segments](http://localhost:8888/unified-console.html#segments)) provides information about what segments a datasource contains. The page shows that there are 24 segments, each one containing data for a specific hour of 2015-09-12:
+通过单击 `retention-tutorial` 数据源 "Fully Available" 链接边上的 "24 Segments" 来查看段（segments）信息。
+
+段视图 ([http://localhost:8888/unified-console.html#segments](http://localhost:8888/unified-console.html#segments)) p
+
+[Segment视图](http://localhost:8888/unified-console.html#segments) 提供了一个数据源的段（segment）信息。
+本页显示了有 24 个段，每个段包括有 2015-09-12 每一个小时的数据。
 
 ![Original segments](../assets/tutorial-retention-02.png "Original segments")
 
-## Set retention rules
+## 设置保留规则
 
 Suppose we want to drop data for the first 12 hours of 2015-09-12 and keep data for the later 12 hours of 2015-09-12.
 
@@ -86,48 +97,13 @@ Note that in this tutorial we defined a load rule on a specific interval.
 
 If instead you want to retain data based on how old it is (e.g., retain data that ranges from 3 months in the past to the present time), you would define a Period load rule instead.
 
-## Further reading
+## 延伸阅读
 
 * [Load rules](../operations/rule-configuration.md)
 
 
 
 
-## 配置数据保留规则
-
-本教程演示如何在数据源上配置保留规则，以设置要保留或删除的数据的时间间隔
-
-本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
-
-完成[加载本地文件](tutorial-batch.md)和[数据查询](./chapter-4.md)两部分内容也是非常有帮助的。
-
-### 加载示例数据
-
-在本教程中，我们将使用Wikipedia编辑的示例数据，其中包含一个摄取任务规范，它将为输入数据每个小时创建一个单独的段
-
-数据摄取规范位于 `quickstart/tutorial/retention-index.json`, 提交这个规范，将创建一个名称为 `retention-tutorial` 的数据源
-
-```json
-bin/post-index-task --file quickstart/tutorial/retention-index.json --url http://localhost:8081
-```
-
-摄取完成后，在浏览器中转到[http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources)以访问Druid控制台的datasource视图
-
-此视图显示可用的数据源以及每个数据源的保留规则摘要
-
-![](img-6/tutorial-retention-01.png)
-
-当前没有为 `retention-tutorial` 数据源设置规则。请注意，集群有默认规则：在 `_default_tier` 中永久加载2个副本
-
-这意味着无论时间戳如何，所有数据都将加载，并且每个段将复制到两个Historical进程的 `_default_tier` 中
-
-在本教程中，我们将暂时忽略分层和冗余概念
-
-让我们通过单击"Fully Available"旁边的"24 Segments"链接来查看 `retention-tutorial` 数据源的段
-
-[Segment视图](http://localhost:8888/unified-console.html#segments) 提供了一个数据源包括的segment信息，本页显示有24个段，每一个段包括了2015-09-12特定小时的数据
-
-![](img-6/tutorial-retention-02.png)
 
 ### 设置数据保留规则
 
