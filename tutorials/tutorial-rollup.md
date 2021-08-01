@@ -91,17 +91,17 @@ Roll-up 是第一级对选定列集的一级聚合操作，通过这个操作我
 
 ## 载入示例数据
 
-From the apache-druid-apache-druid-0.21.1 package root, run the following command:
+在 Druid 包 的apache-druid-apache-druid-0.21.1 根目录下运行以下命令：
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/rollup-index.json --url http://localhost:8081
 ```
 
-After the script completes, we will query the data.
+当上面的脚本运行完成后，我们将会开始查询数据。
 
-## Query the example data
+## 查询示例数据
 
-Let's run `bin/dsql` and issue a `select * from "rollup-tutorial";` query to see what data was ingested.
+让我们运行 `bin/dsql` 命令行工具，然后执行 `select * from "rollup-tutorial";` 脚本，来查看 Druid 系统中导入的数据。
 
 ```bash
 $ bin/dsql
@@ -122,7 +122,7 @@ Retrieved 5 rows in 1.18s.
 dsql>
 ```
 
-Let's look at the three events in the original input data that occurred during `2018-01-01T01:01`:
+让我们查看在 `2018-01-01T01:01` 导入的 3 条原始数据：
 
 ```json
 {"timestamp":"2018-01-01T01:01:35Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":20,"bytes":9024}
@@ -130,7 +130,7 @@ Let's look at the three events in the original input data that occurred during `
 {"timestamp":"2018-01-01T01:01:59Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":11,"bytes":5780}
 ```
 
-These three rows have been "rolled up" into the following row:
+上面的 3 调原始数据使用 "rolled up" 后将会合并成下面 1 条数据进行导入：
 
 ```bash
 ┌──────────────────────────┬────────┬───────┬─────────┬─────────┬─────────┐
@@ -139,8 +139,12 @@ These three rows have been "rolled up" into the following row:
 │ 2018-01-01T01:01:00.000Z │  35937 │     3 │ 2.2.2.2 │     286 │ 1.1.1.1 │
 └──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
 ```
+这输入的数据将会按按照时间列（timestamp）和维度列(dimension columns) `{timestamp, srcIP, dstIP}` 进行分组（Group By），同时在指标列（metric columns） `{packages, bytes}` 上进行聚合。
 
-The input rows have been grouped by the timestamp and dimension columns `{timestamp, srcIP, dstIP}` with sum aggregations on the metric columns `packets` and `bytes`.
+在进行分组之前，原始输入数据的时间戳按分钟进行标记和记录的，这是由于摄取规范中的 `"queryGranularity"："minute"` 配置中决定的。
+
+因此，记录中的 `2018-01-01T01:02` 期间发生的时间也被聚合后汇总。
+
 
 Before the grouping occurs, the timestamps of the original input data are bucketed/floored by minute, due to the `"queryGranularity":"minute"` setting in the ingestion spec.
 
@@ -159,7 +163,7 @@ Likewise, these two events that occurred during `2018-01-01T01:02` have been rol
 └──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
 ```
 
-For the last event recording traffic between 1.1.1.1 and 2.2.2.2, no roll-up took place, because this was the only event that occurred during `2018-01-01T01:03`:
+针对最后的记录 1.1.1.1 和 2.2.2.2 之间流量事件没有被 roll-up 进行合并汇总， 这是因为这些事件是 `2018-01-01T01:03` 期间发生的唯一事件。nt that occurred during `2018-01-01T01:03`:
 
 ```json
 {"timestamp":"2018-01-01T01:03:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":49,"bytes":10204}
@@ -173,90 +177,4 @@ For the last event recording traffic between 1.1.1.1 and 2.2.2.2, no roll-up too
 └──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
 ```
 
-Note that the `count` metric shows how many rows in the original input data contributed to the final "rolled up" row.
-
-
-
-
-
-### 加载示例数据
-
-在Druid的根目录下运行以下命令：
-
-```json
-bin/post-index-task --file quickstart/tutorial/rollup-index.json --url http://localhost:8081
-```
-
-脚本运行完成以后，我们将查询数据。
-
-### 查询示例数据
-
-现在运行 `bin/dsql` 然后执行查询 `select * from "rollup-tutorial";` 来查看已经被摄入的数据。
-
-```json
-$ bin/dsql
-Welcome to dsql, the command-line client for Druid SQL.
-Type "\h" for help.
-dsql> select * from "rollup-tutorial";
-┌──────────────────────────┬────────┬───────┬─────────┬─────────┬─────────┐
-│ __time                   │ bytes  │ count │ dstIP   │ packets │ srcIP   │
-├──────────────────────────┼────────┼───────┼─────────┼─────────┼─────────┤
-│ 2018-01-01T01:01:00.000Z │  35937 │     3 │ 2.2.2.2 │     286 │ 1.1.1.1 │
-│ 2018-01-01T01:02:00.000Z │ 366260 │     2 │ 2.2.2.2 │     415 │ 1.1.1.1 │
-│ 2018-01-01T01:03:00.000Z │  10204 │     1 │ 2.2.2.2 │      49 │ 1.1.1.1 │
-│ 2018-01-02T21:33:00.000Z │ 100288 │     2 │ 8.8.8.8 │     161 │ 7.7.7.7 │
-│ 2018-01-02T21:35:00.000Z │   2818 │     1 │ 8.8.8.8 │      12 │ 7.7.7.7 │
-└──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
-Retrieved 5 rows in 1.18s.
-
-dsql>
-```
-
-我们来看发生在 `2018-01-01T01:01` 的三条原始数据：
-
-```json
-{"timestamp":"2018-01-01T01:01:35Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":20,"bytes":9024}
-{"timestamp":"2018-01-01T01:01:51Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":255,"bytes":21133}
-{"timestamp":"2018-01-01T01:01:59Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":11,"bytes":5780}
-```
-这三条数据已经被roll up为以下一行数据：
-
-```json
-┌──────────────────────────┬────────┬───────┬─────────┬─────────┬─────────┐
-│ __time                   │ bytes  │ count │ dstIP   │ packets │ srcIP   │
-├──────────────────────────┼────────┼───────┼─────────┼─────────┼─────────┤
-│ 2018-01-01T01:01:00.000Z │  35937 │     3 │ 2.2.2.2 │     286 │ 1.1.1.1 │
-└──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
-```
-
-这输入的数据行已经被按照时间列和维度列 `{timestamp, srcIP, dstIP}` 在指标列 `{packages, bytes}` 上做求和聚合
-
-在进行分组之前，原始输入数据的时间戳按分钟进行标记/布局，这是由于摄取规范中的 `"queryGranularity"："minute"` 设置造成的。
-同样，`2018-01-01T01:02` 期间发生的这两起事件也已经汇总。
-
-```json
-{"timestamp":"2018-01-01T01:02:14Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":38,"bytes":6289}
-{"timestamp":"2018-01-01T01:02:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":377,"bytes":359971}
-```
-```json
-┌──────────────────────────┬────────┬───────┬─────────┬─────────┬─────────┐
-│ __time                   │ bytes  │ count │ dstIP   │ packets │ srcIP   │
-├──────────────────────────┼────────┼───────┼─────────┼─────────┼─────────┤
-│ 2018-01-01T01:02:00.000Z │ 366260 │     2 │ 2.2.2.2 │     415 │ 1.1.1.1 │
-└──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
-```
-
-对于记录1.1.1.1和2.2.2.2之间流量的最后一个事件没有发生汇总，因为这是 `2018-01-01T01:03` 期间发生的唯一事件
-
-```json
-{"timestamp":"2018-01-01T01:03:29Z","srcIP":"1.1.1.1", "dstIP":"2.2.2.2","packets":49,"bytes":10204}
-```
-```json
-┌──────────────────────────┬────────┬───────┬─────────┬─────────┬─────────┐
-│ __time                   │ bytes  │ count │ dstIP   │ packets │ srcIP   │
-├──────────────────────────┼────────┼───────┼─────────┼─────────┼─────────┤
-│ 2018-01-01T01:03:00.000Z │  10204 │     1 │ 2.2.2.2 │      49 │ 1.1.1.1 │
-└──────────────────────────┴────────┴───────┴─────────┴─────────┴─────────┘
-```
-
-请注意，`计数指标 count` 显示原始输入数据中有多少行贡献给最终的"roll up"行。
+列 `计数指标(count)` 显示的是原始数据中有多少条记录最后被合并汇总（roll up）了。
