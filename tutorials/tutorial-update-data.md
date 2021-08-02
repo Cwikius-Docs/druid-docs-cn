@@ -103,17 +103,23 @@ Retrieved 6 rows in 0.02s.
 
 ## 追加数据
 
-Let's try another way of appending data.
+让我们尝试使用另外一种方法来对数据进行追加。
 
-The `quickstart/tutorial/updates-append-index2.json` task spec reads input from `quickstart/tutorial/updates-data4.json` and will append its data to the `updates-tutorial` datasource. Note that `appendToExisting` is set to `true` in this spec.
+`quickstart/tutorial/updates-append-index2.json` 任务规范将会被配置从已经存在的 `quickstart/tutorial/updates-data4.json` 文件中读取数据，
+在数据读取后将数据追加到 `updates-tutorial` 数据源中。
 
-Let's submit that task:
+请注意，规范中的 `appendToExisting` 设置为 `true`。
+
+然后让我们提交这个任务：
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/updates-append-index2.json --url http://localhost:8081
 ```
 
-When the new data is loaded, we can see two additional rows after "octopus". Note that the new "bear" row with number 222 has not been rolled up with the existing bear-111 row, because the new data is held in a separate segment.
+当新的数据被载入后，我们会看到 octopus 中添加了 2 条新的行。
+
+请注意，新添加的行 "bear" 中的值为 222， 针对已经存在的 "bear" 行中的数据 111，Druid 并没有针对数据进行了 rolled-up 操作。
+这是因为新增加的数据保存在不同的段中。
 
 ```bash
 dsql> select * from "updates-tutorial";
@@ -133,85 +139,9 @@ Retrieved 8 rows in 0.02s.
 
 ```
 
-If we run a GroupBy query instead of a `select *`, we can see that the "bear" rows will group together at query time:
+如果我们运行 GroupBy 查询来替代 `select *` 查询的话，我们会看到 "bear" 这一行将在 group By 查询后再合并在一起的：
 
 ```bash
-dsql> select __time, animal, SUM("count"), SUM("number") from "updates-tutorial" group by __time, animal;
-┌──────────────────────────┬──────────┬────────┬────────┐
-│ __time                   │ animal   │ EXPR$2 │ EXPR$3 │
-├──────────────────────────┼──────────┼────────┼────────┤
-│ 2018-01-01T01:01:00.000Z │ lion     │      2 │    400 │
-│ 2018-01-01T03:01:00.000Z │ aardvark │      1 │   9999 │
-│ 2018-01-01T04:01:00.000Z │ bear     │      2 │    333 │
-│ 2018-01-01T05:01:00.000Z │ mongoose │      1 │    737 │
-│ 2018-01-01T06:01:00.000Z │ snake    │      1 │   1234 │
-│ 2018-01-01T07:01:00.000Z │ octopus  │      1 │    115 │
-│ 2018-01-01T09:01:00.000Z │ falcon   │      1 │   1241 │
-└──────────────────────────┴──────────┴────────┴────────┘
-Retrieved 7 rows in 0.23s.
-```
-
-
-### 将旧数据与新数据合并并覆盖
-
-现在我们尝试在 `updates-tutorial` 数据源追加一些新的数据，我们将从 `quickstart/tutorial/updates-data3.json` 增加新的数据
-
-`quickstart/tutorial/updates-append-index.json` 任务规范配置为从现有的 `updates-tutorial` 数据源和 `quickstart/tutorial/updates-data3.json` 文件读取数据，该任务将组合来自两个输入源的数据，然后用新的组合数据覆盖原始数据。
-
-提交任务：
-```json
-bin/post-index-task --file quickstart/tutorial/updates-append-index.json --url http://localhost:8081
-```
-
-当Druid完成从这个覆盖任务加载新段时，新行将被添加到数据源中。请注意，“Lion”行发生了roll up：
-```json
-dsql> select * from "updates-tutorial";
-┌──────────────────────────┬──────────┬───────┬────────┐
-│ __time                   │ animal   │ count │ number │
-├──────────────────────────┼──────────┼───────┼────────┤
-│ 2018-01-01T01:01:00.000Z │ lion     │     2 │    400 │
-│ 2018-01-01T03:01:00.000Z │ aardvark │     1 │   9999 │
-│ 2018-01-01T04:01:00.000Z │ bear     │     1 │    111 │
-│ 2018-01-01T05:01:00.000Z │ mongoose │     1 │    737 │
-│ 2018-01-01T06:01:00.000Z │ snake    │     1 │   1234 │
-│ 2018-01-01T07:01:00.000Z │ octopus  │     1 │    115 │
-└──────────────────────────┴──────────┴───────┴────────┘
-Retrieved 6 rows in 0.02s.
-```
-
-### 追加数据
-
-现在尝试另一种追加数据的方式
-
-`quickstart/tutorial/updates-append-index2.json` 任务规范从 `quickstart/tutorial/updates-data4.json` 文件读取数据，然后追加到 `updates-tutorial` 数据源。注意到在规范中 `appendToExisting` 设置为 `true`
-
-提交任务：
-```json
-bin/post-index-task --file quickstart/tutorial/updates-append-index2.json --url http://localhost:8081
-```
-
-加载新数据后，我们可以看到"octopus"后面额外的两行。请注意，编号为222的新"bear"行尚未与现有的bear-111行合并，因为新数据保存在单独的段中。
-
-```json
-dsql> select * from "updates-tutorial";
-┌──────────────────────────┬──────────┬───────┬────────┐
-│ __time                   │ animal   │ count │ number │
-├──────────────────────────┼──────────┼───────┼────────┤
-│ 2018-01-01T01:01:00.000Z │ lion     │     2 │    400 │
-│ 2018-01-01T03:01:00.000Z │ aardvark │     1 │   9999 │
-│ 2018-01-01T04:01:00.000Z │ bear     │     1 │    111 │
-│ 2018-01-01T05:01:00.000Z │ mongoose │     1 │    737 │
-│ 2018-01-01T06:01:00.000Z │ snake    │     1 │   1234 │
-│ 2018-01-01T07:01:00.000Z │ octopus  │     1 │    115 │
-│ 2018-01-01T04:01:00.000Z │ bear     │     1 │    222 │
-│ 2018-01-01T09:01:00.000Z │ falcon   │     1 │   1241 │
-└──────────────────────────┴──────────┴───────┴────────┘
-Retrieved 8 rows in 0.02s.
-```
-
-当我们执行一个GroupBy查询而非 `Select *`, 我们看到"beer"行将在查询时聚合在一起：
-
-```json
 dsql> select __time, animal, SUM("count"), SUM("number") from "updates-tutorial" group by __time, animal;
 ┌──────────────────────────┬──────────┬────────┬────────┐
 │ __time                   │ animal   │ EXPR$2 │ EXPR$3 │
