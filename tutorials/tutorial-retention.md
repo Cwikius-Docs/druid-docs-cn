@@ -48,36 +48,38 @@ bin/post-index-task --file quickstart/tutorial/retention-index.json --url http:/
 
 ## 设置保留规则
 
-Suppose we want to drop data for the first 12 hours of 2015-09-12 and keep data for the later 12 hours of 2015-09-12.
+假设我们想卸载 2015年9月12日 前 12 小时的数据，保留 2015年9月12日后 12 小时的数据。
 
-Go to the [datasources view](http://localhost:8888/unified-console.html#datasources) and click the blue pencil icon next to `Cluster default: loadForever` for the `retention-tutorial` datasource.
+进入 [datasources view](http://localhost:8888/unified-console.html#datasources) 页面，然后单击 `Cluster default: loadForever` 
+边上的的蓝色铅笔，然后为数据源选择 `retention-tutorial` 。
 
-A rule configuration window will appear:
+一个针对当前数据源的数据保留策略窗口将会显示出来：
 
 ![Rule configuration](../assets/tutorial-retention-03.png "Rule configuration")
 
-Now click the `+ New rule` button twice.
+单击 `+ New rule` 按钮 2 次。
 
-In the upper rule box, select `Load` and `by interval`, and then enter `2015-09-12T12:00:00.000Z/2015-09-13T00:00:00.000Z` in field next to `by interval`. Replicas can remain at 2 in the `_default_tier`.
+在上层的输入框中输入 `Load` 然后选择 `by interval`，然后输入 在 `by interval` 边上的对话框中输入 `2015-09-12T12:00:00.000Z/2015-09-13T00:00:00.000Z`。
+副本（Replicas）在 `_default_tier` 中可以设置为默认为 2。
 
-In the lower rule box, select `Drop` and `forever`.
+然后在下侧的对话框中选择 `Drop` 和 `forever`。
 
-The rules should look like this:
+设置的规则应该看起来和下面这样是一样的：
 
 ![Set rules](../assets/tutorial-retention-04.png "Set rules")
 
-Now click `Next`. The rule configuration process will ask for a user name and comment, for change logging purposes. You can enter `tutorial` for both.
+单击 `Next`。 规则配置进程将要求提供用户名和注释，以及修改的日志以便于记录。你可以同时输入字符 `tutorial`，当然你也可以用自己的字符。
 
-Now click `Save`. You can see the new rules in the datasources view:
+单击 `Save`, 随后你就可以在 datasources 视图中看到设置的新的规则了。
 
 ![New rules](../assets/tutorial-retention-05.png "New rules")
 
-Give the cluster a few minutes to apply the rule change, and go to the [segments view](http://localhost:8888/unified-console.html#segments) in the Druid Console.
-The segments for the first 12 hours of 2015-09-12 are now gone:
+给集群几分钟时间来应用修改的保留规则。然后在 Druid 控制台中进入 [segments view](http://localhost:8888/unified-console.html#segments)。
+这时候你应该发现 2015-09-12 前 12 小时的段已经消失了。
 
 ![New segments](../assets/tutorial-retention-06.png "New segments")
 
-The resulting retention rule chain is the following:
+针对上面的修改，新生成的保留规则链如下：
 
 1. loadByInterval 2015-09-12T12/2015-09-13 (12 hours)
 
@@ -85,73 +87,17 @@ The resulting retention rule chain is the following:
 
 3. loadForever (default rule)
 
-The rule chain is evaluated from top to bottom, with the default rule chain always added at the bottom.
+规则链是自上而下计算的，默认规则链始终添加在规则链的最底部。
 
-The tutorial rule chain we just created loads data if it is within the specified 12 hour interval.
+根据我们刚才教程使用的规则创建的内容，链在指定的12小时间隔内加载数据。
 
-If data is not within the 12 hour interval, the rule chain evaluates `dropForever` next, which will drop any data.
+如果数据不在 12 小时内的话，那么规则链将会随后对 `dropForever` 进行评估 —— 评估的结果就是卸载所有的数据。
 
-The `dropForever` terminates the rule chain, effectively overriding the default `loadForever` rule, which will never be reached in this rule chain.
+`dropForever` 终止了规则链，并且覆盖了默认的 `loadForever` 规则，因此最后的 `loadForever` 在这个规则链中永远不会实现到。
 
-Note that in this tutorial we defined a load rule on a specific interval.
+请注意，在本教程中，我们定义了一个特定间隔的加载规则。
 
-If instead you want to retain data based on how old it is (e.g., retain data that ranges from 3 months in the past to the present time), you would define a Period load rule instead.
+如果希望根据数据的生命周期来保留保留数据（例如，保留从过去到现在 3 个月以内的数据），那么你应该定义一个周期性加载规则（Period Load Rule）。
 
 ## 延伸阅读
-
-* [Load rules](../operations/rule-configuration.md)
-
-
-
-
-
-### 设置数据保留规则
-
-假设我们想删除2015年9月12日前12小时的数据，保留2015年9月12日后12小时的数据。
-
-进入到Datasources视图，点击 `retention-tutorial` 数据源的蓝色铅笔的图标 `Cluster default: loadForever`
-
-一个规则配置窗口出现了：
-
-![](img-6/tutorial-retention-03.png)
-
-现在点击 `+ New rule` 按钮两次
-
-在上边的规则框中，选择 `Load` 和 `by Interval` 然后输入在 `by Interval` 旁边的输入框中输入 `2015-09-12T12:00:00.000Z/2015-09-13T00:00:00.000Z`, 副本可以选择保持2，在 `_default_tier` 中
-
-在下边的规则框中，选择 `Drop` 和 `forever`
-
-规则看上去是这样的：
-
-![](img-6/tutorial-retention-04.png)
-
-现在点击 `Next`, 规则配置过程将要求提供用户名和注释，以便进行更改日志记录。您可以同时输入教程。
-
-现在点击 `Save`, 可以在Datasources视图中看到新的规则
-
-![](img-6/tutorial-retention-05.png)
-
-给集群几分钟时间应用规则更改，然后转到Druid控制台中的segments视图。2015年9月12日前12小时的段文件现已消失
-
-![](img-6/tutorial-retention-06.png)
-
-生成的保留规则链如下:
-
-1. loadByInterval 2015-09-12T12/2015-09-13 (12 hours)
-2. dropForever
-3. loadForever (默认规则)
-
-规则链是自上而下计算的，默认规则链始终添加在底部
-
-我们刚刚创建的教程规则链在指定的12小时间隔内加载数据
-
-如果数据不在12小时的间隔内，则规则链下一步将计算 `dropForever`，这将删除任何数据
-
-`dropForever` 终止了规则链，有效地覆盖了默认的 `loadForever` 规则，在这个规则链中永远不会到达该规则
-
-注意，在本教程中，我们定义了一个特定间隔的加载规则
-
-相反，如果希望根据数据的生命周期保留数据（例如，保留从过去3个月到现在3个月的数据），则应定义一个周期性加载规则(Period Load Rule)。
-
-### 进一步阅读
-[加载规则](../operations/retainingOrDropData.md)
+* [载入规则（Load rules）](../operations/rule-configuration.md)
