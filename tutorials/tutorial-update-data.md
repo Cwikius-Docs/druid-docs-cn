@@ -1,28 +1,30 @@
 # 数据更新
-This tutorial demonstrates how to update existing data, showing both overwrites and appends.
+被页面将会对如何对现有数据进行更新进行说明，同时演示覆盖（overwrites）和追加（appends）2 种更新方式。
 
-For this tutorial, we'll assume you've already downloaded Apache Druid as described in
-the [single-machine quickstart](index.html) and have it running on your local machine.
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容，并且你的 Druid 实例已经在你的本地的计算机上运行了。
 
-It will also be helpful to have finished [Tutorial: Loading a file](../tutorials/tutorial-batch.md), [Tutorial: Querying data](../tutorials/tutorial-query.md), and [Tutorial: Rollup](../tutorials/tutorial-rollup.md).
+同时，如果你已经完成了下面内容的阅读的话将会更好的帮助你理解有关数据更新的内容。
 
-## Overwrite
+* [教程：载入一个文件](../tutorials/tutorial-batch.md)
+* [教程：查询数据](../tutorials/tutorial-query.md)
+* [教程：Rollup](../tutorials/tutorial-rollup.md)
+ 
+## 覆盖（Overwrite）
+本教程的这部分内容将会展示如何覆盖已经存在的时序间隔数据。
 
-This section of the tutorial will cover how to overwrite an existing interval of data.
+### 载入初始化数据
 
-### Load initial data
+让我们先载入一部分原始数据来作为初始化的数据，随后我们将会对这些数据进行覆盖和追加。
 
-Let's load an initial data set which we will overwrite and append to.
+本指南使用的数据导入规范位于 `quickstart/tutorial/updates-init-index.json` 文件。这个数据导入规范将会从 `quickstart/tutorial/updates-data.json` 中导入数据文件，并且创建一个称为`updates-tutorial` 的数据源。
 
-The spec we'll use for this tutorial is located at `quickstart/tutorial/updates-init-index.json`. This spec creates a datasource called `updates-tutorial` from the `quickstart/tutorial/updates-data.json` input file.
-
-Let's submit that task:
+让我们提交这个任务：
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/updates-init-index.json --url http://localhost:8081
 ```
 
-We have three initial rows containing an "animal" dimension and "number" metric:
+在任务完成后，我将会初始化看到一个 "animal" 的维度（dimension）和 "number" 的指标（metric）：
 
 ```bash
 dsql> select * from "updates-tutorial";
@@ -36,21 +38,23 @@ dsql> select * from "updates-tutorial";
 Retrieved 3 rows in 1.42s.
 ```
 
-### Overwrite the initial data
+### 覆盖初始化数据
 
-To overwrite this data, we can submit another task for the same interval, but with different input data.
+为了覆盖这些初始化的原始数据，我们可以提交另外一个任务，在这个任务中我们会设置有相同的时间间隔，但是输入数据是不同的。
 
-The `quickstart/tutorial/updates-overwrite-index.json` spec will perform an overwrite on the `updates-tutorial` datasource.
+`quickstart/tutorial/updates-overwrite-index.json` 规范将定义如何覆盖 `updates-tutorial` 数据源。
 
-Note that this task reads input from `quickstart/tutorial/updates-data2.json`, and `appendToExisting` is set to `false` (indicating this is an overwrite).
+请注意，上面定义的导入规范是从 `quickstart/tutorial/updates-data2.json` 数据文件中读取数据的，并且规范中的 `appendToExisting` 设置为 `false` 
+（在规范中的这个设置决定了数据采取的是覆盖导入方式）。
 
-Let's submit that task:
+然后让我们提交这个任务：
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/updates-overwrite-index.json --url http://localhost:8081
 ```
 
-When Druid finishes loading the new segment from this overwrite task, the "tiger" row now has the value "lion", the "aardvark" row has a different number, and the "giraffe" row has been replaced. It may take a couple of minutes for the changes to take effect:
+当 Druid 从覆盖任务中完成导入新的段后，我们会看到原来的 "tiger" 行中对应当前的值为 "lion"； "aardvark" 行中有了不同的数字； "giraffe" 行被完全替换了。
+针对不同的环境，上面的配置需要等几分钟后才能生效：
 
 ```bash
 dsql> select * from "updates-tutorial";
@@ -64,19 +68,23 @@ dsql> select * from "updates-tutorial";
 Retrieved 3 rows in 0.02s.
 ```
 
-## Combine old data with new data and overwrite
+## 将新数据和老数据合并后进行覆盖
 
-Let's try appending some new data to the `updates-tutorial` datasource now. We will add the data from `quickstart/tutorial/updates-data3.json`.
+让我们现在将新的数据追加到 `updates-tutorial` 数据源。我们将会使用名为 `quickstart/tutorial/updates-data3.json` 的数据文件。
 
-The `quickstart/tutorial/updates-append-index.json` task spec has been configured to read from the existing `updates-tutorial` datasource and the `quickstart/tutorial/updates-data3.json` file. The task will combine data from the two input sources, and then overwrite the original data with the new combined data.
+`quickstart/tutorial/updates-append-index.json` 任务规范将会被配置从已经存在的 `quickstart/tutorial/updates-data3.json` 数据文件
+和 `updates-tutorial` 数据源同属兑取数据后更新 `updates-tutorial` 数据源。
 
-Let's submit that task:
+这个任务将会对 2 个数据源中读取的数据进行合并，然后将合并后的数据重新写回到数据源。
+
+然后让我们提交这个任务：
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/updates-append-index.json --url http://localhost:8081
 ```
 
-When Druid finishes loading the new segment from this overwrite task, the new rows will have been added to the datasource. Note that roll-up occurred for the "lion" row:
+当 Druid 完成这个任务并且创建新段后，新的行将会被添加到数据源中。
+需要注意的是 "lion" 行进行了合并（roll-up）操作：
 
 ```bash
 dsql> select * from "updates-tutorial";
@@ -93,7 +101,7 @@ dsql> select * from "updates-tutorial";
 Retrieved 6 rows in 0.02s.
 ```
 
-## Append to the data
+## 追加数据
 
 Let's try another way of appending data.
 
@@ -143,63 +151,6 @@ dsql> select __time, animal, SUM("count"), SUM("number") from "updates-tutorial"
 Retrieved 7 rows in 0.23s.
 ```
 
-## 数据更新
-本教程演示如何更新现有数据，同时展示覆盖(Overwrite)和追加(append)的两个方式。
-
-本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
-
-完成[加载本地文件](tutorial-batch.md)、[数据查询](./chapter-4.md)和[roll-up](./chapter-5.md)部分内容也是非常有帮助的
-
-### 数据覆盖
-本节教程将介绍如何覆盖现有的指定间隔的数据
-
-#### 加载初始数据
-
-本节教程使用的任务摄取规范位于 `quickstart/tutorial/updates-init-index.json`, 本规范从 `quickstart/tutorial/updates-data.json` 输入文件创建一个名称为 `updates-tutorial` 的数据源
-
-提交任务：
-```json
-bin/post-index-task --file quickstart/tutorial/updates-init-index.json --url http://localhost:8081
-```
-
-我们有三个包含"动物"维度和"数字"指标的初始行：
-```json
-dsql> select * from "updates-tutorial";
-┌──────────────────────────┬──────────┬───────┬────────┐
-│ __time                   │ animal   │ count │ number │
-├──────────────────────────┼──────────┼───────┼────────┤
-│ 2018-01-01T01:01:00.000Z │ tiger    │     1 │    100 │
-│ 2018-01-01T03:01:00.000Z │ aardvark │     1 │     42 │
-│ 2018-01-01T03:01:00.000Z │ giraffe  │     1 │  14124 │
-└──────────────────────────┴──────────┴───────┴────────┘
-Retrieved 3 rows in 1.42s.
-```
-#### 覆盖初始数据
-
-为了覆盖这些数据，我们可以在相同的时间间隔内提交另一个任务，但是使用不同的输入数据。
-
-`quickstart/tutorial/updates-overwrite-index.json` 规范将会对 `updates-tutorial` 数据进行数据重写
-
-注意，此任务从 `quickstart/tutorial/updates-data2.json` 读取输入，`appendToExisting` 设置为false（表示这是一个覆盖）
-
-提交任务：
-```json
-bin/post-index-task --file quickstart/tutorial/updates-overwrite-index.json --url http://localhost:8081
-```
-
-当Druid从这个覆盖任务加载完新的段时，"tiger"行现在有了值"lion"，"aardvark"行有了不同的编号，"giraffe"行已经被替换。更改可能需要几分钟才能生效：
-
-```json
-dsql> select * from "updates-tutorial";
-┌──────────────────────────┬──────────┬───────┬────────┐
-│ __time                   │ animal   │ count │ number │
-├──────────────────────────┼──────────┼───────┼────────┤
-│ 2018-01-01T01:01:00.000Z │ lion     │     1 │    100 │
-│ 2018-01-01T03:01:00.000Z │ aardvark │     1 │   9999 │
-│ 2018-01-01T04:01:00.000Z │ bear     │     1 │    111 │
-└──────────────────────────┴──────────┴───────┴────────┘
-Retrieved 3 rows in 0.02s.
-```
 
 ### 将旧数据与新数据合并并覆盖
 
