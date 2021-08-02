@@ -93,7 +93,7 @@ WHERE 语句将会显示在你的查询中。
 
     ![Explain query](../assets/tutorial-query-06.png "Explain query")
 
-     > Another way to view the explain plan is by adding EXPLAIN PLAN FOR to the front of your query, as follows:
+     > 另外一种通过纯文本 JSON 格式查看 SQL 脚本的办法就是在查询脚本前面添加 EXPLAIN PLAN FOR, 如下所示：
      >
      >```sql
      >EXPLAIN PLAN FOR
@@ -106,8 +106,7 @@ WHERE 语句将会显示在你的查询中。
      >GROUP BY 1, 2
      >ORDER BY "Edits" DESC
      >```
-     >This is particularly useful when running queries 
-     from the command line or over HTTP.
+     >这种方式针对在控制台工具上运行查询脚本的时候非常有用。
 
 
 11. 最后，单击 `...`  然后选择 **Edit context** 来查看你可以添加的其他参数来控制查询的执行。

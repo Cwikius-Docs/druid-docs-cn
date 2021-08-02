@@ -1,96 +1,87 @@
----
-id: tutorial-retention
-title: "Tutorial: Configuring data retention"
-sidebar_label: "Configuring data retention"
----
+# 数据保留规则
+本教程对如何在数据源上配置数据保留规则进行了说明，数据保留规则主要定义为数据的保留（retained）或者卸载（dropped）的时间。
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+!> 请注意，dropped 我们使用了中文 `卸载` 来进行翻译。但是 Druid 对卸载的数据是会从段里面删除掉的，如果你还需要这些数据的话，你需要将数据重新导入。
+
+本教程我们假设您已经按照[单服务器部署](../GettingStarted/chapter-3.md)中描述下载了Druid，并运行在本地机器上。
+
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容，并且你的 Druid 实例已经在你的本地的计算机上运行了。
+
+同时，如果你已经完成了下面内容的阅读的话将会更好的帮助你理解 Roll-up 的相关内容
+
+* [教程：载入一个文件](../tutorials/tutorial-batch.md)
+* [教程：查询数据](../tutorials/tutorial-query.md)
 
 
-This tutorial demonstrates how to configure retention rules on a datasource to set the time intervals of data that will be retained or dropped.
+## 载入示例数据
 
-For this tutorial, we'll assume you've already downloaded Apache Druid as described in
-the [single-machine quickstart](index.html) and have it running on your local machine.
+在本教程中，我们将使用W Wikipedia 编辑的示例数据，其中包含一个摄取任务规范，它将为输入数据每个小时创建一个单独的段。
 
-It will also be helpful to have finished [Tutorial: Loading a file](../tutorials/tutorial-batch.md) and [Tutorial: Querying data](../tutorials/tutorial-query.md).
-
-## Load the example data
-
-For this tutorial, we'll be using the Wikipedia edits sample data, with an ingestion task spec that will create a separate segment for each hour in the input data.
-
-The ingestion spec can be found at `quickstart/tutorial/retention-index.json`. Let's submit that spec, which will create a datasource called `retention-tutorial`:
+数据摄取导入规范位于 `quickstart/tutorial/retention-index.json` 文件中。让我们提交这个规范，将创建一个名称为 `retention-tutorial` 的数据源。
 
 ```bash
 bin/post-index-task --file quickstart/tutorial/retention-index.json --url http://localhost:8081
 ```
 
-After the ingestion completes, go to [http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources) in a browser to access the Druid Console's datasource view.
+摄取完成后，在浏览器中访问 http://localhost:8888/unified-console.html#datasources](http://localhost:8888/unified-console.html#datasources) 
+然后访问 Druid 的控制台数据源视图。
 
-This view shows the available datasources and a summary of the retention rules for each datasource:
+此视图显示可用的数据源以及每个数据源定义的数据保留规则摘要。
+
 
 ![Summary](../assets/tutorial-retention-01.png "Summary")
 
-Currently there are no rules set for the `retention-tutorial` datasource. Note that there are default rules for the cluster: load forever with 2 replicas in `_default_tier`.
+当前，针对 `retention-tutorial` 数据源还没有设置数据保留规则。
 
-This means that all data will be loaded regardless of timestamp, and each segment will be replicated to two Historical processes in the default tier.
+需要注意的是，针对集群部署方式会配置一个默认的数据保留规则：永久载入 2 个副本并且替换进 `_default_tier`（load forever with 2 replicas in `_default_tier`）。ith 2 replicas in `_default_tier`.
 
-In this tutorial, we will ignore the tiering and redundancy concepts for now.
+这意味着无论时间戳如何，所有数据都将加载，并且每个段将复制到两个 Historical 进程的默认层（default tier）中。
 
-Let's view the segments for the `retention-tutorial` datasource by clicking the "24 Segments" link next to "Fully Available".
+在本教程中，我们将暂时忽略分层（tiering）和冗余（redundancy）的概念。
 
-The segments view ([http://localhost:8888/unified-console.html#segments](http://localhost:8888/unified-console.html#segments)) provides information about what segments a datasource contains. The page shows that there are 24 segments, each one containing data for a specific hour of 2015-09-12:
+通过单击 `retention-tutorial` 数据源 "Fully Available" 链接边上的 "24 Segments" 来查看段（segments）信息。
+
+段视图 ([http://localhost:8888/unified-console.html#segments](http://localhost:8888/unified-console.html#segments)) p
+
+[Segment视图](http://localhost:8888/unified-console.html#segments) 提供了一个数据源的段（segment）信息。
+本页显示了有 24 个段，每个段包括有 2015-09-12 每一个小时的数据。
 
 ![Original segments](../assets/tutorial-retention-02.png "Original segments")
 
-## Set retention rules
+## 设置保留规则
 
-Suppose we want to drop data for the first 12 hours of 2015-09-12 and keep data for the later 12 hours of 2015-09-12.
+假设我们想卸载 2015年9月12日 前 12 小时的数据，保留 2015年9月12日后 12 小时的数据。
 
-Go to the [datasources view](http://localhost:8888/unified-console.html#datasources) and click the blue pencil icon next to `Cluster default: loadForever` for the `retention-tutorial` datasource.
+进入 [datasources view](http://localhost:8888/unified-console.html#datasources) 页面，然后单击 `Cluster default: loadForever` 
+边上的的蓝色铅笔，然后为数据源选择 `retention-tutorial` 。
 
-A rule configuration window will appear:
+一个针对当前数据源的数据保留策略窗口将会显示出来：
 
 ![Rule configuration](../assets/tutorial-retention-03.png "Rule configuration")
 
-Now click the `+ New rule` button twice.
+单击 `+ New rule` 按钮 2 次。
 
-In the upper rule box, select `Load` and `by interval`, and then enter `2015-09-12T12:00:00.000Z/2015-09-13T00:00:00.000Z` in field next to `by interval`. Replicas can remain at 2 in the `_default_tier`.
+在上层的输入框中输入 `Load` 然后选择 `by interval`，然后输入 在 `by interval` 边上的对话框中输入 `2015-09-12T12:00:00.000Z/2015-09-13T00:00:00.000Z`。
+副本（Replicas）在 `_default_tier` 中可以设置为默认为 2。
 
-In the lower rule box, select `Drop` and `forever`.
+然后在下侧的对话框中选择 `Drop` 和 `forever`。
 
-The rules should look like this:
+设置的规则应该看起来和下面这样是一样的：
 
 ![Set rules](../assets/tutorial-retention-04.png "Set rules")
 
-Now click `Next`. The rule configuration process will ask for a user name and comment, for change logging purposes. You can enter `tutorial` for both.
+单击 `Next`。 规则配置进程将要求提供用户名和注释，以及修改的日志以便于记录。你可以同时输入字符 `tutorial`，当然你也可以用自己的字符。
 
-Now click `Save`. You can see the new rules in the datasources view:
+单击 `Save`, 随后你就可以在 datasources 视图中看到设置的新的规则了。
 
 ![New rules](../assets/tutorial-retention-05.png "New rules")
 
-Give the cluster a few minutes to apply the rule change, and go to the [segments view](http://localhost:8888/unified-console.html#segments) in the Druid Console.
-The segments for the first 12 hours of 2015-09-12 are now gone:
+给集群几分钟时间来应用修改的保留规则。然后在 Druid 控制台中进入 [segments view](http://localhost:8888/unified-console.html#segments)。
+这时候你应该发现 2015-09-12 前 12 小时的段已经消失了。
 
 ![New segments](../assets/tutorial-retention-06.png "New segments")
 
-The resulting retention rule chain is the following:
+针对上面的修改，新生成的保留规则链如下：
 
 1. loadByInterval 2015-09-12T12/2015-09-13 (12 hours)
 
@@ -98,18 +89,17 @@ The resulting retention rule chain is the following:
 
 3. loadForever (default rule)
 
-The rule chain is evaluated from top to bottom, with the default rule chain always added at the bottom.
+规则链是自上而下计算的，默认规则链始终添加在规则链的最底部。
 
-The tutorial rule chain we just created loads data if it is within the specified 12 hour interval.
+根据我们刚才教程使用的规则创建的内容，链在指定的12小时间隔内加载数据。
 
-If data is not within the 12 hour interval, the rule chain evaluates `dropForever` next, which will drop any data.
+如果数据不在 12 小时内的话，那么规则链将会随后对 `dropForever` 进行评估 —— 评估的结果就是卸载所有的数据。
 
-The `dropForever` terminates the rule chain, effectively overriding the default `loadForever` rule, which will never be reached in this rule chain.
+`dropForever` 终止了规则链，并且覆盖了默认的 `loadForever` 规则，因此最后的 `loadForever` 在这个规则链中永远不会实现到。
 
-Note that in this tutorial we defined a load rule on a specific interval.
+请注意，在本教程中，我们定义了一个特定间隔的加载规则。
 
-If instead you want to retain data based on how old it is (e.g., retain data that ranges from 3 months in the past to the present time), you would define a Period load rule instead.
+如果希望根据数据的生命周期来保留保留数据（例如，保留从过去到现在 3 个月以内的数据），那么你应该定义一个周期性加载规则（Period Load Rule）。
 
-## Further reading
-
-* [Load rules](../operations/rule-configuration.md)
+## 延伸阅读
+* [载入规则（Load rules）](../operations/rule-configuration.md)
