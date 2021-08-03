@@ -95,11 +95,12 @@ AWS 上面硬件的配置为：
 #### 查询服务器（Query server）
 当对数据服务器进行选择的时候，主要考虑的是 CPU 数量，RAM 内存数量和 Broker 进程的的 heap 内存加上直接内存（direct memory），以及 Router 进程的 heap 内存。
 
-Sum up the allocated memory sizes for your Broker and Router from the single-server deployment, and choose Query server hardware with enough RAM to cover the Broker/Router, with some extra RAM for other processes on the machine.
+将 Broker 和 Router 进程在独立服务器上使用的内存数量相加，然后选择的查询服务器的内存需要足够大的内存来覆盖 Broker/Router 进程使用内存相加的结果。
+同时还需要准备为这台服务器留够足够的内存供其他进程使用。
 
-For CPU cores, you can choose hardware with approximately 1/4th of the cores of the single-server deployment.
+针对服务器使用的 CPU 内核，你可以只选择在单独部署情况下的 1/4 即可。
 
-The [basic cluster tuning guide](../operations/basic-cluster-tuning.md) has information on how to calculate Broker/Router memory usage.
+请参考 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 页面中的内容，来确定如何计算 Broker/Router 进程使用的内存。
 
 ## Select OS
 
