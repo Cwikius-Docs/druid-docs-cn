@@ -181,16 +181,15 @@ Druid 依赖分布式文件系统或者一个大对象（blob）存储来对数�
 
 #### S3
 
-In `conf/druid/cluster/_common/common.runtime.properties`,
+在文件 `conf/druid/cluster/_common/common.runtime.properties`，
 
-- Add "druid-s3-extensions" to `druid.extensions.loadList`.
+- 添加 "druid-s3-extensions" 到 `druid.extensions.loadList`。
 
-- Comment out the configurations for local storage under "Deep Storage" and "Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，注释掉本地存储的配置。
 
-- Uncomment and configure appropriate values in the "For S3" sections of "Deep Storage" and
-"Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，取消注释 "For S3" 部分有关的配置。
 
-After this, you should have made the following changes:
+在完成上面的操作后，你的配置文件应该看起来和下面的内容相似：
 
 ```
 druid.extensions.loadList=["druid-s3-extensions"]
@@ -212,7 +211,7 @@ druid.indexer.logs.s3Bucket=your-bucket
 druid.indexer.logs.s3Prefix=druid/indexing-logs
 ```
 
-Please see the [S3 extension](../development/extensions-core/s3.md) documentation for more info.
+请参考 [S3 extension](../development/extensions-core/s3.md) 页面中的内容来获得更多的信息。
 
 #### HDFS
 
