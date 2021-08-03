@@ -161,17 +161,19 @@ cd apache-druid-apache-druid-0.21.1
 集群环境的部署是需要配置深度存储的，例如 S3 或 HDFS。 
 如果单实例部署已在使用分布式深度存储，则可以在新集群中继续使用当前的深度存储。
 
-### Metadata storage
+### 元数据存储
 
-In `conf/druid/cluster/_common/common.runtime.properties`, replace
-"metadata.storage.*" with the address of the machine that you will use as your metadata store:
+在 `conf/druid/cluster/_common/common.runtime.properties` 配置文件中，替换 "metadata.storage.*" 的的属性来确定元数据存储的服务器地址。
+元数据通常是存储在数据库中的，因此你可以在这里配置你的数据库服务器地址。
 
 - `druid.metadata.storage.connector.connectURI`
 - `druid.metadata.storage.connector.host`
 
-In a production deployment, we recommend running a dedicated metadata store such as MySQL or PostgreSQL with replication, deployed separately from the Druid servers.
+在实际的生产环境中，我们推荐你使用独立的元数据存储数据库例如 MySQL 或者 PostgreSQL 来增加冗余性。
+这个配置将会在 Druid 服务器外部配置一个数据库连接来保留一套元数据的配置信息，以增加数据冗余性。
 
-The [MySQL extension](../development/extensions-core/mysql.md) and [PostgreSQL extension](../development/extensions-core/postgresql.md) docs have instructions for extension configuration and initial database setup.
+[MySQL extension](../development/extensions-core/mysql.md) 和 [PostgreSQL extension](../development/extensions-core/postgresql.md) 
+页面中有如何对扩展进行配置和对数据库如何进行初始化的说明，请参考上面页面中的内容。
 
 ### Deep storage
 
