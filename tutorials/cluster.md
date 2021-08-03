@@ -102,47 +102,45 @@ AWS 上面硬件的配置为：
 
 请参考 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 页面中的内容，来确定如何计算 Broker/Router 进程使用的内存。
 
-## Select OS
+## 选择操作系统
 
-We recommend running your favorite Linux distribution. You will also need:
+我们推荐你使用任何你喜欢的 Linux 操作系统。同时你需要安装：
 
-  * **Java 8 or later**
+  * **Java 8 或者更新的版本**
 
-> **Warning:** Druid only officially supports Java 8. Any Java version later than 8 is still experimental.
+> **警告：** Druid 目前只能官方的支持 Java 8。如果你使用其他的 JDK 版本，那么很多功能可能是实践性的的。
 >
-> If needed, you can specify where to find Java using the environment variables `DRUID_JAVA_HOME` or `JAVA_HOME`. For more details run the verify-java script.
+> 如果需要的话，你可以在你的系统环境中定义环境变量 `DRUID_JAVA_HOME` 或 `JAVA_HOME`，来告诉 Druid 到哪里可以找到需要的 JDK 版本。
+> 可以运行 Druid 程序中的 `bin/verify-java` 脚本来查看当前运行的 Java 版本。
 
-Your OS package manager should be able to help for both Java. If your Ubuntu-based OS
-does not have a recent enough version of Java, WebUpd8 offers [packages for those
-OSes](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html).
+你的操作系统包管理工具应该能够帮助你在操作系统中安装 Java。
+如果你使用的是基于 Ubuntu 的操作系统，但是这个操作系统没有提供的最新版本的 Java 的话，请尝试访问 WebUpd8 页面中的内容： [packages for those
+OSes](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html) 。
 
-## Download the distribution
+## 下载发行版本
+首先，需要下载并且解压缩相关的归档文件。
+最好先在单台计算机上进行相关操作。因为随后你需要在解压缩的包内对配置进行修改，然后将修改后的配置发布到所有的其他服务器上。
 
-First, download and unpack the release archive. It's best to do this on a single machine at first,
-since you will be editing the configurations and then copying the modified distribution out to all
-of your servers.
+[apache-druid-0.21.1 下载地址](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz)
 
-[Download](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz)
-the apache-druid-0.21.1 release.
-
-Extract Druid by running the following commands in your terminal:
+在控制台中使用下面的命令来进行解压：
 
 ```bash
 tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz
 cd apache-druid-apache-druid-0.21.1
 ```
 
-In the package, you should find:
+在解压后的包中，你应该能够看到：
 
-* `LICENSE` and `NOTICE` files
-* `bin/*` - scripts related to the [single-machine quickstart](index.html)
-* `conf/druid/cluster/*` - template configurations for a clustered setup
-* `extensions/*` - core Druid extensions
-* `hadoop-dependencies/*` - Druid Hadoop dependencies
-* `lib/*` - libraries and dependencies for core Druid
-* `quickstart/*` - files related to the [single-machine quickstart](index.html)
+* `LICENSE` 和 `NOTICE` 文件
+* `bin/*` - 启动或停止的脚本，这是针对独立服务器进行部署的，请参考页面： [独立服务器部署快速指南](../tutorials/index.md)
+* `conf/druid/cluster/*` - 针对集群部署的配置和设置文件
+* `extensions/*` - Druid 核心扩展
+* `hadoop-dependencies/*` - Druid Hadoop 依赖
+* `lib/*` - Druid 核心库和依赖
+* `quickstart/*` - 独立服务器配置的相关文件，这是针对独立服务器进行部署的，请参考页面： [独立服务器部署快速指南](../tutorials/index.md)
 
-We'll be editing the files in `conf/druid/cluster/` in order to get things running.
+如果你需要让你的集群能够启动的话，我们将会对 `conf/druid/cluster/` 中的内容进行编辑。
 
 ### Migrating from Single-Server Deployments
 
@@ -449,56 +447,6 @@ Druid based on your use case. Read more about [loading data](../ingestion/index.
 
 
 
-
-
-##### 其他硬件配置
-
-上面的示例集群是从多种确定Druid集群大小的可能方式中选择的一个示例。
-
-您可以根据自己的特定需求和限制选择较小/较大的硬件或较少/更多的服务器。
-
-如果您的使用场景具有复杂的扩展要求，则还可以选择不将Druid服务混合部署（例如，独立的Historical Server）。
-
-[基本集群调整指南](../../operations/basicClusterTuning.md)中的信息可以帮助您进行决策，并可以调整配置大小。
-
-#### 从单服务器环境迁移部署
-
-如果您现在已有单服务器部署的环境，例如[单服务器部署示例](chapter-3.md)中的部署，并且希望迁移到类似规模的集群部署，则以下部分包含一些选择Master/Data/Query服务等效硬件的准则。
-
-##### Master服务
-
-Master服务的主要考虑点是可用CPU以及用于Coordinator和Overlord进程的堆内存。
-
-首先计算出来在单服务器环境下Coordinator和Overlord已分配堆内存之和，然后选择具有足够内存的Master服务硬件，同时还需要考虑到为服务器上其他进程预留一些额外的内存。
-
-对于CPU，可以选择接近于单服务器环境核数1/4的硬件。
-
-##### Data服务
-
-在为集群Data服务选择硬件时，主要考虑可用的CPU和内存，可行时使用SSD存储。
-
-在集群化部署时，出于容错的考虑，最好是部署多个Data服务。
-
-在选择Data服务的硬件时，可以假定一个分裂因子`N`，将原来的单服务器环境的CPU和内存除以`N`,然后在新集群中部署`N`个硬件规格缩小的Data服务。
-
-##### Query服务
-
-Query服务的硬件选择主要考虑可用的CPU、Broker服务的堆内和堆外内存、Router服务的堆内存。
-
-首先计算出来在单服务器环境下Broker和Router已分配堆内存之和，然后选择可以覆盖Broker和Router内存的Query服务硬件，同时还需要考虑到为服务器上其他进程预留一些额外的内存。
-
-对于CPU，可以选择接近于单服务器环境核数1/4的硬件。
-
-[基本集群调优指南](../../operations/basicClusterTuning.md)包含有关如何计算Broker和Router服务内存使用量的信息。
-
-### 选择操作系统
-
-我们建议运行您喜欢的Linux发行版，同时还需要：
-
-* **Java 8**
-
-> [!WARNING]
-> Druid服务运行依赖Java 8，可以使用环境变量`DRUID_JAVA_HOME`或`JAVA_HOME`指定在何处查找Java,有关更多详细信息，请运行`verify-java`脚本。
 
 ### 下载发行版
 
