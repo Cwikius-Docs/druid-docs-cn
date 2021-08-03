@@ -175,11 +175,9 @@ cd apache-druid-apache-druid-0.21.1
 [MySQL extension](../development/extensions-core/mysql.md) 和 [PostgreSQL extension](../development/extensions-core/postgresql.md) 
 页面中有如何对扩展进行配置和对数据库如何进行初始化的说明，请参考上面页面中的内容。
 
-### Deep storage
-
-Druid relies on a distributed filesystem or large object (blob) store for data storage. The most
-commonly used deep storage implementations are S3 (popular for those on AWS) and HDFS (popular if
-you already have a Hadoop deployment).
+### 深度存储
+Druid 依赖分布式文件系统或者一个大对象（blob）存储来对数据进行存储。
+最常用的深度存储的实现通常使用的是 S3 (如果你使用的是 AWS 的话)或者 HDFS（如果你使用的是 Hadoop 部署的话）。
 
 #### S3
 
