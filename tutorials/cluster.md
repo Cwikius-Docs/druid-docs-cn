@@ -71,9 +71,11 @@ AWS 上面硬件的配置为：
 
 ### 从独立服务器部署上合并到集群
 
-If you have an existing single-server deployment, such as the ones from the [single-server deployment examples](../operations/single-server.md), and you wish to migrate to a clustered deployment of similar scale, the following section contains guidelines for choosing equivalent hardware using the Master/Data/Query server organization.
+如果你已经有一个已经存在并且独立运行的独立服务器部署的话，例如在页面 [single-server deployment examples](../operations/single-server.md) 中部署的服务器，
+现在你希望将这个独立部署的服务器合并到集群的部署方式中的话，下面的这部分内容将会帮助你完成这个切换和合并的过程。
+这个过程包括有如何对硬件进行的选择和针对 Master/Data/Query 服务器应该如何进行组织。
 
-#### Master server
+#### 主服务器（Master Server）
 
 The main considerations for the Master server are available CPUs and RAM for the Coordinator and Overlord heaps.
 
