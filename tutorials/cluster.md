@@ -126,7 +126,7 @@ OSes](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.htm
 在控制台中使用下面的命令来进行解压：
 
 ```bash
-tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz
+tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz 
 cd apache-druid-apache-druid-0.21.1
 ```
 
@@ -142,11 +142,10 @@ cd apache-druid-apache-druid-0.21.1
 
 如果你需要让你的集群能够启动的话，我们将会对 `conf/druid/cluster/` 中的内容进行编辑。
 
-### Migrating from Single-Server Deployments
+### 从独立服务器部署上进行合并
+如果需要完成后续页面的部署和配置的话，你需要对 `conf/druid/cluster/` 中的内容进行编辑。
 
-In the following sections we will be editing the configs under `conf/druid/cluster`.
-
-If you have an existing single-server deployment, please copy your existing configs to `conf/druid/cluster` to preserve any config changes you have made.
+如果你已经有一个正在运行的独立服务器部署的话，请拷贝你已经存在的配置文件到 `conf/druid/cluster` 文件夹中，以保证你已有的配置文件不丢失。
 
 ## Configure metadata storage and deep storage
 
