@@ -1,61 +1,38 @@
----
-id: cluster
-title: "Clustered deployment"
----
+# 集群方式部署
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+Apache Druid 被设计部署为可扩展和容错的集群部署方式。
 
+在本文档中，我们将会设置一个示例集群，并且进行一些讨论，你可以进行那些修改来满足你的需求。
 
-Apache Druid is designed to be deployed as a scalable, fault-tolerant cluster.
+这个简单的集群包括有下面的特性：
 
-In this document, we'll set up a simple cluster and discuss how it can be further configured to meet
-your needs.
+ - 主服务器（Master Server）将会运行 Coordinator 和 Overlord 进程
+ - 2 个可扩展和容错的数据服务器将会运行 Historical 和 MiddleManager 进程
+ - 一个查询服务器（Query Server）将会运行 Broker 和 Router 进程
 
-This simple cluster will feature:
+在生产环境中，我们建议你部署多个 Master 服务器和多个 Query 服务器，服务器的高可用性（fault-tolerant）配置与你的数据特性和容错性要求息息相关。
+但是你可以使用一个主服务器（Master Server） 和 一个查询服务器（Query Server）来启动服务，随着需求的增加你可以随时增加更多的服务器节点。
 
- - A Master server to host the Coordinator and Overlord processes
- - Two scalable, fault-tolerant Data servers running Historical and MiddleManager processes
- - A query server, hosting the Druid Broker and Router processes
+## 选择硬件
 
-In production, we recommend deploying multiple Master servers and multiple Query servers in a fault-tolerant configuration based on your specific fault-tolerance needs, but you can get started quickly with one Master and one Query server and add more servers later.
+### 全新部署
 
-## Select hardware
+如果你没有已经存在的 Druid 集群，但是你希望开始在你的环境中使用集群方式部署 Druid，本文档将会使用预配置（pre-made configurations）内容来帮助你开始部署 Druid 的集群。
 
-### Fresh Deployment
+#### 主服务器（Master Server）
 
-If you do not have an existing Druid cluster, and wish to start running Druid in a clustered deployment, this guide provides an example clustered deployment with pre-made configurations.
+Coordinator 和 Overlord 进程将会负责处理 metadata 数据和在你集群中进行协调。这 2 个进程可以合并在同一个服务器上。
 
-#### Master server
+在本示例中，我们将会在 AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) 上部署这个服务器。
 
-The Coordinator and Overlord processes are responsible for handling the metadata and coordination needs of your cluster. They can be colocated together on the same server.
-
-In this example, we will be deploying the equivalent of one AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) instance.
-
-This hardware offers:
+硬件的要求是：
 
 - 8 vCPUs
 - 31 GB RAM
 
-Example Master server configurations that have been sized for this hardware can be found under `conf/druid/cluster/master`.
+有关本服务器的配置信息和有关硬件大小的建议，额可以在文件夹 `conf/druid/cluster/master` 中找到。
 
-#### Data server
+#### 数据服务器（Data server）
 
 Historicals and MiddleManagers can be colocated on the same server to handle the actual data in your cluster. These servers benefit greatly from CPU, RAM,
 and SSDs.
