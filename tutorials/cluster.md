@@ -23,31 +23,30 @@ Apache Druid 被设计部署为可扩展和容错的集群部署方式。
 
 Coordinator 和 Overlord 进程将会负责处理 metadata 数据和在你集群中进行协调。这 2 个进程可以合并在同一个服务器上。
 
-在本示例中，我们将会在 AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) 上部署这个服务器。
+在本示例中，我们将会在 AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) 部署一个评估的服务器和实例。
 
-硬件的要求是：
+AWS 上面硬件的配置为：
 
 - 8 vCPUs
 - 31 GB RAM
 
-有关本服务器的配置信息和有关硬件大小的建议，额可以在文件夹 `conf/druid/cluster/master` 中找到。
+有关本服务器的配置信息和有关硬件大小的建议，可以在文件 `conf/druid/cluster/master` 中找到。
 
 #### 数据服务器（Data server）
 
-Historicals and MiddleManagers can be colocated on the same server to handle the actual data in your cluster. These servers benefit greatly from CPU, RAM,
-and SSDs.
+Historicals 和 MiddleManagers 可以合并到同一个服务器上，这个 2 个进程在你的集群中用于处理实际的数据。通常来说越大更大的 CPU, RAM, SSDs硬盘越好更好。
 
-In this example, we will be deploying the equivalent of two AWS [i3.4xlarge](https://aws.amazon.com/ec2/instance-types/i3/) instances.
+在本示例中，我们将会在  [i3.4xlarge](https://aws.amazon.com/ec2/instance-types/i3/) 部署一个评估的服务器和实例。
 
-This hardware offers:
+AWS 上面硬件的配置为：
 
 - 16 vCPUs
 - 122 GB RAM
 - 2 * 1.9TB SSD storage
 
-Example Data server configurations that have been sized for this hardware can be found under `conf/druid/cluster/data`.
+有关本服务器的配置信息和有关硬件大小的建议，可以在文件 `conf/druid/cluster/data` 中找到。
 
-#### Query server
+#### 查询服务器（Query server）
 
 Druid Brokers accept queries and farm them out to the rest of the cluster. They also optionally maintain an
 in-memory query cache. These servers benefit greatly from CPU and RAM.
@@ -450,48 +449,7 @@ You can add more Query servers as needed based on query load. If you increase th
 Congratulations, you now have a Druid cluster! The next step is to learn about recommended ways to load data into
 Druid based on your use case. Read more about [loading data](../ingestion/index.md).
 
-## 集群部署
 
-Apache Druid旨在作为可伸缩的容错集群进行部署。
-
-在本文档中，我们将安装一个简单的集群，并讨论如何对其进行进一步配置以满足您的需求。
-
-这个简单的集群将具有以下特点：
-* 一个Master服务同时起Coordinator和Overlord进程
-* 两个可伸缩、容错的Data服务来运行Historical和MiddleManager进程
-* 一个Query服务，运行Druid Broker和Router进程
-
-在生产中，我们建议根据您的特定容错需求部署多个Master服务器和多个Query服务器，但是您可以使用一台Master服务器和一台Query服务器将服务快速运行起来，然后再添加更多服务器。
-### 选择硬件
-#### 首次部署
-
-如果您现在没有Druid集群，并打算首次以集群模式部署运行Druid，则本指南提供了一个包含预先配置的集群部署示例。
-
-##### Master服务
-
-Coordinator进程和Overlord进程负责处理集群的元数据和协调需求，它们可以运行在同一台服务器上。
-
-在本示例中，我们将在等效于AWS[m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/)实例的硬件环境上部署。
-
-硬件规格为：
-
-* 8核CPU
-* 31GB内存
-
-可以在`conf/druid/cluster/master`下找到适用于此硬件规格的Master示例服务配置。
-
-##### Data服务
-
-Historical和MiddleManager可以分配在同一台服务器上运行，以处理集群中的实际数据，这两个服务受益于CPU、内存和固态硬盘。
-
-在本示例中，我们将在等效于AWS[i3.4xlarge](https://aws.amazon.com/cn/ec2/instance-types/i3/)实例的硬件环境上部署。
-
-硬件规格为：
-* 16核CPU
-* 122GB内存
-* 2 * 1.9TB 固态硬盘
-
-可以在`conf/druid/cluster/data`下找到适用于此硬件规格的Data示例服务配置。
 
 ##### Query服务
 
