@@ -147,15 +147,19 @@ cd apache-druid-apache-druid-0.21.1
 
 如果你已经有一个正在运行的独立服务器部署的话，请拷贝你已经存在的配置文件到 `conf/druid/cluster` 文件夹中，以保证你已有的配置文件不丢失。
 
-## Configure metadata storage and deep storage
+## 配置 metadata 存储和深度存储（deep storage） 
 
-### Migrating from Single-Server Deployments
+### 从独立服务器部署上合并到集群
+如果您已经有一个独立服务器的部署实例，并且希望在整个迁移过程中保留数据，请在对元数据进行迁移之前先阅读：
+* [metadata migration](../operations/metadata-migration.md) 
+* [deep storage migration](../operations/deep-storage-migration.md)
 
-If you have an existing single-server deployment and you wish to preserve your data across the migration, please follow the instructions at [metadata migration](../operations/metadata-migration.md) and [deep storage migration](../operations/deep-storage-migration.md) before updating your metadata/deep storage configs.
+本指南中的元数据迁移是针对你将原数据存储在 Derby 数据库中，同时你的深度存储也是使用的 Derby 数据库。
+如果你在单实例部署的服务器上已经使用了非 Derby 的数据库存储元数据或者分布式深度存储的那，那么你可以在新的集群环境中使用已经存在并且使用的存储方案。
 
-These guides are targeted at single-server deployments that use the Derby metadata store and local deep storage. If you are already using a non-Derby metadata store in your single-server cluster, you can reuse the existing metadata store for the new cluster.
-
-These guides also provide information on migrating segments from local deep storage. A clustered deployment requires distributed deep storage like S3 or HDFS. If your single-server deployment was already using distributed deep storage, you can reuse the existing deep storage for the new cluster.
+本指南还提供了从本地深度存储中进行段合并的信息。
+集群环境的部署是需要配置深度存储的，例如 S3 或 HDFS。 
+如果单实例部署已在使用分布式深度存储，则可以在新集群中继续使用当前的深度存储。
 
 ### Metadata storage
 
@@ -447,45 +451,6 @@ Druid based on your use case. Read more about [loading data](../ingestion/index.
 
 
 
-### 下载发行版
-
-首先，下载并解压缩发布安装包。最好首先在单台计算机上执行此操作，因为您将编辑配置，然后将修改后的配置分发到所有服务器上。
-
-[下载](https://www.apache.org/dyn/closer.cgi?path=/druid/0.17.0/apache-druid-0.17.0-bin.tar.gz)Druid最新0.17.0release安装包
-
-在终端中运行以下命令来提取Druid
-
-```
-tar -xzf apache-druid-0.17.0-bin.tar.gz
-cd apache-druid-0.17.0
-```
-
-在安装包中有以下文件：
-
-* `LICENSE`和`NOTICE`文件
-* `bin/*` - 启停等脚本
-* `conf/druid/cluster/*` - 用于集群部署的模板配置
-* `extensions/*` - Druid核心扩展
-* `hadoop-dependencies/*` - Druid Hadoop依赖
-* `lib/*` - Druid核心库和依赖
-* `quickstart/*` - 与[快速入门](chapter-2.md)相关的文件
-
-我们主要是编辑`conf/druid/cluster/`中的文件。
-
-#### 从单服务器环境迁移部署
-
-在以下各节中，我们将在`conf/druid/cluster`下编辑配置。
-
-如果您已经有一个单服务器部署，请将您的现有配置复制到`conf/druid /cluster`以保留您所做的所有配置更改。
-
-### 配置元数据存储和深度存储
-#### 从单服务器环境迁移部署
-
-如果您已经有一个单服务器部署，并且希望在整个迁移过程中保留数据，请在更新元数据/深层存储配置之前，按照[元数据迁移](../../operations/metadataMigration.md)和[深层存储迁移](../../operations/DeepstorageMigration.md)中的说明进行操作。
-
-这些指南针对使用Derby元数据存储和本地深度存储的单服务器部署。 如果您已经在单服务器集群中使用了非Derby元数据存储，则可以在新集群中可以继续使用当前的元数据存储。
-
-这些指南还提供了有关从本地深度存储迁移段的信息。集群部署需要分布式深度存储，例如S3或HDFS。 如果单服务器部署已在使用分布式深度存储，则可以在新集群中继续使用当前的深度存储。
 
 #### 元数据存储
 
