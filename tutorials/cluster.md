@@ -34,7 +34,7 @@ AWS 上面硬件的配置为：
 
 #### 数据服务器（Data server）
 
-Historicals 和 MiddleManagers 可以合并到同一个服务器上，这个 2 个进程在你的集群中用于处理实际的数据。通常来说越大更大的 CPU, RAM, SSDs硬盘越好更好。
+Historicals 和 MiddleManagers 可以合并到同一个服务器上，这个 2 个进程在你的集群中用于处理实际的数据。通常来说越大 CPU, RAM, SSDs硬盘越好。
 
 在本示例中，我们将会在  [i3.4xlarge](https://aws.amazon.com/ec2/instance-types/i3/) 部署一个评估的服务器和实例。
 
@@ -48,150 +48,148 @@ AWS 上面硬件的配置为：
 
 #### 查询服务器（Query server）
 
-Druid Brokers accept queries and farm them out to the rest of the cluster. They also optionally maintain an
-in-memory query cache. These servers benefit greatly from CPU and RAM.
+Druid Brokers 可以接受查询，并且将接受的查询发送到集群中处理。同时他们也负责维护内存中的查询缓存， 常来说越大的 CPU, RAM 越好。
 
-In this example, we will be deploying the equivalent of one AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) instance.
+在本示例中，我们将会在  [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) 部署一个评估的服务器和实例。
 
-This hardware offers:
+AWS 上面硬件的配置为：
 
 - 8 vCPUs
 - 31 GB RAM
 
-You can consider co-locating any open source UIs or query libraries on the same server that the Broker is running on.
+你也可以考虑在运行 Broker 进程的查询服务器上部署任何开源的 UI 或者查询库。
 
-Example Query server configurations that have been sized for this hardware can be found under `conf/druid/cluster/query`.
+有关本服务器的配置信息和有关硬件大小的建议，可以在文件，可以在文件 `conf/druid/cluster/query` 中找到。
 
-#### Other Hardware Sizes
+#### 其他硬件大小
+上面的示例集群配置是从多种确定 Druid 集群可能的配置方式中选择的一个示例。
 
-The example cluster above is chosen as a single example out of many possible ways to size a Druid cluster.
+您可以根据自己的特定需求和要求来选择 较小/较大的硬件配置或 较少/更多的服务器数量。
+如果你的使用实例有比较复杂的可扩展性要求，你也可以选择不将进程合并到服务器上的配置方案，而针对每一个进程配置一台服务器（例如，你可以配置一个独立的 Historical 服务器）。
 
-You can choose smaller/larger hardware or less/more servers for your specific needs and constraints.
+有关更多的配置信息，请参考页面 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 中的内容，能够帮助你如何对你的配置进行配置和扩展。
 
-If your use case has complex scaling requirements, you can also choose to not co-locate Druid processes (e.g., standalone Historical servers).
+### 从独立服务器部署上合并到集群
 
-The information in the [basic cluster tuning guide](../operations/basic-cluster-tuning.md) can help with your decision-making process and with sizing your configurations.
+如果你已经有一个已经存在并且独立运行的独立服务器部署的话，例如在页面 [single-server deployment examples](../operations/single-server.md) 中部署的服务器，
+现在你希望将这个独立部署的服务器合并到集群的部署方式中的话，下面的这部分内容将会帮助你完成这个切换和合并的过程。
+这个过程包括有如何对硬件进行的选择和针对 Master/Data/Query 服务器应该如何进行组织。
 
-### Migrating from a single-server deployment
+#### 主服务器（Master Server）
+针对主服务器主要需要考虑的就是 Coordinator 和 Overlord 进程的 CPU 使用和 RAM 内存的 heaps。
 
-If you have an existing single-server deployment, such as the ones from the [single-server deployment examples](../operations/single-server.md), and you wish to migrate to a clustered deployment of similar scale, the following section contains guidelines for choosing equivalent hardware using the Master/Data/Query server organization.
+从单独服务器部署的实例中找到 Coordinator 和 Overlord 进程的总计 heap 内存使用大小，然后在新的集群服务上选择硬件时候的 RAM 内存选择，需要有这 2 个进程合并 heap 的大小。
+同时还需要准备为这台服务器留够足够的内存供其他进程使用。
 
-#### Master server
+针对服务器使用的 CPU 内核，你可以只选择在单独部署情况下的 1/4 即可。
 
-The main considerations for the Master server are available CPUs and RAM for the Coordinator and Overlord heaps.
+#### 数据服务器（Data server）
+当对数据服务器进行选择的时候，主要考虑的是 CPU 数量和 RAM 内存数量，同时如果能够使用 SSD 固态硬盘就更好了。
 
-Sum up the allocated heap sizes for your Coordinator and Overlord from the single-server deployment, and choose Master server hardware with enough RAM for the combined heaps, with some extra RAM for other processes on the machine.
+在针对集群的部署中，如果能够使用多台服务器来部署数据服务器就更好了，因为这样能够让集群拥有更多的冗余来保障持续运行。
 
-For CPU cores, you can choose hardware with approximately 1/4th of the cores of the single-server deployment.
+当针对数据服务器选择硬件的时候，你可以选择分裂因子 'N'，针对原始独立服务器部署的时候的 CPU/RAM 的数量除以 N， 然后按照除以 'N' 后的结果来确定集群服务器的硬件要求。
 
-#### Data server
+针对 Historical/MiddleManager 的配置调整和分离将会在本页面后部分的指南中进行说明。
 
-When choosing Data server hardware for the cluster, the main considerations are available CPUs and RAM, and using SSD storage if feasible.
+#### 查询服务器（Query server）
+当对数据服务器进行选择的时候，主要考虑的是 CPU 数量，RAM 内存数量和 Broker 进程的的 heap 内存加上直接内存（direct memory），以及 Router 进程的 heap 内存。
 
-In a clustered deployment, having multiple Data servers is a good idea for fault-tolerance purposes.
+将 Broker 和 Router 进程在独立服务器上使用的内存数量相加，然后选择的查询服务器的内存需要足够大的内存来覆盖 Broker/Router 进程使用内存相加的结果。
+同时还需要准备为这台服务器留够足够的内存供其他进程使用。
 
-When choosing the Data server hardware, you can choose a split factor `N`, divide the original CPU/RAM of the single-server deployment by `N`, and deploy `N` Data servers of reduced size in the new cluster.
+针对服务器使用的 CPU 内核，你可以只选择在单独部署情况下的 1/4 即可。
 
-Instructions for adjusting the Historical/MiddleManager configs for the split are described in a later section in this guide.
+请参考 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 页面中的内容，来确定如何计算 Broker/Router 进程使用的内存。
 
-#### Query server
+## 选择操作系统
 
-The main considerations for the Query server are available CPUs and RAM for the Broker heap + direct memory, and Router heap.
+我们推荐你使用任何你喜欢的 Linux 操作系统。同时你需要安装：
 
-Sum up the allocated memory sizes for your Broker and Router from the single-server deployment, and choose Query server hardware with enough RAM to cover the Broker/Router, with some extra RAM for other processes on the machine.
+  * **Java 8 或者更新的版本**
 
-For CPU cores, you can choose hardware with approximately 1/4th of the cores of the single-server deployment.
-
-The [basic cluster tuning guide](../operations/basic-cluster-tuning.md) has information on how to calculate Broker/Router memory usage.
-
-## Select OS
-
-We recommend running your favorite Linux distribution. You will also need:
-
-  * **Java 8 or later**
-
-> **Warning:** Druid only officially supports Java 8. Any Java version later than 8 is still experimental.
+> **警告：** Druid 目前只能官方的支持 Java 8。如果你使用其他的 JDK 版本，那么很多功能可能是实践性的的。
 >
-> If needed, you can specify where to find Java using the environment variables `DRUID_JAVA_HOME` or `JAVA_HOME`. For more details run the verify-java script.
+> 如果需要的话，你可以在你的系统环境中定义环境变量 `DRUID_JAVA_HOME` 或 `JAVA_HOME`，来告诉 Druid 到哪里可以找到需要的 JDK 版本。
+> 可以运行 Druid 程序中的 `bin/verify-java` 脚本来查看当前运行的 Java 版本。
 
-Your OS package manager should be able to help for both Java. If your Ubuntu-based OS
-does not have a recent enough version of Java, WebUpd8 offers [packages for those
-OSes](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html).
+你的操作系统包管理工具应该能够帮助你在操作系统中安装 Java。
+如果你使用的是基于 Ubuntu 的操作系统，但是这个操作系统没有提供的最新版本的 Java 的话，请尝试访问 WebUpd8 页面中的内容： [packages for those
+OSes](http://www.webupd8.org/2012/09/install-oracle-java-8-in-ubuntu-via-ppa.html) 。
 
-## Download the distribution
+## 下载发行版本
+首先，需要下载并且解压缩相关的归档文件。
+最好先在单台计算机上进行相关操作。因为随后你需要在解压缩的包内对配置进行修改，然后将修改后的配置发布到所有的其他服务器上。
 
-First, download and unpack the release archive. It's best to do this on a single machine at first,
-since you will be editing the configurations and then copying the modified distribution out to all
-of your servers.
+[apache-druid-0.21.1 下载地址](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz)
 
-[Download](https://www.apache.org/dyn/closer.cgi?path=/druid/apache-druid-0.21.1/apache-druid-apache-druid-0.21.1-bin.tar.gz)
-the apache-druid-0.21.1 release.
-
-Extract Druid by running the following commands in your terminal:
+在控制台中使用下面的命令来进行解压：
 
 ```bash
-tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz
+tar -xzf apache-druid-apache-druid-0.21.1-bin.tar.gz 
 cd apache-druid-apache-druid-0.21.1
 ```
 
-In the package, you should find:
+在解压后的包中，你应该能够看到：
 
-* `LICENSE` and `NOTICE` files
-* `bin/*` - scripts related to the [single-machine quickstart](index.html)
-* `conf/druid/cluster/*` - template configurations for a clustered setup
-* `extensions/*` - core Druid extensions
-* `hadoop-dependencies/*` - Druid Hadoop dependencies
-* `lib/*` - libraries and dependencies for core Druid
-* `quickstart/*` - files related to the [single-machine quickstart](index.html)
+* `LICENSE` 和 `NOTICE` 文件
+* `bin/*` - 启动或停止的脚本，这是针对独立服务器进行部署的，请参考页面： [独立服务器部署快速指南](../tutorials/index.md)
+* `conf/druid/cluster/*` - 针对集群部署的配置和设置文件
+* `extensions/*` - Druid 核心扩展
+* `hadoop-dependencies/*` - Druid Hadoop 依赖
+* `lib/*` - Druid 核心库和依赖
+* `quickstart/*` - 独立服务器配置的相关文件，这是针对独立服务器进行部署的，请参考页面： [独立服务器部署快速指南](../tutorials/index.md)
 
-We'll be editing the files in `conf/druid/cluster/` in order to get things running.
+如果你需要让你的集群能够启动的话，我们将会对 `conf/druid/cluster/` 中的内容进行编辑。
 
-### Migrating from Single-Server Deployments
+### 从独立服务器部署上进行合并
+如果需要完成后续页面的部署和配置的话，你需要对 `conf/druid/cluster/` 中的内容进行编辑。
 
-In the following sections we will be editing the configs under `conf/druid/cluster`.
+如果你已经有一个正在运行的独立服务器部署的话，请拷贝你已经存在的配置文件到 `conf/druid/cluster` 文件夹中，以保证你已有的配置文件不丢失。
 
-If you have an existing single-server deployment, please copy your existing configs to `conf/druid/cluster` to preserve any config changes you have made.
+## 配置 metadata 存储和深度存储（deep storage） 
 
-## Configure metadata storage and deep storage
+### 从独立服务器部署上合并到集群
+如果您已经有一个独立服务器的部署实例，并且希望在整个迁移过程中保留数据，请在对元数据进行迁移之前先阅读：
+* [metadata migration](../operations/metadata-migration.md) 
+* [deep storage migration](../operations/deep-storage-migration.md)
 
-### Migrating from Single-Server Deployments
+本指南中的元数据迁移是针对你将原数据存储在 Derby 数据库中，同时你的深度存储也是使用的 Derby 数据库。
+如果你在单实例部署的服务器上已经使用了非 Derby 的数据库存储元数据或者分布式深度存储的那，那么你可以在新的集群环境中使用已经存在并且使用的存储方案。
 
-If you have an existing single-server deployment and you wish to preserve your data across the migration, please follow the instructions at [metadata migration](../operations/metadata-migration.md) and [deep storage migration](../operations/deep-storage-migration.md) before updating your metadata/deep storage configs.
+本指南还提供了从本地深度存储中进行段合并的信息。
+集群环境的部署是需要配置深度存储的，例如 S3 或 HDFS。 
+如果单实例部署已在使用分布式深度存储，则可以在新集群中继续使用当前的深度存储。
 
-These guides are targeted at single-server deployments that use the Derby metadata store and local deep storage. If you are already using a non-Derby metadata store in your single-server cluster, you can reuse the existing metadata store for the new cluster.
+### 元数据存储
 
-These guides also provide information on migrating segments from local deep storage. A clustered deployment requires distributed deep storage like S3 or HDFS. If your single-server deployment was already using distributed deep storage, you can reuse the existing deep storage for the new cluster.
-
-### Metadata storage
-
-In `conf/druid/cluster/_common/common.runtime.properties`, replace
-"metadata.storage.*" with the address of the machine that you will use as your metadata store:
+在 `conf/druid/cluster/_common/common.runtime.properties` 配置文件中，替换 "metadata.storage.*" 的的属性来确定元数据存储的服务器地址。
+元数据通常是存储在数据库中的，因此你可以在这里配置你的数据库服务器地址。
 
 - `druid.metadata.storage.connector.connectURI`
 - `druid.metadata.storage.connector.host`
 
-In a production deployment, we recommend running a dedicated metadata store such as MySQL or PostgreSQL with replication, deployed separately from the Druid servers.
+在实际的生产环境中，我们推荐你使用独立的元数据存储数据库例如 MySQL 或者 PostgreSQL 来增加冗余性。
+这个配置将会在 Druid 服务器外部配置一个数据库连接来保留一套元数据的配置信息，以增加数据冗余性。
 
-The [MySQL extension](../development/extensions-core/mysql.md) and [PostgreSQL extension](../development/extensions-core/postgresql.md) docs have instructions for extension configuration and initial database setup.
+[MySQL extension](../development/extensions-core/mysql.md) 和 [PostgreSQL extension](../development/extensions-core/postgresql.md) 
+页面中有如何对扩展进行配置和对数据库如何进行初始化的说明，请参考上面页面中的内容。
 
-### Deep storage
-
-Druid relies on a distributed filesystem or large object (blob) store for data storage. The most
-commonly used deep storage implementations are S3 (popular for those on AWS) and HDFS (popular if
-you already have a Hadoop deployment).
+### 深度存储
+Druid 依赖分布式文件系统或者一个大对象（blob）存储来对数据进行存储。
+最常用的深度存储的实现通常使用的是 S3 (如果你使用的是 AWS 的话)或者 HDFS（如果你使用的是 Hadoop 部署的话）。
 
 #### S3
 
-In `conf/druid/cluster/_common/common.runtime.properties`,
+在文件 `conf/druid/cluster/_common/common.runtime.properties`，
 
-- Add "druid-s3-extensions" to `druid.extensions.loadList`.
+- 添加 "druid-s3-extensions" 到 `druid.extensions.loadList`。
 
-- Comment out the configurations for local storage under "Deep Storage" and "Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，注释掉本地存储的配置。
 
-- Uncomment and configure appropriate values in the "For S3" sections of "Deep Storage" and
-"Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，取消注释 "For S3" 部分有关的配置。
 
-After this, you should have made the following changes:
+在完成上面的操作后，你的配置文件应该看起来和下面的内容相似：
 
 ```
 druid.extensions.loadList=["druid-s3-extensions"]
@@ -213,20 +211,19 @@ druid.indexer.logs.s3Bucket=your-bucket
 druid.indexer.logs.s3Prefix=druid/indexing-logs
 ```
 
-Please see the [S3 extension](../development/extensions-core/s3.md) documentation for more info.
+请参考 [S3 extension](../development/extensions-core/s3.md) 页面中的内容来获得更多的信息。
 
 #### HDFS
 
-In `conf/druid/cluster/_common/common.runtime.properties`,
+在文件 `conf/druid/cluster/_common/common.runtime.properties`，
 
-- Add "druid-hdfs-storage" to `druid.extensions.loadList`.
+- 添加 "druid-hdfs-storage" 到 `druid.extensions.loadList`。
 
-- Comment out the configurations for local storage under "Deep Storage" and "Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，注释掉本地存储的配置。
 
-- Uncomment and configure appropriate values in the "For HDFS" sections of "Deep Storage" and
-"Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，取消注释 "For HDFS" 部分有关的配置。 
 
-After this, you should have made the following changes:
+在完成上面的操作后，你的配置文件应该看起来和下面的内容相似：
 
 ```
 druid.extensions.loadList=["druid-hdfs-storage"]
@@ -244,15 +241,13 @@ druid.indexer.logs.type=hdfs
 druid.indexer.logs.directory=/druid/indexing-logs
 ```
 
-Also,
+同时,
 
-- Place your Hadoop configuration XMLs (core-site.xml, hdfs-site.xml, yarn-site.xml,
-mapred-site.xml) on the classpath of your Druid processes. You can do this by copying them into
-`conf/druid/cluster/_common/`.
+- 在你 Druid 启动进程的的 classpath 中，请替换掉你的 Hadoop 配置 XMLs 文件(core-site.xml, hdfs-site.xml, yarn-site.xml,
+  mapred-site.xml)，或者你可以直接拷贝上面的文件到 `conf/druid/cluster/_common/` 中。
 
-Please see the [HDFS extension](../development/extensions-core/hdfs.md) documentation for more info.
+请参考  [HDFS extension](../development/extensions-core/hdfs.md) 页面中的内容来获得更多的信息。
 
-<a name="hadoop"></a>
 
 ## Configure for connecting to Hadoop (optional)
 
@@ -451,187 +446,7 @@ Druid based on your use case. Read more about [loading data](../ingestion/index.
 
 
 
-##### Query服务
 
-Druid Broker服务接收查询请求，并将其转发到集群中的其他部分，同时其可以可选的配置内存缓存。 Broker服务受益于CPU和内存。
-
-在本示例中，我们将在等效于AWS[m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/)实例的硬件环境上部署。
-
-硬件规格为：
-
-* 8核CPU
-* 31GB内存
-
-您可以考虑将所有的其他开源UI工具或者查询依赖等与Broker服务部署在同一台服务器上。
-
-可以在`conf/druid/cluster/query`下找到适用于此硬件规格的Query示例服务配置。
-
-##### 其他硬件配置
-
-上面的示例集群是从多种确定Druid集群大小的可能方式中选择的一个示例。
-
-您可以根据自己的特定需求和限制选择较小/较大的硬件或较少/更多的服务器。
-
-如果您的使用场景具有复杂的扩展要求，则还可以选择不将Druid服务混合部署（例如，独立的Historical Server）。
-
-[基本集群调整指南](../../operations/basicClusterTuning.md)中的信息可以帮助您进行决策，并可以调整配置大小。
-
-#### 从单服务器环境迁移部署
-
-如果您现在已有单服务器部署的环境，例如[单服务器部署示例](chapter-3.md)中的部署，并且希望迁移到类似规模的集群部署，则以下部分包含一些选择Master/Data/Query服务等效硬件的准则。
-
-##### Master服务
-
-Master服务的主要考虑点是可用CPU以及用于Coordinator和Overlord进程的堆内存。
-
-首先计算出来在单服务器环境下Coordinator和Overlord已分配堆内存之和，然后选择具有足够内存的Master服务硬件，同时还需要考虑到为服务器上其他进程预留一些额外的内存。
-
-对于CPU，可以选择接近于单服务器环境核数1/4的硬件。
-
-##### Data服务
-
-在为集群Data服务选择硬件时，主要考虑可用的CPU和内存，可行时使用SSD存储。
-
-在集群化部署时，出于容错的考虑，最好是部署多个Data服务。
-
-在选择Data服务的硬件时，可以假定一个分裂因子`N`，将原来的单服务器环境的CPU和内存除以`N`,然后在新集群中部署`N`个硬件规格缩小的Data服务。
-
-##### Query服务
-
-Query服务的硬件选择主要考虑可用的CPU、Broker服务的堆内和堆外内存、Router服务的堆内存。
-
-首先计算出来在单服务器环境下Broker和Router已分配堆内存之和，然后选择可以覆盖Broker和Router内存的Query服务硬件，同时还需要考虑到为服务器上其他进程预留一些额外的内存。
-
-对于CPU，可以选择接近于单服务器环境核数1/4的硬件。
-
-[基本集群调优指南](../../operations/basicClusterTuning.md)包含有关如何计算Broker和Router服务内存使用量的信息。
-
-### 选择操作系统
-
-我们建议运行您喜欢的Linux发行版，同时还需要：
-
-* **Java 8**
-
-> [!WARNING]
-> Druid服务运行依赖Java 8，可以使用环境变量`DRUID_JAVA_HOME`或`JAVA_HOME`指定在何处查找Java,有关更多详细信息，请运行`verify-java`脚本。
-
-### 下载发行版
-
-首先，下载并解压缩发布安装包。最好首先在单台计算机上执行此操作，因为您将编辑配置，然后将修改后的配置分发到所有服务器上。
-
-[下载](https://www.apache.org/dyn/closer.cgi?path=/druid/0.17.0/apache-druid-0.17.0-bin.tar.gz)Druid最新0.17.0release安装包
-
-在终端中运行以下命令来提取Druid
-
-```
-tar -xzf apache-druid-0.17.0-bin.tar.gz
-cd apache-druid-0.17.0
-```
-
-在安装包中有以下文件：
-
-* `LICENSE`和`NOTICE`文件
-* `bin/*` - 启停等脚本
-* `conf/druid/cluster/*` - 用于集群部署的模板配置
-* `extensions/*` - Druid核心扩展
-* `hadoop-dependencies/*` - Druid Hadoop依赖
-* `lib/*` - Druid核心库和依赖
-* `quickstart/*` - 与[快速入门](chapter-2.md)相关的文件
-
-我们主要是编辑`conf/druid/cluster/`中的文件。
-
-#### 从单服务器环境迁移部署
-
-在以下各节中，我们将在`conf/druid/cluster`下编辑配置。
-
-如果您已经有一个单服务器部署，请将您的现有配置复制到`conf/druid /cluster`以保留您所做的所有配置更改。
-
-### 配置元数据存储和深度存储
-#### 从单服务器环境迁移部署
-
-如果您已经有一个单服务器部署，并且希望在整个迁移过程中保留数据，请在更新元数据/深层存储配置之前，按照[元数据迁移](../../operations/metadataMigration.md)和[深层存储迁移](../../operations/DeepstorageMigration.md)中的说明进行操作。
-
-这些指南针对使用Derby元数据存储和本地深度存储的单服务器部署。 如果您已经在单服务器集群中使用了非Derby元数据存储，则可以在新集群中可以继续使用当前的元数据存储。
-
-这些指南还提供了有关从本地深度存储迁移段的信息。集群部署需要分布式深度存储，例如S3或HDFS。 如果单服务器部署已在使用分布式深度存储，则可以在新集群中继续使用当前的深度存储。
-
-#### 元数据存储
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，使用您将用作元数据存储的服务器地址来替换"metadata.storage.*":
-
-* `druid.metadata.storage.connector.connectURI`
-* `druid.metadata.storage.connector.host`
-
-在生产部署中，我们建议运行专用的元数据存储，例如具有复制功能的MySQL或PostgreSQL，与Druid服务器分开部署。
-
-[MySQL扩展](../../Configuration/core-ext/mysql.md)和[PostgreSQL](../../Configuration/core-ext/postgresql.md)扩展文档包含有关扩展配置和初始数据库安装的说明。
-
-#### 深度存储
-
-Druid依赖于分布式文件系统或大对象（blob）存储来存储数据，最常用的深度存储实现是S3（适合于在AWS上）和HDFS（适合于已有Hadoop集群）。
-
-##### S3
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，
-
-* 在`druid.extension.loadList`配置项中增加"druid-s3-extensions"扩展
-* 注释掉配置文件中用于本地存储的"Deep Storage"和"Indexing service logs"
-* 打开配置文件中关于"For S3"部分中"Deep Storage"和"Indexing service logs"的配置
-
-上述操作之后，您将看到以下的变化：
-
-```json
-druid.extensions.loadList=["druid-s3-extensions"]
-
-#druid.storage.type=local
-#druid.storage.storageDirectory=var/druid/segments
-
-druid.storage.type=s3
-druid.storage.bucket=your-bucket
-druid.storage.baseKey=druid/segments
-druid.s3.accessKey=...
-druid.s3.secretKey=...
-
-#druid.indexer.logs.type=file
-#druid.indexer.logs.directory=var/druid/indexing-logs
-
-druid.indexer.logs.type=s3
-druid.indexer.logs.s3Bucket=your-bucket
-druid.indexer.logs.s3Prefix=druid/indexing-logs
-```
-更多信息可以看[S3扩展](../../Configuration/core-ext/s3.md)部分的文档。
-
-##### HDFS
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，
-
-* 在`druid.extension.loadList`配置项中增加"druid-hdfs-storage"扩展
-* 注释掉配置文件中用于本地存储的"Deep Storage"和"Indexing service logs"
-* 打开配置文件中关于"For HDFS"部分中"Deep Storage"和"Indexing service logs"的配置
-
-上述操作之后，您将看到以下的变化：
-
-```json
-druid.extensions.loadList=["druid-hdfs-storage"]
-
-#druid.storage.type=local
-#druid.storage.storageDirectory=var/druid/segments
-
-druid.storage.type=hdfs
-druid.storage.storageDirectory=/druid/segments
-
-#druid.indexer.logs.type=file
-#druid.indexer.logs.directory=var/druid/indexing-logs
-
-druid.indexer.logs.type=hdfs
-druid.indexer.logs.directory=/druid/indexing-logs
-```
-
-同时：
-
-* 需要将Hadoop的配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放置在Druid进程的classpath中，可以将他们拷贝到`conf/druid/cluster/_common`目录中
-
-更多信息可以看[HDFS扩展](../../Configuration/core-ext/hdfs.md)部分的文档。
 
 ### Hadoop连接配置
 
