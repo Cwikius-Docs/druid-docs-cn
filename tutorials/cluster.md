@@ -76,18 +76,18 @@ AWS 上面硬件的配置为：
 这个过程包括有如何对硬件进行的选择和针对 Master/Data/Query 服务器应该如何进行组织。
 
 #### 主服务器（Master Server）
+针对主服务器主要需要考虑的就是 Coordinator 和 Overlord 进程的 CPU 使用和 RAM 内存的 heaps。
 
-The main considerations for the Master server are available CPUs and RAM for the Coordinator and Overlord heaps.
+从单独服务器部署的实例中找到 Coordinator 和 Overlord 进程的总计 heap 内存使用大小，然后在新的集群服务上选择硬件时候的 RAM 内存选择，需要有这 2 个进程合并 heap 的大小。
+同时还需要准备为这台服务器留够足够的内存供其他进程使用。
 
-Sum up the allocated heap sizes for your Coordinator and Overlord from the single-server deployment, and choose Master server hardware with enough RAM for the combined heaps, with some extra RAM for other processes on the machine.
+针对服务器使用的 CPU 内核，你可以只选择在单独部署情况下的 1/4 即可。
 
-For CPU cores, you can choose hardware with approximately 1/4th of the cores of the single-server deployment.
+#### 数据服务器（Data server）
+当对数据服务器进行选择的时候，主要考虑的是 CPU 数量和 RAM 内存数量，同时如果能够使用 SSD 固态硬盘就更好了。
 
-#### Data server
+在针对集群的部署中，如果能够使用多台服务器来部署数据服务器就更好了，因为这样能够让集群拥有更多的冗余来保障持续运行。
 
-When choosing Data server hardware for the cluster, the main considerations are available CPUs and RAM, and using SSD storage if feasible.
-
-In a clustered deployment, having multiple Data servers is a good idea for fault-tolerance purposes.
 
 When choosing the Data server hardware, you can choose a split factor `N`, divide the original CPU/RAM of the single-server deployment by `N`, and deploy `N` Data servers of reduced size in the new cluster.
 
