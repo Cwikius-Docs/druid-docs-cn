@@ -215,16 +215,15 @@ druid.indexer.logs.s3Prefix=druid/indexing-logs
 
 #### HDFS
 
-In `conf/druid/cluster/_common/common.runtime.properties`,
+在文件 `conf/druid/cluster/_common/common.runtime.properties`，
 
-- Add "druid-hdfs-storage" to `druid.extensions.loadList`.
+- 添加 "druid-hdfs-storage" 到 `druid.extensions.loadList`。
 
-- Comment out the configurations for local storage under "Deep Storage" and "Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，注释掉本地存储的配置。
 
-- Uncomment and configure appropriate values in the "For HDFS" sections of "Deep Storage" and
-"Indexing service logs".
+- 在 "Deep Storage" 和 "Indexing service logs" 部分的配置中，取消注释 "For HDFS" 部分有关的配置。 
 
-After this, you should have made the following changes:
+在完成上面的操作后，你的配置文件应该看起来和下面的内容相似：
 
 ```
 druid.extensions.loadList=["druid-hdfs-storage"]
@@ -242,15 +241,13 @@ druid.indexer.logs.type=hdfs
 druid.indexer.logs.directory=/druid/indexing-logs
 ```
 
-Also,
+同时,
 
-- Place your Hadoop configuration XMLs (core-site.xml, hdfs-site.xml, yarn-site.xml,
-mapred-site.xml) on the classpath of your Druid processes. You can do this by copying them into
-`conf/druid/cluster/_common/`.
+- 在你 Druid 启动进程的的 classpath 中，请替换掉你的 Hadoop 配置 XMLs 文件(core-site.xml, hdfs-site.xml, yarn-site.xml,
+  mapred-site.xml)，或者你可以直接拷贝上面的文件到 `conf/druid/cluster/_common/` 中。
 
-Please see the [HDFS extension](../development/extensions-core/hdfs.md) documentation for more info.
+请参考  [HDFS extension](../development/extensions-core/hdfs.md) 页面中的内容来获得更多的信息。
 
-<a name="hadoop"></a>
 
 ## Configure for connecting to Hadoop (optional)
 
@@ -450,84 +447,6 @@ Druid based on your use case. Read more about [loading data](../ingestion/index.
 
 
 
-
-#### 元数据存储
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，使用您将用作元数据存储的服务器地址来替换"metadata.storage.*":
-
-* `druid.metadata.storage.connector.connectURI`
-* `druid.metadata.storage.connector.host`
-
-在生产部署中，我们建议运行专用的元数据存储，例如具有复制功能的MySQL或PostgreSQL，与Druid服务器分开部署。
-
-[MySQL扩展](../../Configuration/core-ext/mysql.md)和[PostgreSQL](../../Configuration/core-ext/postgresql.md)扩展文档包含有关扩展配置和初始数据库安装的说明。
-
-#### 深度存储
-
-Druid依赖于分布式文件系统或大对象（blob）存储来存储数据，最常用的深度存储实现是S3（适合于在AWS上）和HDFS（适合于已有Hadoop集群）。
-
-##### S3
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，
-
-* 在`druid.extension.loadList`配置项中增加"druid-s3-extensions"扩展
-* 注释掉配置文件中用于本地存储的"Deep Storage"和"Indexing service logs"
-* 打开配置文件中关于"For S3"部分中"Deep Storage"和"Indexing service logs"的配置
-
-上述操作之后，您将看到以下的变化：
-
-```json
-druid.extensions.loadList=["druid-s3-extensions"]
-
-#druid.storage.type=local
-#druid.storage.storageDirectory=var/druid/segments
-
-druid.storage.type=s3
-druid.storage.bucket=your-bucket
-druid.storage.baseKey=druid/segments
-druid.s3.accessKey=...
-druid.s3.secretKey=...
-
-#druid.indexer.logs.type=file
-#druid.indexer.logs.directory=var/druid/indexing-logs
-
-druid.indexer.logs.type=s3
-druid.indexer.logs.s3Bucket=your-bucket
-druid.indexer.logs.s3Prefix=druid/indexing-logs
-```
-更多信息可以看[S3扩展](../../Configuration/core-ext/s3.md)部分的文档。
-
-##### HDFS
-
-在`conf/druid/cluster/_common/common.runtime.properties`中，
-
-* 在`druid.extension.loadList`配置项中增加"druid-hdfs-storage"扩展
-* 注释掉配置文件中用于本地存储的"Deep Storage"和"Indexing service logs"
-* 打开配置文件中关于"For HDFS"部分中"Deep Storage"和"Indexing service logs"的配置
-
-上述操作之后，您将看到以下的变化：
-
-```json
-druid.extensions.loadList=["druid-hdfs-storage"]
-
-#druid.storage.type=local
-#druid.storage.storageDirectory=var/druid/segments
-
-druid.storage.type=hdfs
-druid.storage.storageDirectory=/druid/segments
-
-#druid.indexer.logs.type=file
-#druid.indexer.logs.directory=var/druid/indexing-logs
-
-druid.indexer.logs.type=hdfs
-druid.indexer.logs.directory=/druid/indexing-logs
-```
-
-同时：
-
-* 需要将Hadoop的配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放置在Druid进程的classpath中，可以将他们拷贝到`conf/druid/cluster/_common`目录中
-
-更多信息可以看[HDFS扩展](../../Configuration/core-ext/hdfs.md)部分的文档。
 
 ### Hadoop连接配置
 
