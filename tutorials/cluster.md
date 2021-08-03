@@ -88,14 +88,12 @@ AWS 上面硬件的配置为：
 
 在针对集群的部署中，如果能够使用多台服务器来部署数据服务器就更好了，因为这样能够让集群拥有更多的冗余来保障持续运行。
 
+当针对数据服务器选择硬件的时候，你可以选择分裂因子 'N'，针对原始独立服务器部署的时候的 CPU/RAM 的数量除以 N， 然后按照除以 'N' 后的结果来确定集群服务器的硬件要求。
 
-When choosing the Data server hardware, you can choose a split factor `N`, divide the original CPU/RAM of the single-server deployment by `N`, and deploy `N` Data servers of reduced size in the new cluster.
+针对 Historical/MiddleManager 的配置调整和分离将会在本页面后部分的指南中进行说明。
 
-Instructions for adjusting the Historical/MiddleManager configs for the split are described in a later section in this guide.
-
-#### Query server
-
-The main considerations for the Query server are available CPUs and RAM for the Broker heap + direct memory, and Router heap.
+#### 查询服务器（Query server）
+当对数据服务器进行选择的时候，主要考虑的是 CPU 数量，RAM 内存数量和 Broker 进程的的 heap 内存加上直接内存（direct memory），以及 Router 进程的 heap 内存。
 
 Sum up the allocated memory sizes for your Broker and Router from the single-server deployment, and choose Query server hardware with enough RAM to cover the Broker/Router, with some extra RAM for other processes on the machine.
 
