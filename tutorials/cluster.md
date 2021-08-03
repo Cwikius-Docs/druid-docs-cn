@@ -62,16 +62,14 @@ AWS 上面硬件的配置为：
 有关本服务器的配置信息和有关硬件大小的建议，可以在文件，可以在文件 `conf/druid/cluster/query` 中找到。
 
 #### 其他硬件大小
+上面的示例集群配置是从多种确定 Druid 集群可能的配置方式中选择的一个示例。
 
-The example cluster above is chosen as a single example out of many possible ways to size a Druid cluster.
+您可以根据自己的特定需求和要求来选择 较小/较大的硬件配置或 较少/更多的服务器数量。
+如果你的使用实例有比较复杂的可扩展性要求，你也可以选择不将进程合并到服务器上的配置方案，而针对每一个进程配置一台服务器（例如，你可以配置一个独立的 Historical 服务器）。
 
-You can choose smaller/larger hardware or less/more servers for your specific needs and constraints.
+有关更多的配置信息，请参考页面 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 中的内容，能够帮助你如何对你的配置进行配置和扩展。
 
-If your use case has complex scaling requirements, you can also choose to not co-locate Druid processes (e.g., standalone Historical servers).
-
-The information in the [basic cluster tuning guide](../operations/basic-cluster-tuning.md) can help with your decision-making process and with sizing your configurations.
-
-### Migrating from a single-server deployment
+### 从独立服务器部署上合并到集群
 
 If you have an existing single-server deployment, such as the ones from the [single-server deployment examples](../operations/single-server.md), and you wish to migrate to a clustered deployment of similar scale, the following section contains guidelines for choosing equivalent hardware using the Master/Data/Query server organization.
 
@@ -450,20 +448,7 @@ Druid based on your use case. Read more about [loading data](../ingestion/index.
 
 
 
-##### Query服务
 
-Druid Broker服务接收查询请求，并将其转发到集群中的其他部分，同时其可以可选的配置内存缓存。 Broker服务受益于CPU和内存。
-
-在本示例中，我们将在等效于AWS[m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/)实例的硬件环境上部署。
-
-硬件规格为：
-
-* 8核CPU
-* 31GB内存
-
-您可以考虑将所有的其他开源UI工具或者查询依赖等与Broker服务部署在同一台服务器上。
-
-可以在`conf/druid/cluster/query`下找到适用于此硬件规格的Query示例服务配置。
 
 ##### 其他硬件配置
 
