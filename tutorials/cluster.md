@@ -34,7 +34,7 @@ AWS 上面硬件的配置为：
 
 #### 数据服务器（Data server）
 
-Historicals 和 MiddleManagers 可以合并到同一个服务器上，这个 2 个进程在你的集群中用于处理实际的数据。通常来说越大更大的 CPU, RAM, SSDs硬盘越好更好。
+Historicals 和 MiddleManagers 可以合并到同一个服务器上，这个 2 个进程在你的集群中用于处理实际的数据。通常来说越大 CPU, RAM, SSDs硬盘越好。
 
 在本示例中，我们将会在  [i3.4xlarge](https://aws.amazon.com/ec2/instance-types/i3/) 部署一个评估的服务器和实例。
 
@@ -48,21 +48,20 @@ AWS 上面硬件的配置为：
 
 #### 查询服务器（Query server）
 
-Druid Brokers accept queries and farm them out to the rest of the cluster. They also optionally maintain an
-in-memory query cache. These servers benefit greatly from CPU and RAM.
+Druid Brokers 可以接受查询，并且将接受的查询发送到集群中处理。同时他们也负责维护内存中的查询缓存， 常来说越大的 CPU, RAM 越好。
 
-In this example, we will be deploying the equivalent of one AWS [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) instance.
+在本示例中，我们将会在  [m5.2xlarge](https://aws.amazon.com/ec2/instance-types/m5/) 部署一个评估的服务器和实例。
 
-This hardware offers:
+AWS 上面硬件的配置为：
 
 - 8 vCPUs
 - 31 GB RAM
 
-You can consider co-locating any open source UIs or query libraries on the same server that the Broker is running on.
+你也可以考虑在运行 Broker 进程的查询服务器上部署任何开源的 UI 或者查询库。
 
-Example Query server configurations that have been sized for this hardware can be found under `conf/druid/cluster/query`.
+有关本服务器的配置信息和有关硬件大小的建议，可以在文件，可以在文件 `conf/druid/cluster/query` 中找到。
 
-#### Other Hardware Sizes
+#### 其他硬件大小
 
 The example cluster above is chosen as a single example out of many possible ways to size a Druid cluster.
 
