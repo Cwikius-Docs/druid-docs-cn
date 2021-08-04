@@ -245,7 +245,7 @@ http://<middlemanager-host>:<worker-port>/druid/worker/v1/chat/<task-id>/unparse
 
 要启用段锁定，可能需要在 [task context(任务上下文)](#上下文参数) 中将 `forceTimeChunkLock` 设置为 `false`。一旦 `forceTimeChunkLock` 被取消设置，任务将自动选择正确的锁类型。**请注意**，段锁并不总是可用的。使用时间块锁的最常见场景是当覆盖任务更改段粒度时。此外，只有本地索引任务和Kafka/kinesis索引任务支持段锁。Hadoop索引任务和索引实时(`index_realtime`)任务（被 [Tranquility](tranquility.md)使用）还不支持它。
 
-任务上下文中的 `forceTimeChunkLock` 仅应用于单个任务。如果要为所有任务取消设置，则需要在 [Overlord配置](../Configuration/configuration.md#overlord) 中设置 `druid.indexer.tasklock.forceTimeChunkLock` 为false。
+任务上下文中的 `forceTimeChunkLock` 仅应用于单个任务。如果要为所有任务取消设置，则需要在 [Overlord配置](../configuration/human-readable-byte.md#overlord) 中设置 `druid.indexer.tasklock.forceTimeChunkLock` 为false。
 
 如果两个或多个任务尝试为同一数据源的重叠时间块获取锁，则锁请求可能会相互冲突。**请注意，**锁冲突可能发生在不同的锁类型之间。
 

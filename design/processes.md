@@ -108,7 +108,7 @@ Coordinator进程的工作负载往往随着集群中段的数量而增加。Ove
 
 通过设置 `druid.Coordinator.asOverlord.enabled` 属性，Coordinator进程和Overlord进程可以作为单个组合进程运行。
 
-有关详细信息，请参阅[Coordinator配置](../Configuration/configuration.md#Coordinator)。
+有关详细信息，请参阅[Coordinator配置](../configuration/human-readable-byte.md#Coordinator)。
 
 #### Historical和MiddleManager
 

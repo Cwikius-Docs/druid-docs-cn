@@ -167,7 +167,7 @@ cd apache-druid-0.17.0
 
 在生产部署中，我们建议运行专用的元数据存储，例如具有复制功能的MySQL或PostgreSQL，与Druid服务器分开部署。
 
-[MySQL扩展](../Configuration/core-ext/mysql.md)和[PostgreSQL](../Configuration/core-ext/postgresql.md)扩展文档包含有关扩展配置和初始数据库安装的说明。
+[MySQL扩展](../configuration/core-ext/mysql.md)和[PostgreSQL](../configuration/core-ext/postgresql.md)扩展文档包含有关扩展配置和初始数据库安装的说明。
 
 #### 深度存储
 
@@ -202,7 +202,7 @@ druid.indexer.logs.type=s3
 druid.indexer.logs.s3Bucket=your-bucket
 druid.indexer.logs.s3Prefix=druid/indexing-logs
 ```
-更多信息可以看[S3扩展](../Configuration/core-ext/s3.md)部分的文档。
+更多信息可以看[S3扩展](../configuration/core-ext/s3.md)部分的文档。
 
 ##### HDFS
 
@@ -234,7 +234,7 @@ druid.indexer.logs.directory=/druid/indexing-logs
 
 * 需要将Hadoop的配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放置在Druid进程的classpath中，可以将他们拷贝到`conf/druid/cluster/_common`目录中
 
-更多信息可以看[HDFS扩展](../Configuration/core-ext/hdfs.md)部分的文档。
+更多信息可以看[HDFS扩展](../configuration/core-ext/hdfs.md)部分的文档。
 
 ### Hadoop连接配置
 

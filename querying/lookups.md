@@ -15,8 +15,8 @@ Lookups没有历史记录，总是使用当前的数据。这意味着，如果�
 在所有服务器上，Lookup通常都预加载在内存中。但是，对于非常小的Lookup（大约几十到几百个条目）也可以使用"map"Lookup类型在原生查询时内联传递。有关详细信息，请参见 [维度说明](querydimensions.md)。
 
 其他的Lookup类型在扩展中是可用的，例如：
-* 来自本地文件、远程URI或JDBC的全局缓存Lookup，使用 [lookups-cached-global扩展](../Configuration/core-ext/lookups-cached-global.md)
-* 来自Kafka Topic的全局缓存Lookup，使用 [ kafka-extraction-namespace扩展](../Configuration/core-ext/kafka-extraction-namespace.md)
+* 来自本地文件、远程URI或JDBC的全局缓存Lookup，使用 [lookups-cached-global扩展](../configuration/core-ext/lookups-cached-global.md)
+* 来自Kafka Topic的全局缓存Lookup，使用 [ kafka-extraction-namespace扩展](../configuration/core-ext/kafka-extraction-namespace.md)
 
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -354,7 +354,7 @@ map中所有的条目都将会更新，没有条目被删除。
 
 ### 配置
 
-可以查看Coordinator配置中的 [Lookups动态配置](../Configuration/configuration.md#coordinator)
+可以查看Coordinator配置中的 [Lookups动态配置](../configuration/human-readable-byte.md#coordinator)
 
 使用以下属性来配置Broker/Router/Historical/Peon来宣告它自身作为一个lookup tier的部分。
 

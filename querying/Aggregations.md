@@ -313,18 +313,18 @@ Double/Float/Long/String的ANY聚合器不能够使用在摄入规范中，只�
 
 **Apache DataSketches Theta Sketch**
 
-聚合器提供的[DataSketches Theta Sketch扩展](../Configuration/core-ext/datasketches-theta.md) 使用[Apache Datasketches库](https://datasketches.apache.org/) 中的Theta Sketch提供不同的计数估计，并支持集合并集、交集和差分后置聚合器。
+聚合器提供的[DataSketches Theta Sketch扩展](../configuration/core-ext/datasketches-theta.md) 使用[Apache Datasketches库](https://datasketches.apache.org/) 中的Theta Sketch提供不同的计数估计，并支持集合并集、交集和差分后置聚合器。
 
 **Apache DataSketches HLL Sketch**
 
-聚合器提供的[DataSketches HLL Sketch扩展](../Configuration/core-ext/datasketches-hll.md)使用HyperLogLog算法给出不同的计数估计。
+聚合器提供的[DataSketches HLL Sketch扩展](../configuration/core-ext/datasketches-hll.md)使用HyperLogLog算法给出不同的计数估计。
 
 与Theta草图相比，HLL草图不支持set操作，更新和合并速度稍慢，但需要的空间要少得多
 
 **Cardinality, hyperUnique**
 
 > [!WARNING]
-> 对于新的场景，我们推荐评估使用 [DataSketches Theta Sketch扩展](../Configuration/core-ext/datasketches-theta.md) 和 [DataSketches HLL Sketch扩展](../Configuration/core-ext/datasketches-hll.md) 来替代。 DataSketch聚合器通常情况下比经典的Druid `cardinality` 和 `hyperUnique` 聚合器提供更弹性的和更好的精确度。
+> 对于新的场景，我们推荐评估使用 [DataSketches Theta Sketch扩展](../configuration/core-ext/datasketches-theta.md) 和 [DataSketches HLL Sketch扩展](../configuration/core-ext/datasketches-hll.md) 来替代。 DataSketch聚合器通常情况下比经典的Druid `cardinality` 和 `hyperUnique` 聚合器提供更弹性的和更好的精确度。
 
 Cardinality和HyperUnique聚合器是在Druid中默认提供的较旧的聚合器实现，它们还使用HyperLogLog算法提供不同的计数估计。较新的数据集Theta和HLL扩展提供了上述聚合器，具有更高的精度和性能，因此建议改为使用。
 

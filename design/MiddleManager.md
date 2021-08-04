@@ -13,7 +13,7 @@
 
 ## MiddleManager进程
 ### 配置
-对于Apache Druid MiddleManager配置，可以参见[索引服务配置](../Configuration/configuration.md#MiddleManager)
+对于Apache Druid MiddleManager配置，可以参见[索引服务配置](../configuration/human-readable-byte.md#MiddleManager)
 
 ### HTTP
 对于MiddleManager的API接口，详见 [MiddleManager API](../operations/api.md#MiddleManager)

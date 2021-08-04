@@ -92,7 +92,7 @@ foo_2015-01-03/2015-01-04_v1_2
 }
 ```
 
-压缩任务读取时间间隔 `2017-01-01/2018-01-01` 的*所有分段*，并生成新分段。由于 `segmentGranularity` 为空，压缩后原始的段粒度将保持不变。要控制每个时间块的结果段数，可以设置 [`maxRowsPerSegment`](../Configuration/configuration.md#Coordinator) 或 [`numShards`](native.md#tuningconfig)。请注意，您可以同时运行多个压缩任务。例如，您可以每月运行12个compactionTasks，而不是一整年只运行一个任务。
+压缩任务读取时间间隔 `2017-01-01/2018-01-01` 的*所有分段*，并生成新分段。由于 `segmentGranularity` 为空，压缩后原始的段粒度将保持不变。要控制每个时间块的结果段数，可以设置 [`maxRowsPerSegment`](../configuration/human-readable-byte.md#Coordinator) 或 [`numShards`](native.md#tuningconfig)。请注意，您可以同时运行多个压缩任务。例如，您可以每月运行12个compactionTasks，而不是一整年只运行一个任务。
 
 压缩任务在内部生成 `index` 任务规范，用于使用某些固定参数执行的压缩工作。例如，它的 `inputSource` 始终是 [DruidInputSource](native.md#Druid输入源)，`dimensionsSpec` 和 `metricsSpec` 默认包含输入段的所有Dimensions和Metrics。
 

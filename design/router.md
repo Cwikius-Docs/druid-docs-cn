@@ -24,7 +24,7 @@ Apache Druid Router用于将查询路由到不同的Broker。默认情况下，B
 
 ### 配置
 
-对于Apache Druid Router的配置，请参见 [Router 配置](../Configuration/configuration.md#Router)
+对于Apache Druid Router的配置，请参见 [Router 配置](../configuration/human-readable-byte.md#Router)
 
 ### HTTP
 

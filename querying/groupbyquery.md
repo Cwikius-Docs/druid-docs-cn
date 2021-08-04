@@ -56,24 +56,28 @@ grouping asked for by the query.
 }
 ```
 
-Following are main parts to a groupBy query:
+下面的表格是有关分组查询（groupBy）的主要查询参数：
 
-|property|description|required?|
+|属性|描述|是否是必须的?|
 |--------|-----------|---------|
-|queryType|This String should always be "groupBy"; this is the first thing Druid looks at to figure out how to interpret the query|yes|
-|dataSource|A String or Object defining the data source to query, very similar to a table in a relational database. See [DataSource](../querying/datasource.md) for more information.|yes|
-|dimensions|A JSON list of dimensions to do the groupBy over; or see [DimensionSpec](../querying/dimensionspecs.md) for ways to extract dimensions. |yes|
-|limitSpec|See [LimitSpec](../querying/limitspec.md).|no|
-|having|See [Having](../querying/having.md).|no|
-|granularity|Defines the granularity of the query. See [Granularities](../querying/granularities.md)|yes|
-|filter|See [Filters](../querying/filters.md)|no|
-|aggregations|See [Aggregations](../querying/aggregations.md)|no|
-|postAggregations|See [Post Aggregations](../querying/post-aggregations.md)|no|
-|intervals|A JSON Object representing ISO-8601 Intervals. This defines the time ranges to run the query over.|yes|
-|subtotalsSpec| A JSON array of arrays to return additional result sets for groupings of subsets of top level `dimensions`. It is [described later](groupbyquery.md#more-on-subtotalsspec) in more detail.|no|
-|context|An additional JSON Object which can be used to specify certain flags.|no|
+|queryType|这个地方的字符串应该总是 "groupBy"；这个字段是 Druid 进行查询解析的时候首先查看的地方，Druid 会根据这个字符串来决定使用何种解析器。|是（YES）|
+|dataSource|这个字段是一个字符串或者对象。这个字段定义了查询的数据源，与关系数据库中的表的定义是非常相似的，请查看 [数据源（DataSource）](../querying/datasource.md) 页面中的内容来获得更多的信息。|是（YES）|
+|dimensions|这是一个 JSON 的列表，在这个 JSON 的列表中表达了 groupBy 的查询维度，请参考 [DimensionSpec](../querying/dimensionspecs.md) 页面中的内容来了解如何进行表述。 |是（YES）|
+|limitSpec|请查看 [LimitSpec](../querying/limitspec.md) 页面。|否（NO）|
+|having|请查看 [Having](../querying/having.md)页面。|否（NO）|
+|granularity|定义查询的粒度，请查看 [Granularities](../querying/granularities.md)页面。|是（YES）|
+|filter|请查看 [Filters](../querying/filters.md)页面。|否（NO）|
+|aggregations|请查看 [Aggregations](../querying/aggregations.md)页面。|否（NO）|
+|postAggregations|请查看 [Post Aggregations](../querying/post-aggregations.md)页面。|否（NO）|
+|intervals|一个使用了 ISO-8601 时间格式的 JSON 对象，这个对象定义了查询的时间范围。|是（YES）|
+|subtotalsSpec| 一个 JSON 数组，返回顶级 `维度(dimensions)` 子集分组的附加结果集。稍后将 [更详细地](groupbyquery.md#more-on-subtotalsspec) 对其进行描述。|否（NO）|
+|context|一个附加的 JSON 对象，这个对象将会被中一些标记位。|否（NO）|
 
-To pull it all together, the above query would return *n\*m* data points, up to a maximum of 5000 points, where n is the cardinality of the `country` dimension, m is the cardinality of the `device` dimension, each day between 2012-01-01 and 2012-01-03, from the `sample_datasource` table. Each data point contains the (long) sum of `total_usage` if the value of the data point is greater than 100, the (double) sum of `data_transfer` and the (double) result of `total_usage` divided by `data_transfer` for the filter set for a particular grouping of `country` and `device`. The output looks like this:
+把它们放在一起，上面查询 `sample_datasource` 的表将会返回 *n\*m* 个数据点，查询允许返回最多 5000 个数据点，其中 n 是 `country` 维度的基数，m 是`device`维度的基数，在 2012-01-01 和 2012-01-03 之间的每一天。
+
+如果数据点的值大于 100，那么每个数据点将会包含 (long) sum 个 `total_usage`，对于特定的 `country` 和 `device` 分组，每个数据点都包含 `double total_usage` 除以 `data_transfer` 的结果。
+
+输出如下：
 
 ```json
 [
@@ -103,7 +107,7 @@ To pull it all together, the above query would return *n\*m* data points, up to 
 ]
 ```
 
-## Behavior on multi-value dimensions
+## 多值维度上的表现
 
 groupBy queries can group on multi-value dimensions. When grouping on a multi-value dimension, _all_ values
 from matching rows will be used to generate one group per value. It's possible for a query to return more groups than

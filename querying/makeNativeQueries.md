@@ -90,7 +90,7 @@ curl -X DELETE "http://host:port/druid/v2/abc123"
 }
 ```
 
-如果查询请求由于受到 [query scheduler laning configuration](../Configuration/configuration.md#broker) 的限制而失败，则为HTTP 429响应，该响应具有与错误响应相同的JSON对象架构，但 `errorMessage` 格式为："Total query capacity exceeded"或"query capacity exceeded for lane 'low'"。
+如果查询请求由于受到 [query scheduler laning configuration](../configuration/human-readable-byte.md#broker) 的限制而失败，则为HTTP 429响应，该响应具有与错误响应相同的JSON对象架构，但 `errorMessage` 格式为："Total query capacity exceeded"或"query capacity exceeded for lane 'low'"。
 
 响应中的字段是:
 

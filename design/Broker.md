@@ -13,7 +13,7 @@
 
 ## Broker
 ### 配置
-对于Apache Druid Broker的配置，请参见 [Broker配置](../Configuration/configuration.md#Broker)
+对于Apache Druid Broker的配置，请参见 [Broker配置](../configuration/human-readable-byte.md#Broker)
 
 ### HTTP
 对于Broker的API的列表，请参见 [Broker API](../operations/api.md#Broker)

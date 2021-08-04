@@ -162,7 +162,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 | 字段 | 类型 | 描述 | 是否必须 |
 |-|-|-|-|
-| `type` | String | 对于可用选项，可以见 [额外的Peon配置：SegmentWriteOutMediumFactory](../Configuration/configuration.md#SegmentWriteOutMediumFactory) | 是 | 
+| `type` | String | 对于可用选项，可以见 [额外的Peon配置：SegmentWriteOutMediumFactory](../configuration/human-readable-byte.md#SegmentWriteOutMediumFactory) | 是 | 
 
 #### KafkaSupervisorIOConfig
 

@@ -13,7 +13,7 @@
 
 ## Overload进程
 ### 配置
-对于Apache Druid的Overlord进程配置，详见 [Overlord配置](../Configuration/configuration.md#Overlord)
+对于Apache Druid的Overlord进程配置，详见 [Overlord配置](../configuration/human-readable-byte.md#Overlord)
 
 ### HTTP
 对于Overlord的API接口，详见 [Overlord API](../operations/api.md#Overlord)

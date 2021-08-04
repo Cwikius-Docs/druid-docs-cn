@@ -32,12 +32,12 @@ Apache Druid不提供的存储机制，深度存储是存储段的地方。深�
 
 ### S3适配
 
-请看[druid-s3-extensions](../Configuration/core-ext/s3.md)扩展文档
+请看[druid-s3-extensions](../configuration/core-ext/s3.md)扩展文档
 
 ### HDFS
 
-请看[druid-hdfs-extensions](../Configuration/core-ext/hdfs.md)扩展文档
+请看[druid-hdfs-extensions](../configuration/core-ext/hdfs.md)扩展文档
 
 ### 其他深度存储
 
-对于另外的深度存储等，可以参见[扩展列表](../Configuration/extensions.md)
+对于另外的深度存储等，可以参见[扩展列表](../configuration/logging.md)

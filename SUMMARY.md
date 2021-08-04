@@ -99,7 +99,7 @@
     * [空间过滤器(Spatial Filter)](querying/spatialfilter.md)
 
 * [配置列表]()
-  * [配置列表](Configuration/configuration.md)
+  * [配置列表](configuration/human-readable-byte.md)
 
 * [操作指南]()
   * [操作指南](operations/index.md)

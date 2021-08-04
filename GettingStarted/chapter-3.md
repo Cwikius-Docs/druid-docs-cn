@@ -31,7 +31,7 @@ Druid包括一组参考配置和用于单机部署的启动脚本：
 
 这些示例配置的启动脚本与Druid服务一起运行单个ZK实例,您也可以选择单独部署ZK。
 
-通过[Coordinator配置文档](../Configuration/configuration.md#Coordinator)中描述的可选配置`druid.coordinator.asOverlord.enabled = true`可以在单个进程中同时运行Druid Coordinator和Overlord。
+通过[Coordinator配置文档](../configuration/human-readable-byte.md#Coordinator)中描述的可选配置`druid.coordinator.asOverlord.enabled = true`可以在单个进程中同时运行Druid Coordinator和Overlord。
 
 虽然为大型单台计算机提供了示例配置，但在更高规模下，我们建议在集群部署中运行Druid，以实现容错和减少资源争用。
 
