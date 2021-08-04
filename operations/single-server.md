@@ -19,7 +19,7 @@ Druid 包含有一组可用的参考配置和用于单机部署的启动脚本�
 相关的内容请参考 [Coordinator configuration documentation](../configuration/index.md#coordinator-operation) 页面中的内容。
 
 我们虽然为大型单台计算机提供了配置的实例，但是在更加真实和大数据的环境下，我们建议在集群方式下部署 Druid，请参考 [clustered deployment](../tutorials/cluster.md) 页面中的内容。
-通过集群范式的部署，能够更好的增加的 Druid 容错能力和扩展能力。
+通过集群方式的部署，能够更好的增加的 Druid 容错能力和扩展能力。
 
 ### Nano-Quickstart: 1 CPU, 4GiB RAM
 

@@ -49,7 +49,7 @@ Druid的查询执行方法因查询的 [数据源类型](#数据源类型) 而�
 
 [query数据源] 是子查询, 每个子查询都被当作它自己的查询来执行, 结果会返回给Broker。然后，Broker继续处理查询的其余部分，就像子查询被内联数据源替换一样。
 
-在大多数情况下，子查询结果在其余查询继续之前在Broker上的内存中完全缓冲，这意味着子查询按顺序执行。以这种方式在给定查询的所有子查询中缓冲的行总数不能超过 [druid.server.http.maxSubQueryRows](../Configuration/configuration.md) 属性。
+在大多数情况下，子查询结果在其余查询继续之前在Broker上的内存中完全缓冲，这意味着子查询按顺序执行。以这种方式在给定查询的所有子查询中缓冲的行总数不能超过 [druid.server.http.maxSubQueryRows](../configuration/human-readable-byte.md) 属性。
 
 有一个例外：如果外部查询和所有子查询都是 [groupBy](groupby.md) 类型，则可以以流式方式处理子查询结果，并且 `druid.server.http.maxSubQueryRows` 限制不适用。
 

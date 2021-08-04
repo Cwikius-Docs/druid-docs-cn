@@ -13,7 +13,7 @@
 
 ## Peons
 ### 配置
-对于Apache Druid Peon配置，可以参见 [Peon查询配置](../Configuration/configuration.md) 和 [额外的Peon配置](../Configuration/configuration.md)
+对于Apache Druid Peon配置，可以参见 [Peon查询配置](../configuration/human-readable-byte.md) 和 [额外的Peon配置](../configuration/human-readable-byte.md)
 
 ### HTTP
 对于Peon的API接口，详见 [Peon API](../operations/api.md#Peon)

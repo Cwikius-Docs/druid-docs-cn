@@ -18,7 +18,7 @@ Druid源代码包含一个 [示例docker-compose.yml](https://github.com/apache/
 
 #### 配置
 
-Druid Docker容器的配置是通过环境变量完成的，环境变量还可以指定到 [标准Druid配置文件](../Configuration/configuration.md) 的路径
+Druid Docker容器的配置是通过环境变量完成的，环境变量还可以指定到 [标准Druid配置文件](../configuration/human-readable-byte.md) 的路径
 
 特殊环境变量：
 

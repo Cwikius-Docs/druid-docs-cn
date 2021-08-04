@@ -127,7 +127,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 #### NULL
 
-[runtime property](../Configuration/configuration.md#SQL兼容的空值处理) 中的 `druid.generic.useDefaultValueForNull` 配置控制着Druid的NULL处理模式。
+[runtime property](../configuration/human-readable-byte.md#SQL兼容的空值处理) 中的 `druid.generic.useDefaultValueForNull` 配置控制着Druid的NULL处理模式。
 
 在默认模式(`true`)下，Druid将NULL和空字符串互换处理，而不是根据SQL标准。在这种模式下，Druid SQL只部分支持NULL。例如，表达式 `col IS NULL` 和 `col = ''` 等效，如果 `col` 包含空字符串，则两者的计算结果都为true。类似地，如果`col1`是空字符串，则表达式 `COALESCE(col1，col2)` 将返回 `col2`。当 `COUNT(*)` 聚合器计算所有行时，`COUNT(expr)` 聚合器将计算expr既不为空也不为空字符串的行数。此模式中的数值列不可为空；任何空值或缺少的值都将被视为零。
 
@@ -148,23 +148,23 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `MAX(expr)` | 取数字的最大值 |
 | `AVG(expr)` | 取平均值 |
 | `APPROX_COUNT_DISTINCT(expr)` | 唯一值的计数，该值可以是常规列或hyperUnique。这始终是近似值，而不考虑"useApproximateCountDistinct"的值。该函数使用了Druid内置的"cardinality"或"hyperUnique"聚合器。另请参见 `COUNT(DISTINCT expr)` |
-| `APPROX_COUNT_DISTINCT_DS_HLL(expr, [lgK, tgtHllType])` | 唯一值的计数，该值可以是常规列或[HLL sketch](../Configuration/core-ext/datasketches-hll.md)。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `APPROX_COUNT_DISTINCT_DS_THETA(expr, [size])` | 唯一值的计数，该值可以是常规列或[Theta sketch](../Configuration/core-ext/datasketches-theta.md)。`size` 参数在Theta Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `DS_HLL(expr, [lgK, tgtHllType])` | 在表达式的值上创建一个 [`HLL sketch`](../Configuration/core-ext/datasketches-hll.md), 该值可以是常规列或者包括HLL Sketch的列。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `DS_THETA(expr, [size])` | 在表达式的值上创建一个[`Theta sketch`](../Configuration/core-ext/datasketches-theta.md)，该值可以是常规列或者包括Theta Sketch的列。`size` 参数在Theta Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `APPROX_QUANTILE(expr, probability, [resolution])` | 在数值表达式或者[近似图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1），"resolution"是用于计算的centroids，更高的resolution将会获得更精确的结果，默认值为50。使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
-| `APPROX_QUANTILE_DS(expr, probability, [k])` | 在数值表达式或者 [Quantiles sketch](../Configuration/core-ext/datasketches-quantiles.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `APPROX_QUANTILE_FIXED_BUCKETS(expr, probability, numBuckets, lowerLimit, upperLimit, [outlierHandlingMode])` | 在数值表达式或者[fixed buckets直方图](../Configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `numBuckets`, `lowerLimit`, `upperLimit` 和 `outlierHandlingMode` 参数在fixed buckets直方图文档中做了描述。 使用该函数需要加载 [近似直方图扩展](../Configuration/core-ext/approximate-histograms.md) |
-| `DS_QUANTILES_SKETCH(expr, [k])` | 在表达式的值上创建一个[`Quantiles sketch`](../Configuration/core-ext/datasketches-quantiles.md)，该值可以是常规列或者包括Quantiles Sketch的列。`k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
-| `BLOOM_FILTER(expr, numEntries)` | 根据`expr`生成的值计算bloom筛选器，其中`numEntries`在假阳性率增加之前具有最大数量的不同值。详细可以参见 [Bloom过滤器扩展](../Configuration/core-ext/bloom-filter.md) |
-| `TDIGEST_QUANTILE(expr, quantileFraction, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch，并返回分位数的值。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
-| `TDIGEST_GENERATE_SKETCH(expr, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../Configuration/core-ext/tdigestsketch-quantiles.md) |
-| `VAR_POP(expr)` | 计算`expr`的总体方差, 额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
-| `VAR_SAMP(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
-| `VARIANCE(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
-| `STDDEV_POP(expr)` | 计算`expr`的总体标准差, 额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
-| `STDDEV_SAMP(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
-| `STDDEV(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../Configuration/core-ext/stats.md) |
+| `APPROX_COUNT_DISTINCT_DS_HLL(expr, [lgK, tgtHllType])` | 唯一值的计数，该值可以是常规列或[HLL sketch](../configuration/core-ext/datasketches-hll.md)。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `APPROX_COUNT_DISTINCT_DS_THETA(expr, [size])` | 唯一值的计数，该值可以是常规列或[Theta sketch](../configuration/core-ext/datasketches-theta.md)。`size` 参数在Theta Sketch文档中做了描述。 该值也始终是近似值，而不考虑"useApproximateCountDistinct"的值。另请参见 `COUNT(DISTINCT expr)`, 使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `DS_HLL(expr, [lgK, tgtHllType])` | 在表达式的值上创建一个 [`HLL sketch`](../configuration/core-ext/datasketches-hll.md), 该值可以是常规列或者包括HLL Sketch的列。`lgk` 和 `tgtHllType` 参数在HLL Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `DS_THETA(expr, [size])` | 在表达式的值上创建一个[`Theta sketch`](../configuration/core-ext/datasketches-theta.md)，该值可以是常规列或者包括Theta Sketch的列。`size` 参数在Theta Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `APPROX_QUANTILE(expr, probability, [resolution])` | 在数值表达式或者[近似图](../configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1），"resolution"是用于计算的centroids，更高的resolution将会获得更精确的结果，默认值为50。使用该函数需要加载 [近似直方图扩展](../configuration/core-ext/approximate-histograms.md) |
+| `APPROX_QUANTILE_DS(expr, probability, [k])` | 在数值表达式或者 [Quantiles sketch](../configuration/core-ext/datasketches-quantiles.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `APPROX_QUANTILE_FIXED_BUCKETS(expr, probability, numBuckets, lowerLimit, upperLimit, [outlierHandlingMode])` | 在数值表达式或者[fixed buckets直方图](../configuration/core-ext/approximate-histograms.md) 表达式上计算近似分位数，"probability"应该是位于0到1之间（不包括1）, `numBuckets`, `lowerLimit`, `upperLimit` 和 `outlierHandlingMode` 参数在fixed buckets直方图文档中做了描述。 使用该函数需要加载 [近似直方图扩展](../configuration/core-ext/approximate-histograms.md) |
+| `DS_QUANTILES_SKETCH(expr, [k])` | 在表达式的值上创建一个[`Quantiles sketch`](../configuration/core-ext/datasketches-quantiles.md)，该值可以是常规列或者包括Quantiles Sketch的列。`k`参数在Quantiles Sketch文档中做了描述。使用该函数需要加载 [DataSketches扩展](../development/datasketches-extension.md) |
+| `BLOOM_FILTER(expr, numEntries)` | 根据`expr`生成的值计算bloom筛选器，其中`numEntries`在假阳性率增加之前具有最大数量的不同值。详细可以参见 [Bloom过滤器扩展](../configuration/core-ext/bloom-filter.md) |
+| `TDIGEST_QUANTILE(expr, quantileFraction, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch，并返回分位数的值。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../configuration/core-ext/tdigestsketch-quantiles.md) |
+| `TDIGEST_GENERATE_SKETCH(expr, [compression])` | 根据`expr`生成的值构建一个T-Digest sketch。"compression"（默认值100）确定sketch的精度和大小。更高的compression意味着更高的精度，但更多的空间来存储sketch。有关更多详细信息，请参阅 [t-digest扩展文档](../configuration/core-ext/tdigestsketch-quantiles.md) |
+| `VAR_POP(expr)` | 计算`expr`的总体方差, 额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
+| `VAR_SAMP(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
+| `VARIANCE(expr)` | 计算表达式的样本方差，额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
+| `STDDEV_POP(expr)` | 计算`expr`的总体标准差, 额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
+| `STDDEV_SAMP(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
+| `STDDEV(expr)` | 计算表达式的样本标准差，额外的信息参见 [stats扩展文档](../configuration/core-ext/stats.md) |
 | `EARLIEST(expr)` | 返回`expr`的最早值，该值必须是数字。如果`expr`来自一个与timestamp列（如Druid数据源）的关系，那么"earliest"是所有被聚合值的最小总时间戳最先遇到的值。如果`expr`不是来自带有时间戳的关系，那么它只是遇到的第一个值。 |
 | `ARLIEST(expr, maxBytesPerString) ` | 与`EARLIEST(expr)`相似，但是面向string。`maxBytesPerString` 参数确定每个字符串要分配多少聚合空间, 超过此限制的字符串将被截断。这个参数应该设置得尽可能低，因为高值会导致内存浪费。 |
 | `LATEST(expr)` | 返回 `expr` 的最新值，该值必须是数字。如果 `expr` 来自一个与timestamp列（如Druid数据源）的关系，那么"latest"是最后一次遇到的值，它是所有被聚合的值的最大总时间戳。如果`expr`不是来自带有时间戳的关系，那么它只是遇到的最后一个值。 |
@@ -326,7 +326,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **HLL Sketch函数**
 
-以下函数操作在 [DataSketches HLL sketches](../Configuration/core-ext/datasketches-hll.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
+以下函数操作在 [DataSketches HLL sketches](../configuration/core-ext/datasketches-hll.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -337,7 +337,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **Theta Sketch函数**
 
-以下函数操作在 [theta sketches](../Configuration/core-ext/datasketches-theta.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
+以下函数操作在 [theta sketches](../configuration/core-ext/datasketches-theta.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -349,7 +349,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 
 **Quantiles Sketch函数**
 
-以下函数操作在 [quantiles sketches](../Configuration/core-ext/datasketches-quantiles.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
+以下函数操作在 [quantiles sketches](../configuration/core-ext/datasketches-quantiles.md) 之上，使用这些函数之前需要加载 [DataSketches扩展](../development/datasketches-extension.md)
 
 | 函数 | 描述 |
 |-|-|
@@ -370,7 +370,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `NULLIF(value1, value2)` | 如果value1和value2匹配，则返回NULL，否则返回value1 |
 | `COALESCE(value1, value2, ...)` | 返回第一个既不是NULL也不是空字符串的值。 |
 | `NVL(expr,expr-for-null)` | 如果'expr'为空（或字符串类型为空字符串），则返回 `expr for null` |
-| `BLOOM_FILTER_TEST(<expr>, <serialized-filter>)` | 如果值包含在Base64序列化bloom筛选器中，则返回true。 详情查看 [Bloom Filter扩展](../Configuration/core-ext/bloom-filter.md) |
+| `BLOOM_FILTER_TEST(<expr>, <serialized-filter>)` | 如果值包含在Base64序列化bloom筛选器中，则返回true。 详情查看 [Bloom Filter扩展](../configuration/core-ext/bloom-filter.md) |
 
 ### 多值字符串函数
 
@@ -435,7 +435,7 @@ DruidJoinQueryRel(condition=[=($1, $3)], joinType=[inner], query=[{"queryType":"
 
 这里，有一个带有两个输入的连接。阅读这篇文章的方法是将EXPLAIN计划输出的每一行看作可能成为一个查询，或者可能只是一个简单的数据源。它们都拥有的`query` 字段称为"部分查询"，并表示如果该行本身运行，将在该行所表示的数据源上运行的查询。在某些情况下，比如本例第二行中的"scan"查询，查询实际上并没有运行，最终被转换为一个简单的表数据源。有关如何工作的更多详细信息，请参见 [Join转换](#连接) 部分
 
-我们可以使用Druid的 [请求日志功能](../Configuration/configuration.md#请求日志) 看到这一点。在启用日志记录并运行此查询之后，我们可以看到它实际上作为以下原生查询运行。
+我们可以使用Druid的 [请求日志功能](../configuration/human-readable-byte.md#请求日志) 看到这一点。在启用日志记录并运行此查询之后，我们可以看到它实际上作为以下原生查询运行。
 
 ```json
 {
@@ -798,9 +798,9 @@ Servers表列出集群中发现的所有服务器
 | `plaintext_port` | LONG | 服务器的不安全端口，如果禁用明文通信，则为-1 |
 | `tls_port` | LONG | 服务器的TLS端口，如果禁用了TLS，则为-1 |
 | `server_type` | STRING | Druid服务的类型，可能的值包括：COORDINATOR, OVERLORD, BROKER, ROUTER, HISTORICAL, MIDDLE_MANAGER 或者 PEON |
-| `tier` | STRING | 分布层，查看 [druid.server.tier](../Configuration/configuration.md#Historical)。仅对Historical有效，对于其他类型则为null |
+| `tier` | STRING | 分布层，查看 [druid.server.tier](../configuration/human-readable-byte.md#Historical)。仅对Historical有效，对于其他类型则为null |
 | `current_size` | LONG | 此服务器上以字节为单位的段的当前大小。仅对Historical有效，对于其他类型则为0 |
-| `max_size` | LONG | 此服务器建议分配给段的最大字节大小，请参阅 [druid.server.maxSize](../Configuration/configuration.md) 文件, 仅对Historical有效，对于其他类型则为0 |
+| `max_size` | LONG | 此服务器建议分配给段的最大字节大小，请参阅 [druid.server.maxSize](../configuration/human-readable-byte.md) 文件, 仅对Historical有效，对于其他类型则为0 |
 
 要检索有关所有服务器的信息，请使用查询：
 
@@ -879,8 +879,8 @@ SELECT * FROM sys.supervisors WHERE healthy=0;
 
 ### 服务配置
 
-Druid SQL计划发生在Broker上，由 [Broker runtime properties](../Configuration/configuration.md#broker) 配置。
+Druid SQL计划发生在Broker上，由 [Broker runtime properties](../configuration/human-readable-byte.md#broker) 配置。
 
 ### 安全性
 
-有关进行SQL查询需要哪些权限的信息，请参阅基本安全文档中的 [定义SQL权限](../Configuration/core-ext/druid-basic-security.md) 。
+有关进行SQL查询需要哪些权限的信息，请参阅基本安全文档中的 [定义SQL权限](../configuration/core-ext/druid-basic-security.md) 。

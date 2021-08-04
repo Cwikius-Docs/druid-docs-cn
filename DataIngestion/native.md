@@ -635,7 +635,7 @@ PartitionsSpec用于描述辅助分区方法。您应该根据需要的rollup模
 
 | 字段 | 类型 | 描述 | 是否必须 |
 |-|-|-|-|
-| `type` | String | 配置解释和可选项可以参见 [额外的Peon配置：SegmentWriteOutMediumFactory](../Configuration/configuration.md#SegmentWriteOutMediumFactory) | 是 |
+| `type` | String | 配置解释和可选项可以参见 [额外的Peon配置：SegmentWriteOutMediumFactory](../configuration/human-readable-byte.md#SegmentWriteOutMediumFactory) | 是 |
 
 #### 分段推送模式
 
@@ -739,7 +739,7 @@ S3对象：
 #### 谷歌云存储输入源
 
 > [!WARNING]
-> 您需要添加 [`druid-google-extensions`](../Configuration/core-ext/google-cloud-storage.md) 扩展以便使用谷歌云存储输入源。
+> 您需要添加 [`druid-google-extensions`](../configuration/core-ext/google-cloud-storage.md) 扩展以便使用谷歌云存储输入源。
 
 谷歌云存储输入源支持直接从谷歌云存储读取对象，可以通过谷歌云存储URI字符串列表指定对象。谷歌云存储输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
@@ -812,7 +812,7 @@ S3对象：
 #### Azure输入源
 
 > [!WARNING]
-> 您需要添加 [`druid-azure-extensions`](../Configuration/core-ext/microsoft-azure.md) 扩展以便使用Azure输入源。
+> 您需要添加 [`druid-azure-extensions`](../configuration/core-ext/microsoft-azure.md) 扩展以便使用Azure输入源。
 
 Azure输入源支持直接从Azure读取对象，可以通过Azure URI字符串列表指定对象。Azure输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个对象。
 
@@ -885,7 +885,7 @@ azure对象：
 #### HDFS输入源
 
 > [!WARNING]
-> 您需要添加 [`druid-hdfs-extensions`](../Configuration/core-ext/hdfs.md) 扩展以便使用HDFS输入源。
+> 您需要添加 [`druid-hdfs-extensions`](../configuration/core-ext/hdfs.md) 扩展以便使用HDFS输入源。
 
 HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定为HDFS URI字符串或者HDFS URI字符串列表。HDFS输入源是可拆分的，可以由 [并行任务](#并行任务) 使用，其中 `index_parallel` 的每个worker任务将读取一个或多个文件。
 
@@ -956,7 +956,7 @@ HDFS输入源支持直接从HDFS存储中读取文件，文件路径可以指定
 | `type` | 应该总是 `hdfs` | None | 是 |
 | `paths` | HDFS路径。可以是JSON数组或逗号分隔的路径字符串，这些路径支持类似*的通配符。给定路径之下的空文件将会被跳过。 | None | 是 |
 
-您还可以使用HDFS输入源从云存储摄取数据。但是，如果您想从AWS S3或谷歌云存储读取数据，可以考虑使用 [S3输入源](../Configuration/core-ext/s3.md) 或 [谷歌云存储输入源](../Configuration/core-ext/google-cloud-storage.md)。
+您还可以使用HDFS输入源从云存储摄取数据。但是，如果您想从AWS S3或谷歌云存储读取数据，可以考虑使用 [S3输入源](../configuration/core-ext/s3.md) 或 [谷歌云存储输入源](../configuration/core-ext/google-cloud-storage.md)。
 
 #### HTTP输入源
 

@@ -95,7 +95,7 @@ Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hado
 | `hadoopDependencyCoordinates` | Druid使用的Hadoop依赖，这些属性会覆盖默认的Hadoop依赖。 如果该值被指定，Druid将在 `druid.extensions.hadoopDependenciesDir` 目录下查找指定的Hadoop依赖 | 否 |
 | `classpathPrefix` | 为Peon进程准备的类路径。| 否 |
 
-还要注意，Druid会自动计算在Hadoop集群中运行的Hadoop作业容器的类路径。但是，如果Hadoop和Druid的依赖项之间发生冲突，可以通过设置 `druid.extensions.hadoopContainerDruidClasspath`属性。请参阅 [基本druid配置中的扩展配置](../Configuration/configuration.md#扩展) 。
+还要注意，Druid会自动计算在Hadoop集群中运行的Hadoop作业容器的类路径。但是，如果Hadoop和Druid的依赖项之间发生冲突，可以通过设置 `druid.extensions.hadoopContainerDruidClasspath`属性。请参阅 [基本druid配置中的扩展配置](../configuration/human-readable-byte.md#扩展) 。
 #### `dataSchema`
 
 该字段是必须的。 详情可以查看摄取页中的 [`dataSchema`](ingestion.md#dataschema) 部分来看它应该包括哪些部分。

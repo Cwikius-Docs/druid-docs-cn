@@ -15,7 +15,7 @@
 
 元数据存储是Apache Druid的一个外部依赖。Druid使用它来存储系统的各种元数据，但不存储实际的数据。下面有许多用于各种目的的表。
 
-Derby是Druid的默认元数据存储，但是它不适合生产环境。[MySQL](../Configuration/core-ext/mysql.md)和[PostgreSQL](../Configuration/core-ext/postgresql.md)是更适合生产的元数据存储。
+Derby是Druid的默认元数据存储，但是它不适合生产环境。[MySQL](../configuration/core-ext/mysql.md)和[PostgreSQL](../configuration/core-ext/postgresql.md)是更适合生产的元数据存储。
 
 > [!WARNING]
 > 元数据存储存储了Druid集群工作所必需的整个元数据。对于生产集群，考虑使用MySQL或PostgreSQL而不是Derby。此外，强烈建议设置数据库的高可用，因为如果丢失任何元数据，将无法恢复。
@@ -31,11 +31,11 @@ druid.metadata.storage.connector.connectURI=jdbc:derby://localhost:1527//opt/var
 
 ### MySQL
 
-参见[mysql-metadata-storage](../Configuration/core-ext/mysql.md)扩展文档
+参见[mysql-metadata-storage](../configuration/core-ext/mysql.md)扩展文档
 
 ### PostgreSQL
 
-参见[postgresql-metadata-storage](../Configuration/core-ext/postgresql.md)扩展文档
+参见[postgresql-metadata-storage](../configuration/core-ext/postgresql.md)扩展文档
 
 ### 添加自定义的数据库连接池属性
 

@@ -51,7 +51,7 @@ Long，Double和String类型都是支持的。 如果一个数字包括了小数
 | `like` | like(expr, pattern[, escape]) 等价于SQL的 `expr LIKE pattern` |
 | `case_searched` | case_searched(expr1, result1, [[expr2, result2, ...], else-result]) |
 | `case_simple` | case_simple(expr, value1, result1, [[value2, result2, ...], else-result]) |
-| `bloom_filter_test` | bloom_filter_test(expr, filter)对'filter'（base64序列化的字符串）测试'expr'的值。 详情可以查看 [布隆过滤器扩展](../Configuration/core-ext/bloom-filter.md) |
+| `bloom_filter_test` | bloom_filter_test(expr, filter)对'filter'（base64序列化的字符串）测试'expr'的值。 详情可以查看 [布隆过滤器扩展](../configuration/core-ext/bloom-filter.md) |
 
 ### 字符串函数 
 

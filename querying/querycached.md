@@ -21,23 +21,23 @@ Apache Druid支持两种级别的结果缓存，分别是：段缓存和整个�
 
 ### 使用和填充缓存
 
-所有缓存都有一对参数，用于控制单个查询如何与缓存交互的行为，"use"缓存参数和"populate"缓存参数。必须通过[运行时属性(runtime properties)](../Configuration/configuration.md)在服务级别启用这些设置以利用缓存，但可以通过在[查询上下文(query context)](query-context.md)中设置它们来控制每个查询。"use"参数显然控制查询是否将使用缓存结果, "populate"参数控制查询是否更新缓存的结果。这些是单独的参数，目的是使得不常见数据(例如大型报表或非常旧的数据)的查询不会污染被其他查询重用的缓存结果。
+所有缓存都有一对参数，用于控制单个查询如何与缓存交互的行为，"use"缓存参数和"populate"缓存参数。必须通过[运行时属性(runtime properties)](../configuration/human-readable-byte.md)在服务级别启用这些设置以利用缓存，但可以通过在[查询上下文(query context)](query-context.md)中设置它们来控制每个查询。"use"参数显然控制查询是否将使用缓存结果, "populate"参数控制查询是否更新缓存的结果。这些是单独的参数，目的是使得不常见数据(例如大型报表或非常旧的数据)的查询不会污染被其他查询重用的缓存结果。
 
 ### Brokers上边查询缓存
 
-Broker同时支持段级缓存与全部查询结果级缓存。 段级缓存通过参数`useCache`和`populateCache`来控制。全部结果级缓存通过参数`useResultLevelCache`和`populateResultLevelCache`来控制，这些参数都在[运行时属性(runtime properties)](../Configuration/configuration.md)中的 `druid.broker.cache.*`
+Broker同时支持段级缓存与全部查询结果级缓存。 段级缓存通过参数`useCache`和`populateCache`来控制。全部结果级缓存通过参数`useResultLevelCache`和`populateResultLevelCache`来控制，这些参数都在[运行时属性(runtime properties)](../configuration/human-readable-byte.md)中的 `druid.broker.cache.*`
 
 对于小集群，在Broker上启用段级缓存比在Historical上启用查询缓存的结果更快。对于较小的生产集群（<5台服务器），建议使用此设置。对于大型生产集群，**不建议**在Broker上填充段级缓存，因为当属性`druid.broker.cache.populateCache`设置为`true`（并且查询上下文参数`populateCache`未设置为`false`），则将会按段返回Historical的结果，Historical将无法进行任何本地结果合并。这会削弱Druid集群的扩展能力。
 
 ### Historical上边查询缓存
 
-Historical仅仅支持段级缓存。段级缓存通过上下文参数`useCache`和`populateCache`以及[运行时属性(runtime properties)](../Configuration/configuration.md)中的 `druid.historical.cache.*`来控制。
+Historical仅仅支持段级缓存。段级缓存通过上下文参数`useCache`和`populateCache`以及[运行时属性(runtime properties)](../configuration/human-readable-byte.md)中的 `druid.historical.cache.*`来控制。
 
 大型集群应该仅仅在Historical上（非Broker）启用段级缓存填充，这可以避免在Broker上合并所有的查询结果。在Historical上而非Broker上启用缓存填充使得Historical可以在自己本地进行结果合并，然后将较少的数据传递给Broker。
 
 ### 摄取任务上的查询缓存
 
-任务执行进程，如Peon进程或者实验性的Indexer进程仅仅支持段级缓存。段级缓存通过上下文参数`useCache`和`populateCache`以及[运行时属性(runtime properties)](../Configuration/configuration.md)中的 `druid.realtime.cache.*`来控制。
+任务执行进程，如Peon进程或者实验性的Indexer进程仅仅支持段级缓存。段级缓存通过上下文参数`useCache`和`populateCache`以及[运行时属性(runtime properties)](../configuration/human-readable-byte.md)中的 `druid.realtime.cache.*`来控制。
 
 大型集群应该仅仅在任务执行进程上（非Broker）启用段级缓存填充，这可以避免在Broker上合并所有的查询结果。在任务执行进程上而非Broker上启用缓存填充使得任务执行进程可以在自己本地进行结果合并，然后将较少的数据传递给Broker。
 

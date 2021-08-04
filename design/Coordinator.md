@@ -13,7 +13,7 @@
 
 ## Coordinator进程
 ### 配置
-对于Apache Druid的Coordinator进程配置，详见 [Coordinator配置](../Configuration/configuration.md#Coordinator)
+对于Apache Druid的Coordinator进程配置，详见 [Coordinator配置](../configuration/human-readable-byte.md#Coordinator)
 
 ### HTTP
 对于Coordinator的API接口，详见 [Coordinator API](../operations/api.md#Coordinator)
@@ -45,7 +45,7 @@ org.apache.druid.cli.Main server coordinator
 
 每次运行时，Druid Coordinator都通过合并小段或拆分大片段来压缩段。当您的段没有进行段大小（可能会导致查询性能下降）优化时，该操作非常有用。有关详细信息，请参见[段大小优化](../operations/segmentSizeOpt.md)。
 
-Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../DataIngestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../Configuration/configuration.md#Coordinator)以启用压缩。
+Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../DataIngestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../configuration/human-readable-byte.md#Coordinator)以启用压缩。
 
 压缩任务可能由于以下原因而失败:
 
@@ -76,7 +76,7 @@ Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段�
 
 如果Coordinator还有足够的用于压缩任务的插槽，该策略则继续搜索剩下的段并返回 `bar_2017-10-01T00:00:00.000Z_2017-11-01T00:00:00.000Z_VERSION` 和 `bar_2017-10-01T00:00:00.000Z_2017-11-01T00:00:00.000Z_VERSION_1`。最后，因为在 `2017-09-01T00:00:00.000Z/2017-10-01T00:00:00.000Z` 时间间隔中只有一个段，所以 `foo_2017-09-01T00:00:00.000Z_2017-10-01T00:00:00.000Z_VERSION` 段也会被选择。
 
-搜索的起点可以通过 [skipOffsetFromLatest](../Configuration/configuration.md#Coordinator) 来更改设置。如果设置了此选项，则此策略将忽略范围内的时间段（最新段的结束时间 - `skipOffsetFromLatest`）， 该配置项主要是为了避免压缩任务和实时任务之间的冲突。请注意，默认情况下，实时任务的优先级高于压缩任务。如果两个任务的时间间隔重叠，实时任务将撤消压缩任务的锁，从而终止压缩任务。
+搜索的起点可以通过 [skipOffsetFromLatest](../configuration/human-readable-byte.md#Coordinator) 来更改设置。如果设置了此选项，则此策略将忽略范围内的时间段（最新段的结束时间 - `skipOffsetFromLatest`）， 该配置项主要是为了避免压缩任务和实时任务之间的冲突。请注意，默认情况下，实时任务的优先级高于压缩任务。如果两个任务的时间间隔重叠，实时任务将撤消压缩任务的锁，从而终止压缩任务。
 
 > [!WARNING]
 > 当有很多相同间隔的小段，并且它们的总大小超过 `inputSegmentSizeBytes` 时，此策略当前无法处理这种情况。如果它找到这样的段，它只会跳过它们。
