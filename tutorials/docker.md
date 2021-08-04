@@ -73,7 +73,7 @@ Druid 的 `docker-compose.yml` 文件，展示了如何使用一个环境配置�
 
 所有的 Druid 进程完全启动需要几秒钟的时间。如果在 Druid 进程启动的时候，立即打开控制台的话，你可能会看到一些可安全错误，这些安全错误是可以忽略的，直接刷新页面即可。
 
-至此，你可以继续 [快速使用（Quickstart）](./index.md#step-4-load-data) 页面中的内容。
+至此，你可以继续 [快速使用（Quickstart）](../tutorials/index.md) 页面第 4 步导入数据的内容。
 如果你还希望加载一些其他的依赖的话，你可以直接对 `docker-compose.yml` 文件进行编辑后重启 Docker。
 
 ## Docker 内存的需求
