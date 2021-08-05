@@ -1,17 +1,16 @@
 # 从本地文件中加载数据
+本指南演示了如何使用 Druid 的原生批量数据导入特性从本地文件中加载数据到 Apache Druid 中。
 
-This tutorial demonstrates how to load data into Apache Druid from a file using Apache Druid's native batch ingestion feature.
+要想将数据导入到 Druid 中，你需要提交一个 *数据导入任务（ingestion task）* 规范到 Druid Overlord 进程中。
+你可以手写这个规范，也可以通过使用 Druid 控制台提供的 _数据加载器（data loader）_ 来完成。
 
-You initiate data loading in Druid by submitting an *ingestion task* spec to the Druid Overlord. You can write ingestion
-specs by hand or using the _data loader_ built into the Druid console.
+[快速指南](../tutorials/index.md) 页面向你展示了如何使用数据加载器（data loader）来构建一个数据导入的规范。
 
-The [Quickstart](./index.md) shows you how to use the data loader to build an ingestion spec. For production environments, it's
-likely that you'll want to automate data ingestion. This tutorial starts by showing you how to submit an ingestion spec
-directly in the Druid console, and then introduces ways to ingest batch data that lend themselves to
-automation&mdash;from the command line and from a script.
+在生产环境中，你可能需要你的数据加载器能够自动工作完成数据的导入。
+本页面中的指南先会向你展示如何通过 Druid 的控制台向 Druid 提交一个数据加载规范，然后再对这个数据加载规范设置自动化处理——从命令行和一个脚本中进行加载数据。
 
 
-## Loading data with a spec (via console)
+## 加载一个规范（使用控制台）
 
 The Druid package includes the following sample native batch ingestion task spec at `quickstart/tutorial/wikipedia-index.json`, shown here for convenience,
 which has been configured to read the `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` input file:
@@ -155,20 +154,6 @@ If you wish to go through any of the other ingestion tutorials, you will need to
 For more information on loading batch data, please see [the native batch ingestion documentation](../ingestion/native-batch.md).
 
 
-
-
-
-## 加载本地文件
-
-本教程演示了如何使用Apache Druid的本地批量数据摄取来执行批文件加载。
-
-在本教程中，我们假设您已经按照[快速入门](../GettingStarted/chapter-1.md)中的规范下载了Druid，并使用`micro-quickstart`单机配置使其在本地计算机上运行。您不需要加载任何数据。
-
-Druid的数据加载是通过向Overlord服务提交*摄取任务规范*来启动。对于本教程，我们将加载Wikipedia页面示例编辑数据。
-
-*数据摄取任务规范*可以手动编写，也可以通过Druid控制台里内置的数据加载器编写。数据加载器可以通过采样摄入的数据并配置各种摄入参数来帮助您生成*摄取任务规范*。数据加载器当前仅支持本地批处理提取（将来的版本中将提供对流的支持，包括存储在Apache Kafka和AWS Kinesis中的数据）。目前只能通过手动书写摄入规范来进行流式摄入。
-
-我们提供了2015年9月12日起对Wikipedia进行编辑的示例，以帮助您入门。
 
 ### 使用Data Loader来加载数据
 
