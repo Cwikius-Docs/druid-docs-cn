@@ -249,33 +249,20 @@ druid.indexer.logs.directory=/druid/indexing-logs
 请参考  [HDFS extension](../development/extensions-core/hdfs.md) 页面中的内容来获得更多的信息。
 
 
-
-## Hadoop连接配置
-
-如果要从Hadoop集群加载数据，那么此时应对Druid做如下配置：
-
-* 在`conf/druid/cluster/_common/common.runtime.properties`文件中更新`druid.indexer.task.hadoopWorkingPath`配置项，将其更新为您期望的一个用于临时文件存储的HDFS路径。 通常会配置为`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing`
-* 需要将Hadoop的配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放置在Druid进程的classpath中，可以将他们拷贝到`conf/druid/cluster/_common`目录中
-
-请注意，您无需为了可以从Hadoop加载数据而使用HDFS深度存储。
-
-更多信息可以看[基于Hadoop的数据摄取](../ingestion/hadoop.md)部分的文档。
-
-
-## Hadoop 的连接配置（可选）
-如果你希望懂 Hadoop 集群中加载数据，那么你需要对你的 Druid 集群进行下面的一些配置：
+## Hadoop 连接配置（可选）
+如果你希望从 Hadoop 集群中加载数据，那么你需要对你的 Druid 集群进行下面的一些配置：
 
 - 更新 `conf/druid/cluster/middleManager/runtime.properties` 文件中的 `druid.indexer.task.hadoopWorkingPath` 配置选项。
-将 HDFS 配置路径文件更新到一个你期望使用的临时文件存储路径。`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing` 为通常的配置。
-
+  将 HDFS 配置路径文件更新到一个你期望使用的临时文件存储路径。`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing` 为通常的配置。
 - 将你的 Hadoop XMLs配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放到你的 Druid 进程中。
-你可以将 `conf/druid/cluster/_common/core-site.xml`, `conf/druid/cluster/_common/hdfs-site.xml` 拷贝到 `conf/druid/cluster/_common` 目录中。
+  你可以将 `conf/druid/cluster/_common/core-site.xml`, `conf/druid/cluster/_common/hdfs-site.xml` 拷贝到 `conf/druid/cluster/_common` 目录中。
 
 请注意，你不需要为了从 Hadoop 中载入数据而使用 HDFS 深度存储。
 
 例如，如果您的集群在 Amazon Web Services 上运行，即使已经使用 Hadoop 或 Elastic MapReduce 加载数据，我们也建议使用 S3 进行深度存储。
 
 有关更多的信息，请参考  [Hadoop-based ingestion](../ingestion/hadoop.md) 页面中的内容。
+
 
 ## 配置 Zookeeper 连接
 在实际的生产环境中，我们建议你使用专用的 ZK 集群来进行部署。ZK 的集群与 Druid 的集群部署是分离的。
