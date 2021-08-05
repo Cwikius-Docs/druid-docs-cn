@@ -1,7 +1,7 @@
 <!-- toc -->
 ## 数据源
 
-在Apache Druid中，数据源是被查询的对象。 最常见的数据源类型是一个表数据源，本文档在很多场景中"dataSource"就是指代表数据源，尤其是在 [数据摄取](../DataIngestion/ingestion.md) 部分中，在数据摄取中，总是创建一个表数据源或者往表数据源中写入数据。但是在查询时，有许多种类型的数据源可用。
+在Apache Druid中，数据源是被查询的对象。 最常见的数据源类型是一个表数据源，本文档在很多场景中"dataSource"就是指代表数据源，尤其是在 [数据摄取](../ingestion/ingestion.md) 部分中，在数据摄取中，总是创建一个表数据源或者往表数据源中写入数据。但是在查询时，有许多种类型的数据源可用。
 
 出现在API请求和响应中的"datasource"一般拼写为 `dataSource` ，注意是大写的S。
 
@@ -36,7 +36,7 @@ SELECT column1, column2 FROM "druid"."dataSourceName"
 }
 ```
 
-表数据源是最常见的类型，该类数据源可以在 [数据摄取](../DataIngestion/ingestion.md) 后获得。它们被分成若干段，分布在集群中，并且并行地进行查询。
+表数据源是最常见的类型，该类数据源可以在 [数据摄取](../ingestion/ingestion.md) 后获得。它们被分成若干段，分布在集群中，并且并行地进行查询。
 
 在 [Druid SQL](druidsql.md) 中，表数据源位于 `druid` schema中。 这是默认schema，表数据源可以被指定为 `druid.dataSourceName` 或者简单的 `dataSourceName` 
 

@@ -222,4 +222,4 @@ curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipe
 
 ### 更多信息
 
-更多关于加载批数据的信息可以查看[原生批摄取文档](../DataIngestion/native.md)
+更多关于加载批数据的信息可以查看[原生批摄取文档](../ingestion/native.md)

@@ -249,385 +249,208 @@ druid.indexer.logs.directory=/druid/indexing-logs
 请参考  [HDFS extension](../development/extensions-core/hdfs.md) 页面中的内容来获得更多的信息。
 
 
-## Configure for connecting to Hadoop (optional)
 
-If you will be loading data from a Hadoop cluster, then at this point you should configure Druid to be aware
-of your cluster:
-
-- Update `druid.indexer.task.hadoopWorkingPath` in `conf/druid/cluster/middleManager/runtime.properties` to
-a path on HDFS that you'd like to use for temporary files required during the indexing process.
-`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing` is a common choice.
-
-- Place your Hadoop configuration XMLs (core-site.xml, hdfs-site.xml, yarn-site.xml,
-mapred-site.xml) on the classpath of your Druid processes. You can do this by copying them into
-`conf/druid/cluster/_common/core-site.xml`, `conf/druid/cluster/_common/hdfs-site.xml`, and so on.
-
-Note that you don't need to use HDFS deep storage in order to load data from Hadoop. For example, if
-your cluster is running on Amazon Web Services, we recommend using S3 for deep storage even if you
-are loading data using Hadoop or Elastic MapReduce.
-
-For more info, please see the [Hadoop-based ingestion](../ingestion/hadoop.md) page.
-
-## Configure Zookeeper connection
-
-In a production cluster, we recommend using a dedicated ZK cluster in a quorum, deployed separately from the Druid servers.
-
-In `conf/druid/cluster/_common/common.runtime.properties`, set
-`druid.zk.service.host` to a [connection string](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html)
-containing a comma separated list of host:port pairs, each corresponding to a ZooKeeper server in your ZK quorum.
-(e.g. "127.0.0.1:4545" or "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002")
-
-You can also choose to run ZK on the Master servers instead of having a dedicated ZK cluster. If doing so, we recommend deploying 3 Master servers so that you have a ZK quorum.
-
-## Configuration Tuning
-
-### Migrating from a Single-Server Deployment
-
-#### Master
-
-If you are using an example configuration from [single-server deployment examples](../operations/single-server.md), these examples combine the Coordinator and Overlord processes into one combined process.
-
-The example configs under `conf/druid/cluster/master/coordinator-overlord` also combine the Coordinator and Overlord processes.
-
-You can copy your existing `coordinator-overlord` configs from the single-server deployment to `conf/druid/cluster/master/coordinator-overlord`.
-
-#### Data
-
-Suppose we are migrating from a single-server deployment that had 32 CPU and 256GB RAM. In the old deployment, the following configurations for Historicals and MiddleManagers were applied:
-
-Historical (Single-server)
-
-```
-druid.processing.buffer.sizeBytes=500000000
-druid.processing.numMergeBuffers=8
-druid.processing.numThreads=31
-```
-
-MiddleManager (Single-server)
-
-```
-druid.worker.capacity=8
-druid.indexer.fork.property.druid.processing.numMergeBuffers=2
-druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
-druid.indexer.fork.property.druid.processing.numThreads=1
-```
-
-In the clustered deployment, we can choose a split factor (2 in this example), and deploy 2 Data servers with 16CPU and 128GB RAM each. The areas to scale are the following:
-
-Historical
-
-- `druid.processing.numThreads`: Set to `(num_cores - 1)` based on the new hardware
-- `druid.processing.numMergeBuffers`: Divide the old value from the single-server deployment by the split factor
-- `druid.processing.buffer.sizeBytes`: Keep this unchanged
-
-MiddleManager:
-
-- `druid.worker.capacity`: Divide the old value from the single-server deployment by the split factor
-- `druid.indexer.fork.property.druid.processing.numMergeBuffers`: Keep this unchanged
-- `druid.indexer.fork.property.druid.processing.buffer.sizeBytes`: Keep this unchanged
-- `druid.indexer.fork.property.druid.processing.numThreads`: Keep this unchanged
-
-The resulting configs after the split:
-
-New Historical (on 2 Data servers)
-
-```
- druid.processing.buffer.sizeBytes=500000000
- druid.processing.numMergeBuffers=8
- druid.processing.numThreads=31
-```
-
-New MiddleManager (on 2 Data servers)
-
-```
-druid.worker.capacity=4
-druid.indexer.fork.property.druid.processing.numMergeBuffers=2
-druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
-druid.indexer.fork.property.druid.processing.numThreads=1
-```
-
-#### Query
-
-You can copy your existing Broker and Router configs to the directories under `conf/druid/cluster/query`, no modifications are needed, as long as the new hardware is sized accordingly.
-
-### Fresh deployment
-
-If you are using the example cluster described above:
-- 1 Master server (m5.2xlarge)
-- 2 Data servers (i3.4xlarge)
-- 1 Query server (m5.2xlarge)
-
-The configurations under `conf/druid/cluster` have already been sized for this hardware and you do not need to make further modifications for general use cases.
-
-If you have chosen different hardware, the [basic cluster tuning guide](../operations/basic-cluster-tuning.md) can help you size your configurations.
-
-## Open ports (if using a firewall)
-
-If you're using a firewall or some other system that only allows traffic on specific ports, allow
-inbound connections on the following:
-
-### Master Server
-- 1527 (Derby metadata store; not needed if you are using a separate metadata store like MySQL or PostgreSQL)
-- 2181 (ZooKeeper; not needed if you are using a separate ZooKeeper cluster)
-- 8081 (Coordinator)
-- 8090 (Overlord)
-
-### Data Server
-- 8083 (Historical)
-- 8091, 8100&ndash;8199 (Druid Middle Manager; you may need higher than port 8199 if you have a very high `druid.worker.capacity`)
-
-### Query Server
-- 8082 (Broker)
-- 8088 (Router, if used)
-
-> In production, we recommend deploying ZooKeeper and your metadata store on their own dedicated hardware,
-> rather than on the Master server.
-
-## Start Master Server
-
-Copy the Druid distribution and your edited configurations to your Master server.
-
-If you have been editing the configurations on your local machine, you can use *rsync* to copy them:
-
-```bash
-rsync -az apache-druid-apache-druid-0.21.1/ MASTER_SERVER:apache-druid-apache-druid-0.21.1/
-```
-
-### No Zookeeper on Master
-
-From the distribution root, run the following command to start the Master server:
-
-```
-bin/start-cluster-master-no-zk-server
-```
-
-### With Zookeeper on Master
-
-If you plan to run ZK on Master servers, first update `conf/zoo.cfg` to reflect how you plan to run ZK. Then, you
-can start the Master server processes together with ZK using:
-
-```
-bin/start-cluster-master-with-zk-server
-```
-
-> In production, we also recommend running a ZooKeeper cluster on its own dedicated hardware.
-
-## Start Data Server
-
-Copy the Druid distribution and your edited configurations to your Data servers.
-
-From the distribution root, run the following command to start the Data server:
-
-```
-bin/start-cluster-data-server
-```
-
-You can add more Data servers as needed.
-
-> For clusters with complex resource allocation needs, you can break apart Historicals and MiddleManagers and scale the components individually.
-> This also allows you take advantage of Druid's built-in MiddleManager autoscaling facility.
-
-## Start Query Server
-
-Copy the Druid distribution and your edited configurations to your Query servers.
-
-From the distribution root, run the following command to start the Query server:
-
-```
-bin/start-cluster-query-server
-```
-
-You can add more Query servers as needed based on query load. If you increase the number of Query servers, be sure to adjust the connection pools on your Historicals and Tasks as described in the [basic cluster tuning guide](../operations/basic-cluster-tuning.md).
-
-## Loading data
-
-Congratulations, you now have a Druid cluster! The next step is to learn about recommended ways to load data into
-Druid based on your use case. Read more about [loading data](../ingestion/index.md).
-
-
-
-
-
-### Hadoop连接配置
+## Hadoop连接配置
 
 如果要从Hadoop集群加载数据，那么此时应对Druid做如下配置：
 
 * 在`conf/druid/cluster/_common/common.runtime.properties`文件中更新`druid.indexer.task.hadoopWorkingPath`配置项，将其更新为您期望的一个用于临时文件存储的HDFS路径。 通常会配置为`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing`
 * 需要将Hadoop的配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放置在Druid进程的classpath中，可以将他们拷贝到`conf/druid/cluster/_common`目录中
 
-请注意，您无需为了可以从Hadoop加载数据而使用HDFS深度存储。例如，如果您的集群在Amazon Web Services上运行，即使您使用Hadoop或Elastic MapReduce加载数据，我们也建议使用S3进行深度存储。
+请注意，您无需为了可以从Hadoop加载数据而使用HDFS深度存储。
 
 更多信息可以看[基于Hadoop的数据摄取](../../DataIngestion/hadoopbased.md)部分的文档。
 
-### Zookeeper连接配置
 
-在生产集群中，我们建议使用专用的ZK集群，该集群与Druid服务器分开部署。
+## Hadoop 的连接配置（可选）
+如果你希望懂 Hadoop 集群中加载数据，那么你需要对你的 Druid 集群进行下面的一些配置：
 
-在 `conf/druid/cluster/_common/common.runtime.properties` 中，将 `druid.zk.service.host` 设置为包含用逗号分隔的host：port对列表的连接字符串，每个对与ZK中的ZooKeeper服务器相对应。（例如" 127.0.0.1:4545"或"127.0.0.1:3000,127.0.0.1:3001、127.0.0.1:3002"）
+- 更新 `conf/druid/cluster/middleManager/runtime.properties` 文件中的 `druid.indexer.task.hadoopWorkingPath` 配置选项。
+将 HDFS 配置路径文件更新到一个你期望使用的临时文件存储路径。`druid.indexer.task.hadoopWorkingPath=/tmp/druid-indexing` 为通常的配置。
 
-您也可以选择在Master服务上运行ZK，而不使用专用的ZK集群。如果这样做，我们建议部署3个Master服务，以便您具有ZK仲裁。
+- 将你的 Hadoop XMLs配置文件（core-site.xml, hdfs-site.xml, yarn-site.xml, mapred-site.xml）放到你的 Druid 进程中。
+你可以将 `conf/druid/cluster/_common/core-site.xml`, `conf/druid/cluster/_common/hdfs-site.xml` 拷贝到 `conf/druid/cluster/_common` 目录中。
 
-### 配置调整
-#### 从单服务器环境迁移部署
-##### Master服务
+请注意，你不需要为了从 Hadoop 中载入数据而使用 HDFS 深度存储。
 
-如果您使用的是[单服务器部署示例](chapter-3.md)中的示例配置，则这些示例中将Coordinator和Overlord进程合并为一个合并的进程。
+例如，如果您的集群在 Amazon Web Services 上运行，即使已经使用 Hadoop 或 Elastic MapReduce 加载数据，我们也建议使用 S3 进行深度存储。
 
-`conf/druid/cluster/master/coordinator-overlord` 下的示例配置同样合并了Coordinator和Overlord进程。
+有关更多的信息，请参考  [Hadoop-based ingestion](../ingestion/hadoop.md) 页面中的内容。
 
-您可以将现有的 `coordinator-overlord` 配置从单服务器部署复制到`conf/druid/cluster/master/coordinator-overlord`
+## 配置 Zookeeper 连接
+在实际的生产环境中，我们建议你使用专用的 ZK 集群来进行部署。ZK 的集群与 Druid 的集群部署是分离的。
 
-##### Data服务
+在 `conf/druid/cluster/_common/common.runtime.properties` 配置文件中，设置
+`druid.zk.service.host` 为 [connection string](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html)。
+在连接配置中使用的是逗号分隔符（host:port 对），每一个对应的是一个 ZK 的服务器，（例如, "127.0.0.1:4545" or "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002"）。
 
-假设我们正在从一个32CPU和256GB内存的单服务器部署环境进行迁移，在老的环境中，Historical和MiddleManager使用了如下的配置：
+你也可以选择在 Master 服务器上运行 ZK，而不使用专用的 ZK 集群。
+如果这样做的话，我们建议部署 3 个 Master 服务服务器，以便具有 ZK 仲裁（因为 Zookeeper 的部署至少需要 3 个服务器，并且服务器的总数量为奇数）。
 
-Historical（单服务器）
+## 配置调整
 
-```json
+### 从一个单独部署服务器上进行合并
+
+#### Master 服务
+
+如果你已经有一个已经存在并且独立运行的独立服务器部署的话，例如在页面 [single-server deployment examples](../operations/single-server.md) 中部署的服务器，
+下面的这个示例将会帮助你将 Coordinator 和 Overlord 合并到一个进程上面
+
+`conf/druid/cluster/master/coordinator-overlord` 下面的示例，显示例如如何同时合并 Coordinator 和 Overlord 进程。
+
+你可以从已经部署的独立服务器上拷贝已经存在 `coordinator-overlord` 配置文件，并部署到 `conf/druid/cluster/master/coordinator-overlord`。
+
+#### Data 服务
+假设我们将要从一个 32 CPU 和 256GB 内存的独立服务器上进行合并。
+在老的部署中，下面的配置是针对 Historicals 和  MiddleManagers 进程的：
+
+Historical（独立服务器部署）
+
+```
 druid.processing.buffer.sizeBytes=500000000
 druid.processing.numMergeBuffers=8
 druid.processing.numThreads=31
 ```
 
-MiddleManager（单服务器）
+MiddleManager（独立服务器部署）
 
-```json
+```
 druid.worker.capacity=8
 druid.indexer.fork.property.druid.processing.numMergeBuffers=2
 druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
 druid.indexer.fork.property.druid.processing.numThreads=1
 ```
 
-在集群部署中，我们选择一个分裂因子（假设为2），则部署2个16CPU和128GB内存的Data服务，各项的调整如下：
+在集群部署环境中，我们可以选择使用 2 个服务器来运行上面的 2 个服务，这 2 个服务器的配置为 16CPU 和 128GB RAM 。
+我们将会按照下面的配置方式进行配置：
 
 Historical
 
-* `druid.processing.numThreads`设置为新硬件的（`CPU核数 - 1`）
-* `druid.processing.numMergeBuffers` 使用分裂因子去除单服务部署环境的值
-* `druid.processing.buffer.sizeBytes` 该值保持不变
+- `druid.processing.numThreads`: 基于配置的新硬件环境，设置为 `(num_cores - 1)` 
+- `druid.processing.numMergeBuffers`: 针对独立服务器使用的数量使用分裂因子相除
+- `druid.processing.buffer.sizeBytes`: 保持不变
 
 MiddleManager:
 
-* `druid.worker.capacity`: 使用分裂因子去除单服务部署环境的值
-* `druid.indexer.fork.property.druid.processing.numMergeBuffers`: 该值保持不变
-* `druid.indexer.fork.property.druid.processing.buffer.sizeBytes`: 该值保持不变
-* `druid.indexer.fork.property.druid.processing.numThreads`: 该值保持不变
+- `druid.worker.capacity`: 针对独立服务器使用的数量使用分裂因子相除
+- `druid.indexer.fork.property.druid.processing.numMergeBuffers`: 保持不变
+- `druid.indexer.fork.property.druid.processing.buffer.sizeBytes`: 保持不变
+- `druid.indexer.fork.property.druid.processing.numThreads`: 保持不变
 
-调整后的结果配置如下：
+在完成上面配置后的结果如下：
 
-新的Historical(2 Data服务器)
+集群 Historical (使用 2 个数据服务器)
 
-```json
+```
  druid.processing.buffer.sizeBytes=500000000
  druid.processing.numMergeBuffers=8
  druid.processing.numThreads=31
- ```
+```
 
-新的MiddleManager（2 Data服务器）
+集群 MiddleManager (使用 2 个数据服务器)
 
-```json
+```
 druid.worker.capacity=4
 druid.indexer.fork.property.druid.processing.numMergeBuffers=2
 druid.indexer.fork.property.druid.processing.buffer.sizeBytes=100000000
 druid.indexer.fork.property.druid.processing.numThreads=1
 ```
 
-##### Query服务
+#### Query 服务
+你可以将已经在独立服务器部署中存在的配置文件拷贝到 `conf/druid/cluster/query` 目录中完成部署。
+如果新的服务器的硬件配置和独立服务器的配置是相对的话，新的部署不需要做修改。
 
-您可以将现有的Broker和Router配置复制到`conf/druid/cluster/query`下的目录中，无需进行任何修改.
+### 刷新部署 deployment
 
-#### 首次部署
+如果你使用下面的服务器配置环境为示例的话：
+- 1 Master server (m5.2xlarge)
+- 2 Data servers (i3.4xlarge)
+- 1 Query server (m5.2xlarge)
 
-如果您正在使用如下描述的示例集群规格：
+在 `conf/druid/cluster` 文件夹中的配置文件已经针对上面的硬件环境进行了优化，针对基本情况的使用来说，你不需要针对上面的配置进行修改。
 
-* 1 Master 服务器(m5.2xlarge)
-* 2 Data 服务器(i3.4xlarge)
-* 1 Query 服务器(m5.2xlarge)
+如果你选择使用不同的硬件的话，页面 [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 中的内容能够帮助你对你的硬件配置做一些选择。
 
-`conf/druid/cluster`下的配置已经为此硬件确定了，一般情况下您无需做进一步的修改。
+## 打开端口（如果你使用了防火墙的话）
 
-如果您选择了其他硬件，则[基本的集群调整指南](../../operations/basicClusterTuning.md)可以帮助您调整配置大小。
+如果你的服务使用了防火墙，或者一些网络配置中限制了端口的访问的话。那么你需要在你的服务器上开放下面的端口，并运行数据进行访问：
 
-### 开启端口(如果使用了防火墙)
+### Master 服务器
+- 1527 （Derby 原数据存储；如果你使用的是其他的数据库，例如 MySQL 或 PostgreSQL 的话就不需要）
+- 2181 （ZooKeeper；如果你使用的是分布式 ZooKeeper 集群部署的话就不需要）
+- 8081 （Coordinator 服务）
+- 8090 （Overlord 服务）
 
-如果您正在使用防火墙或其他仅允许特定端口上流量准入的系统，请在以下端口上允许入站连接：
+### Data 服务器
+- 8083 （Historical 服务）
+- 8091, 8100&ndash;8199 （Druid Middle Manager 服务，如果你使用了比较高的 `druid.worker.capacity` 配置的话，那么你需要的端口可能会高于 8199）
 
-#### Master服务
+### Query 服务器
+- 8082 （Broker 服务）
+- 8088 （Router 服务，如果使用的话）
 
-* 1527（Derby元数据存储，如果您正在使用一个像MySQL或者PostgreSQL的分离的元数据存储则不需要）
-* 2181（Zookeeper，如果使用了独立的ZK集群则不需要）
-* 8081（Coordinator）
-* 8090（Overlord）
+> 在生产环境中，我们推荐你部署 ZooKeeper 和你的元数据存储到他们自己的硬件上（独立部署）。不要和 Master server 混合部署在一起。
 
-#### Data服务
+## 启动 Master 服务器
+拷贝 Druid 的分发包和你修改过的配置到 Master 服务器上。
 
-* 8083（Historical）
-* 8091，8100-8199（Druid MiddleManager，如果`druid.worker.capacity`参数设置较大的话，则需要更多高于8199的端口）
+如果你已经在你的本地计算机上修改了配置，你可以使用 *rsync* 来进行拷贝。
 
-#### Query服务
-
-* 8082（Broker）
-* 8088（Router，如果使用了）
-
-> [!WARNING]
-> 在生产中，我们建议将ZooKeeper和元数据存储部署在其专用硬件上，而不是在Master服务器上。
-
-### 启动Master服务
-
-将Druid发行版和您编辑的配置文件复制到Master服务器上。
-
-如果您一直在本地计算机上编辑配置，则可以使用rsync复制它们：
-
-```json
-rsync -az apache-druid-0.17.0/ MASTER_SERVER:apache-druid-0.17.0/
+```bash
+rsync -az apache-druid-apache-druid-0.21.1/ MASTER_SERVER:apache-druid-apache-druid-0.21.1/
 ```
 
-#### 不带Zookeeper启动
+### Master 没有 Zookeeper 的启动 
 
-在发行版根目录中，运行以下命令以启动Master服务：
-```json
+从分发包的 root 节点中，运行下面的命令来启动 Master 服务器：
+
+```
 bin/start-cluster-master-no-zk-server
 ```
 
-#### 带Zookeeper启动
+### Master 有 Zookeeper 的启动
+如果你计划在 Master 服务器上还同时运行 ZK 的话，首先需要更新 `conf/zoo.cfg` 中的配置来确定你如何运行 ZK。
+然后你可以选择在启动 ZK 的同时启动 Master 服务器。
 
-如果计划在Master服务器上运行ZK，请首先更新`conf/zoo.cfg`以标识您计划如何运行ZK，然后，您可以使用以下命令与ZK一起启动Master服务进程：
-```json
+使用下面的命令行来进行启动：
+
+```
 bin/start-cluster-master-with-zk-server
 ```
 
-> [!WARNING]
-> 在生产中，我们建议将ZooKeeper运行在其专用硬件上。
+> 在生产环境中，我们推荐你部署 ZooKeeper 在独立的集群上面。
 
-### 启动Data服务
+## 启动 Data 服务器
+拷贝 Druid 的分发包和你修改过的配置到 Data 服务器上。
 
-将Druid发行版和您编辑的配置文件复制到您的Data服务器。
+从分发包的 root 节点中，运行下面的命令来启动 Data 服务器：
 
-在发行版根目录中，运行以下命令以启动Data服务：
-```json
+```
 bin/start-cluster-data-server
 ```
 
-您可以在需要的时候增加更多的Data服务器。
+如果需要的话，你还可以为你的数据服务器添加更多的节点。
 
-> [!WARNING]
-> 对于具有复杂资源分配需求的集群，您可以将Historical和MiddleManager分开部署，并分别扩容组件。这也使您能够利用Druid的内置MiddleManager自动伸缩功能。
+> 针对集群环境中更加复杂的应用环境和需求，你可以将 Historicals 和 MiddleManagers 服务分开部署，然后分别进行扩容。
+> 上面的这种分开部署方式，能够给代理 Druid 已经构建并且实现的 MiddleManager 自动扩容功能。
 
-### 启动Query服务
-将Druid发行版和您编辑的配置文件复制到您的Query服务器。
+## 启动 Query 服务器
+拷贝 Druid 的分发包和你修改过的配置到 Query 服务器上。
 
-在发行版根目录中，运行以下命令以启动Query服务：
+从分发包的 root 节点中，运行下面的命令来启动 Query 服务器：
 
-```json
+```
 bin/start-cluster-query-server
 ```
+针对你查询的负载情况，你可以为你的查询服务器增加更多的节点。
 
-您可以根据查询负载添加更多查询服务器。 如果增加了查询服务器的数量，请确保按照[基本集群调优指南](../../operations/basicClusterTuning.md)中的说明调整Historical和Task上的连接池。
+如果为你的查询服务器增加了更多的节点的话，请确定同时为你的 Historicals 服务增加更多的连接池。
 
-### 加载数据
+请参考页面  [basic cluster tuning guide](../operations/basic-cluster-tuning.md) 中描述的内容。
 
-恭喜，您现在有了Druid集群！下一步是根据使用场景来了解将数据加载到Druid的推荐方法。
+## 载入数据
+恭喜你，我们现在有了配置成功并且运行的 Druid 集群了！
 
-了解有关[加载数据](../DataIngestion/index.md)的更多信息。
+下一步就是根据根据你的使用情况来用推荐的方法将数据载入到 Druid 集群中了。
 
-
+请参考页面 [loading data](../ingestion/index.md) 中的内容。

@@ -1,15 +1,4 @@
-<!-- toc -->
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-8828078415045620"
-     data-ad-slot="7586680510"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 
 ## 任务参考文档
 
@@ -304,7 +293,7 @@ http://<middlemanager-host>:<worker-port>/druid/worker/v1/chat/<task-id>/unparse
 
 #### `index_hadoop`
 
-参见 [基于Hadoop的摄取](hadoopbased.md)
+参见 [基于Hadoop的摄取](hadoop.md)
 
 #### `index_kafka`
 

@@ -45,12 +45,12 @@ org.apache.druid.cli.Main server coordinator
 
 每次运行时，Druid Coordinator都通过合并小段或拆分大片段来压缩段。当您的段没有进行段大小（可能会导致查询性能下降）优化时，该操作非常有用。有关详细信息，请参见[段大小优化](../operations/segmentSizeOpt.md)。
 
-Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../DataIngestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../configuration/human-readable-byte.md#Coordinator)以启用压缩。
+Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../ingestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../configuration/human-readable-byte.md#Coordinator)以启用压缩。
 
 压缩任务可能由于以下原因而失败:
 
 * 如果压缩任务的输入段在开始前被删除或覆盖，则该压缩任务将立即失败。
-* 如果优先级较高的任务获取与压缩任务的时间间隔重叠的[时间块锁](../DataIngestion/taskrefer.md#锁)，则压缩任务失败。
+* 如果优先级较高的任务获取与压缩任务的时间间隔重叠的[时间块锁](../ingestion/taskrefer.md#锁)，则压缩任务失败。
 
 一旦压缩任务失败，Coordinator只需再次检查失败任务间隔中的段，并在下次运行中发出另一个压缩任务。
 
