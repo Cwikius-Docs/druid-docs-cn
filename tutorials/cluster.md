@@ -259,7 +259,7 @@ druid.indexer.logs.directory=/druid/indexing-logs
 
 请注意，您无需为了可以从Hadoop加载数据而使用HDFS深度存储。
 
-更多信息可以看[基于Hadoop的数据摄取](../../DataIngestion/hadoopbased.md)部分的文档。
+更多信息可以看[基于Hadoop的数据摄取](../ingestion/hadoop.md)部分的文档。
 
 
 ## Hadoop 的连接配置（可选）
