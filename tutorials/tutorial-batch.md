@@ -1,27 +1,159 @@
-<!-- toc -->
+# 从本地文件中加载数据
+本指南演示了如何使用 Druid 的原生批量数据导入特性从本地文件中加载数据到 Apache Druid 中。
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-8828078415045620"
-     data-ad-slot="7586680510"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+要想将数据导入到 Druid 中，你需要提交一个 *数据导入任务（ingestion task）* 规范到 Druid Overlord 进程中。
+你可以手写这个规范，也可以通过使用 Druid 控制台提供的 _数据加载器（data loader）_ 来完成。
 
-## 加载本地文件
+[快速指南](../tutorials/index.md) 页面向你展示了如何使用数据加载器（data loader）来构建一个数据导入的规范。
 
-本教程演示了如何使用Apache Druid的本地批量数据摄取来执行批文件加载。
+在生产环境中，你可能需要你的数据加载器能够自动工作完成数据的导入。
+本页面中的指南先会向你展示如何通过 Druid 的控制台向 Druid 提交一个数据加载规范，然后再对这个数据加载规范设置自动化处理——从命令行和一个脚本中进行加载数据。
 
-在本教程中，我们假设您已经按照[快速入门](../GettingStarted/chapter-1.md)中的规范下载了Druid，并使用`micro-quickstart`单机配置使其在本地计算机上运行。您不需要加载任何数据。
 
-Druid的数据加载是通过向Overlord服务提交*摄取任务规范*来启动。对于本教程，我们将加载Wikipedia页面示例编辑数据。
+## 加载一个规范（使用控制台）
 
-*数据摄取任务规范*可以手动编写，也可以通过Druid控制台里内置的数据加载器编写。数据加载器可以通过采样摄入的数据并配置各种摄入参数来帮助您生成*摄取任务规范*。数据加载器当前仅支持本地批处理提取（将来的版本中将提供对流的支持，包括存储在Apache Kafka和AWS Kinesis中的数据）。目前只能通过手动书写摄入规范来进行流式摄入。
+The Druid package includes the following sample native batch ingestion task spec at `quickstart/tutorial/wikipedia-index.json`, shown here for convenience,
+which has been configured to read the `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` input file:
 
-我们提供了2015年9月12日起对Wikipedia进行编辑的示例，以帮助您入门。
+```json
+{
+  "type" : "index_parallel",
+  "spec" : {
+    "dataSchema" : {
+      "dataSource" : "wikipedia",
+      "dimensionsSpec" : {
+        "dimensions" : [
+          "channel",
+          "cityName",
+          "comment",
+          "countryIsoCode",
+          "countryName",
+          "isAnonymous",
+          "isMinor",
+          "isNew",
+          "isRobot",
+          "isUnpatrolled",
+          "metroCode",
+          "namespace",
+          "page",
+          "regionIsoCode",
+          "regionName",
+          "user",
+          { "name": "added", "type": "long" },
+          { "name": "deleted", "type": "long" },
+          { "name": "delta", "type": "long" }
+        ]
+      },
+      "timestampSpec": {
+        "column": "time",
+        "format": "iso"
+      },
+      "metricsSpec" : [],
+      "granularitySpec" : {
+        "type" : "uniform",
+        "segmentGranularity" : "day",
+        "queryGranularity" : "none",
+        "intervals" : ["2015-09-12/2015-09-13"],
+        "rollup" : false
+      }
+    },
+    "ioConfig" : {
+      "type" : "index_parallel",
+      "inputSource" : {
+        "type" : "local",
+        "baseDir" : "quickstart/tutorial/",
+        "filter" : "wikiticker-2015-09-12-sampled.json.gz"
+      },
+      "inputFormat" :  {
+        "type": "json"
+      },
+      "appendToExisting" : false
+    },
+    "tuningConfig" : {
+      "type" : "index_parallel",
+      "maxRowsPerSegment" : 5000000,
+      "maxRowsInMemory" : 25000
+    }
+  }
+}
+```
+
+This spec creates a datasource named "wikipedia".
+
+From the Ingestion view, click the ellipses next to Tasks and choose `Submit JSON task`.
+
+![Tasks view add task](../assets/tutorial-batch-submit-task-01.png "Tasks view add task")
+
+This brings up the spec submission dialog where you can paste the spec above.
+
+![Query view](../assets/tutorial-batch-submit-task-02.png "Query view")
+
+Once the spec is submitted, wait a few moments for the data to load, after which you can query it.
+
+
+## Loading data with a spec (via command line)
+
+For convenience, the Druid package includes a batch ingestion helper script at `bin/post-index-task`.
+
+This script will POST an ingestion task to the Druid Overlord and poll Druid until the data is available for querying.
+
+Run the following command from Druid package root:
+
+```bash
+bin/post-index-task --file quickstart/tutorial/wikipedia-index.json --url http://localhost:8081
+```
+
+You should see output like the following:
+
+```bash
+Beginning indexing data for wikipedia
+Task started: index_wikipedia_2018-07-27T06:37:44.323Z
+Task log:     http://localhost:8081/druid/indexer/v1/task/index_wikipedia_2018-07-27T06:37:44.323Z/log
+Task status:  http://localhost:8081/druid/indexer/v1/task/index_wikipedia_2018-07-27T06:37:44.323Z/status
+Task index_wikipedia_2018-07-27T06:37:44.323Z still running...
+Task index_wikipedia_2018-07-27T06:37:44.323Z still running...
+Task finished with status: SUCCESS
+Completed indexing data for wikipedia. Now loading indexed data onto the cluster...
+wikipedia loading complete! You may now query your data
+```
+
+Once the spec is submitted, you can follow the same instructions as above to wait for the data to load and then query it.
+
+
+## Loading data without the script
+
+Let's briefly discuss how we would've submitted the ingestion task without using the script. You do not need to run these commands.
+
+To submit the task, POST it to Druid in a new terminal window from the apache-druid-{{DRUIDVERSION}} directory:
+
+```bash
+curl -X 'POST' -H 'Content-Type:application/json' -d @quickstart/tutorial/wikipedia-index.json http://localhost:8081/druid/indexer/v1/task
+```
+
+Which will print the ID of the task if the submission was successful:
+
+```bash
+{"task":"index_wikipedia_2018-06-09T21:30:32.802Z"}
+```
+
+You can monitor the status of this task from the console as outlined above.
+
+
+## Querying your data
+
+Once the data is loaded, please follow the [query tutorial](../tutorials/tutorial-query.md) to run some example queries on the newly loaded data.
+
+
+## Cleanup
+
+If you wish to go through any of the other ingestion tutorials, you will need to shut down the cluster and reset the cluster state by removing the contents of the `var` directory under the druid package, as the other tutorials will write to the same "wikipedia" datasource.
+
+
+## Further reading
+
+For more information on loading batch data, please see [the native batch ingestion documentation](../ingestion/native-batch.md).
+
+
 
 ### 使用Data Loader来加载数据
 
