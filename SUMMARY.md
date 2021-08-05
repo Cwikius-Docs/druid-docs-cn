@@ -52,7 +52,7 @@
   * [摄取概述](ingestion/ingestion.md)
   * [数据格式](ingestion/dataformats.md)
   * [schema设计](ingestion/schemadesign.md)
-  * [数据管理](ingestion/datamanage.md)
+  * [数据管理](ingestion/data-management.md)
   * [流式摄取](ingestion/kafka.md)
     * [Apache Kafka](ingestion/kafka.md)
     * [Apache Kinesis](ingestion/kinesis.md)

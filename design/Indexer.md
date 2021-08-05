@@ -24,7 +24,7 @@ Apache Druid索引器进程是MiddleManager + Peon任务执行系统的另一种
 对于Apache Druid Indexer进程的配置，请参见 [Indexer配置](../configuration/human-readable-byte.md#Indexer)
 
 ### HTTP
-Indexer进程与[MiddleManager](../operations/api.md#MiddleManager)共用API
+Indexer进程与[MiddleManager](../operations/api-reference.md#MiddleManager)共用API
 
 ### 运行
 ```json
