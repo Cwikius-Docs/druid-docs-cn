@@ -1122,7 +1122,7 @@ you have to take caution to not override segments created by real-time processin
 
 Apache Druid当前支持通过一个Hadoop摄取任务来支持基于Apache Hadoop的批量索引任务， 这些任务被提交到 [Druid Overlord](../design/Overlord.md)的一个运行实例上。详情可以查看 [基于Hadoop的摄取vs基于本地批摄取的对比](ingestion.md#批量摄取) 来了解基于Hadoop的摄取、本地简单批摄取、本地并行摄取三者的比较。
 
-运行一个基于Hadoop的批量摄取任务，首先需要编写一个如下的摄取规范， 然后提交到Overlord的 [`druid/indexer/v1/task`](../operations/api.md#overlord) 接口，或者使用Druid软件包中自带的 `bin/post-index-task` 脚本。
+运行一个基于Hadoop的批量摄取任务，首先需要编写一个如下的摄取规范， 然后提交到Overlord的 [`druid/indexer/v1/task`](../operations/api-reference.md#overlord) 接口，或者使用Druid软件包中自带的 `bin/post-index-task` 脚本。
 
 ### 教程
 

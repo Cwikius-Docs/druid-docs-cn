@@ -16,7 +16,7 @@
 对于Apache Druid的Overlord进程配置，详见 [Overlord配置](../configuration/human-readable-byte.md#Overlord)
 
 ### HTTP
-对于Overlord的API接口，详见 [Overlord API](../operations/api.md#Overlord)
+对于Overlord的API接口，详见 [Overlord API](../operations/api-reference.md#Overlord)
 
 ### 综述
 Overlord进程负责接收任务、协调任务分配、创建任务锁并将状态返回给调用方。Overlord可以配置为本地模式运行或者远程模式运行（默认为本地）。在本地模式下，Overlord还负责创建执行任务的Peon， 在本地模式下运行Overlord时，还必须提供所有MiddleManager和Peon配置。本地模式通常用于简单的工作流。在远程模式下，Overlord和MiddleManager在不同的进程中运行，您可以在不同的服务器上运行每一个进程。如果要将索引服务用作所有Druid索引的单个端点，建议使用此模式。

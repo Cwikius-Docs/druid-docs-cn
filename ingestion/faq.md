@@ -171,7 +171,7 @@ Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的�
 
 您可以将 [DruidInputSource](native.md#Druid输入源) 与 [并行任务](native.md#并行任务) 一起使用，以使用新schema摄取现有的druid段，并更改该段的name、dimensions、metrics、rollup等。有关详细信息，请参阅 [DruidInputSource](native.md#Druid输入源)。或者，如果使用基于hadoop的摄取，那么可以使用"dataSource"输入规范来重新编制索引。
 
-有关详细信息，请参阅 [数据管理](datamanage.md) 页的 [更新现有数据](datamanage.md#更新现有的数据) 部分。
+有关详细信息，请参阅 [数据管理](data-management.md) 页的 [更新现有数据](data-management.md#更新现有的数据) 部分。
 
 ### 如果更改Druid中现有数据的段粒度
 
@@ -179,7 +179,7 @@ Druid会拒绝时间窗口之外的事件， 确认事件是否被拒绝了的�
 
 为此，使用 [DruidInputSource](native.md#Druid输入源) 并运行一个 [并行任务](native.md#并行任务)。[DruidInputSource](native.md#Druid输入源) 将允许你从Druid中获取现有的段并将它们聚合并反馈给Druid。它还允许您在反馈数据时过滤这些段中的数据，这意味着，如果有要删除的行，可以在重新摄取期间将它们过滤掉。通常，上面的操作将作为一个批处理作业运行，即每天输入一大块数据并对其进行聚合。或者，如果使用基于hadoop的摄取，那么可以使用"dataSource"输入规范来重新编制索引。
 
-有关详细信息，请参阅 [数据管理](datamanage.md) 页的 [更新现有数据](datamanage.md#更新现有的数据) 部分。
+有关详细信息，请参阅 [数据管理](data-management.md) 页的 [更新现有数据](data-management.md#更新现有的数据) 部分。
 
 ### 实时摄取似乎被卡住了
 

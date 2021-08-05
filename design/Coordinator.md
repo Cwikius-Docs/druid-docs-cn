@@ -16,7 +16,7 @@
 对于Apache Druid的Coordinator进程配置，详见 [Coordinator配置](../configuration/human-readable-byte.md#Coordinator)
 
 ### HTTP
-对于Coordinator的API接口，详见 [Coordinator API](../operations/api.md#Coordinator)
+对于Coordinator的API接口，详见 [Coordinator API](../operations/api-reference.md#Coordinator)
 
 ### 综述
 Druid Coordinator程序主要负责段管理和分发。更具体地说，Druid Coordinator进程与Historical进程通信，根据配置加载或删除段。Druid Coordinator负责加载新段、删除过时段、管理段复制和平衡段负载。
@@ -45,7 +45,7 @@ org.apache.druid.cli.Main server coordinator
 
 每次运行时，Druid Coordinator都通过合并小段或拆分大片段来压缩段。当您的段没有进行段大小（可能会导致查询性能下降）优化时，该操作非常有用。有关详细信息，请参见[段大小优化](../operations/segmentSizeOpt.md)。
 
-Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../ingestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api.md#Coordinator)和[压缩配置](../configuration/human-readable-byte.md#Coordinator)以启用压缩。
+Coordinator首先根据[段搜索策略](#段搜索策略)查找要压缩的段。找到某些段后，它会发出[压缩任务](../ingestion/taskrefer.md#compact)来压缩这些段。运行压缩任务的最大数目为 `min(sum of worker capacity * slotRatio, maxSlots)`。请注意，即使 `min(sum of worker capacity * slotRatio, maxSlots)` = 0，如果为数据源启用了压缩，则始终会提交至少一个压缩任务。请参阅[压缩配置API](../operations/api-reference.md#Coordinator)和[压缩配置](../configuration/human-readable-byte.md#Coordinator)以启用压缩。
 
 压缩任务可能由于以下原因而失败:
 

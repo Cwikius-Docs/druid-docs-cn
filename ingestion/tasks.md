@@ -405,13 +405,13 @@ See the documentation on [deleting data](../ingestion/data-management.md#delete)
 
 任务在Druid中完成所有与 [摄取](ingestion.md) 相关的工作。
 
-对于批量摄取，通常使用 [任务api](../operations/api.md#Overlord) 直接将任务提交给Druid。对于流式接收，任务通常被提交给supervisor。
+对于批量摄取，通常使用 [任务api](../operations/api-reference.md#Overlord) 直接将任务提交给Druid。对于流式接收，任务通常被提交给supervisor。
 
 ### 任务API
 
 任务API主要在两个地方是可用的：
 
-* [Overlord](../design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../operations/api.md) 可以看到完整列表
+* [Overlord](../design/Overlord.md) 进程提供HTTP API接口来进行提交任务、取消任务、检查任务状态、查看任务日志与报告等。 查看 [任务API文档](../operations/api-reference.md) 可以看到完整列表
 * Druid SQL包括了一个 [`sys.tasks`](../querying/druidsql.md#系统Schema) ，保存了当前任务运行的信息。 此表是只读的，并且可以通过Overlord API查询完整信息的有限制的子集。
 
 ### 任务报告
@@ -710,11 +710,11 @@ http://<middlemanager-host>:<worker-port>/druid/worker/v1/chat/<task-id>/unparse
 
 #### `compact`
 
-压缩任务合并给定间隔的所有段。有关详细信息，请参见有关 [压缩](datamanage.md#压缩与重新索引) 的文档。
+压缩任务合并给定间隔的所有段。有关详细信息，请参见有关 [压缩](data-management.md#压缩与重新索引) 的文档。
 
 #### `kill`
 
-Kill tasks删除有关某些段的所有元数据，并将其从深层存储中删除。有关详细信息，请参阅有关 [删除数据](datamanage.md#删除数据) 的文档。
+Kill tasks删除有关某些段的所有元数据，并将其从深层存储中删除。有关详细信息，请参阅有关 [删除数据](data-management.md#删除数据) 的文档。
 
 #### `append`
 

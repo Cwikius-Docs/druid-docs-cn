@@ -28,7 +28,7 @@ Apache Druid Router用于将查询路由到不同的Broker。默认情况下，B
 
 ### HTTP
 
-对于Router的API列表，请参见 [Router API](../operations/api.md#Router)
+对于Router的API列表，请参见 [Router API](../operations/api-reference.md#Router)
 
 ### 运行
 

@@ -16,7 +16,7 @@
 对于Apache Druid Broker的配置，请参见 [Broker配置](../configuration/human-readable-byte.md#Broker)
 
 ### HTTP
-对于Broker的API的列表，请参见 [Broker API](../operations/api.md#Broker)
+对于Broker的API的列表，请参见 [Broker API](../operations/api-reference.md#Broker)
 
 ### 综述
 
