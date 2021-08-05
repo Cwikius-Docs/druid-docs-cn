@@ -162,7 +162,7 @@
 } ]
 ```
 
-**注意**：当查询时的 `granularity` 小于 [数据摄取](../DataIngestion/ingestion.md) 时候设置的 `queryGranularity`是不合理的，因为在存储的数据中没有更细粒度的数据了。 所以，当查询时设置的粒度小于摄取时设置的粒度时，Druid将基于`granularity`与`queryGranularity`相同的基础上进行生产结果。
+**注意**：当查询时的 `granularity` 小于 [数据摄取](../ingestion/ingestion.md) 时候设置的 `queryGranularity`是不合理的，因为在存储的数据中没有更细粒度的数据了。 所以，当查询时设置的粒度小于摄取时设置的粒度时，Druid将基于`granularity`与`queryGranularity`相同的基础上进行生产结果。
 
 如果查询粒度更改为 `all`,将会在一个bucket中查到所以数据：
 

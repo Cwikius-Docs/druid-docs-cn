@@ -483,7 +483,7 @@ curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia
 ```
 如果supervisor被成功创建后，将会返回一个supervisor的ID，在本例中看到的是 `{"id":"wikipedia"}`
 
-更详细的信息可以查看[Druid Kafka索引服务文档](../DataIngestion/kafka.md)
+更详细的信息可以查看[Druid Kafka索引服务文档](../ingestion/kafka.md)
 
 您可以在[Druid控制台]( http://localhost:8888/unified-console.html#tasks)中查看现有的supervisors和tasks
 
@@ -494,4 +494,4 @@ curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia
 ### 清理数据
 如果您希望阅读其他任何入门教程，则需要关闭集群并通过删除druid软件包下的`var`目录的内容来重置集群状态，因为其他教程将写入相同的"wikipedia"数据源。
 ### 进一步阅读
-更多关于从Kafka流加载数据的信息，可以查看[Druid Kafka索引服务文档](../DataIngestion/kafka.md)
+更多关于从Kafka流加载数据的信息，可以查看[Druid Kafka索引服务文档](../ingestion/kafka.md)

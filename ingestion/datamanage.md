@@ -140,7 +140,7 @@ Druid不支持按主键更新单个记录。
 
 #### 使用基于Hadoop的摄取
 
-本节假设读者理解如何使用Hadoop进行批量摄取。有关详细信息，请参见 [Hadoop批处理摄取](hadoopbased.md)。Hadoop批量摄取可用于重新索引数据和增量摄取数据。
+本节假设读者理解如何使用Hadoop进行批量摄取。有关详细信息，请参见 [Hadoop批处理摄取](hadoop.md)。Hadoop批量摄取可用于重新索引数据和增量摄取数据。
 
 Druid使用 `ioConfig` 中的 `inputSpec` 来知道要接收的数据位于何处以及如何读取它。对于简单的Hadoop批接收，`static` 或 `granularity` 粒度规范类型允许您读取存储在深层存储中的数据。
 

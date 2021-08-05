@@ -48,7 +48,7 @@ Druid支持自定义数据格式，可以使用 `Regex` 解析器或 `JavaScript
 > [!WARNING]
 > 输入格式是在0.17.0中引入的指定输入数据的数据格式的新方法。不幸的是，输入格式还不支持Druid支持的所有数据格式或摄取方法。特别是如果您想使用Hadoop接收，您仍然需要使用 [解析器](#parser)。如果您的数据是以本节未列出的某种格式格式化的，请考虑改用解析器。
 
-所有形式的Druid摄取都需要某种形式的schema对象。要摄取的数据的格式是使用[`ioConfig`](../DataIngestion/ingestion.md#ioConfig) 中的 `inputFormat` 条目指定的。
+所有形式的Druid摄取都需要某种形式的schema对象。要摄取的数据的格式是使用[`ioConfig`](/ingestion.md#ioConfig) 中的 `inputFormat` 条目指定的。
 
 #### JSON
 
@@ -210,7 +210,7 @@ Parquet `inputFormat` 有以下组件：
 
 | 字段 | 描述 | 默认值 |
 |-|-|-|
-| useFieldDiscovery | 如果为true，则将所有根级字段解释为可用字段，供 [`timestampSpec`](../DataIngestion/ingestion.md#timestampSpec)、[`transformSpec`](../DataIngestion/ingestion.md#transformSpec)、[`dimensionsSpec`](../DataIngestion/ingestion.md#dimensionsSpec) 和 [`metricsSpec`](../DataIngestion/ingestion.md#metricsSpec) 使用。<br><br> 如果为false，则只有显式指定的字段（请参阅 `fields`）才可供使用。 | true |
+| useFieldDiscovery | 如果为true，则将所有根级字段解释为可用字段，供 [`timestampSpec`](/ingestion.md#timestampSpec)、[`transformSpec`](/ingestion.md#transformSpec)、[`dimensionsSpec`](/ingestion.md#dimensionsSpec) 和 [`metricsSpec`](/ingestion.md#metricsSpec) 使用。<br><br> 如果为false，则只有显式指定的字段（请参阅 `fields`）才可供使用。 | true |
 | fields | 指定感兴趣的字段及其访问方式, 详细请见下边 | `[]` |
 
 **字段展平规范**
@@ -281,7 +281,7 @@ Parquet `inputFormat` 有以下组件：
 > [!WARNING]
 > 需要添加 [druid-avro-extensions](../development/avro-extensions.md) 来使用 Avro Hadoop解析器
 
-该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.avro.AvroValueInputFormat`。您可能想在 `tuningConfig` 中的 `jobProperties` 选项设置Avro reader的schema， 例如：`"avro.schema.input.value.path": "/path/to/your/schema.avsc"` 或者 `"avro.schema.input.value": "your_schema_JSON_object"`。如果未设置Avro读取器的schema，则将使用Avro对象容器文件中的schema，详情可以参见 [avro规范](http://avro.apache.org/docs/1.7.7/spec.html#Schema+Resolution)
+该解析器用于 [Hadoop批摄取](hadoop.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.avro.AvroValueInputFormat`。您可能想在 `tuningConfig` 中的 `jobProperties` 选项设置Avro reader的schema， 例如：`"avro.schema.input.value.path": "/path/to/your/schema.avsc"` 或者 `"avro.schema.input.value": "your_schema_JSON_object"`。如果未设置Avro读取器的schema，则将使用Avro对象容器文件中的schema，详情可以参见 [avro规范](http://avro.apache.org/docs/1.7.7/spec.html#Schema+Resolution)
 
 | 字段 | 类型 | 描述 | 是否必填 |
 |-|-|-|-|
@@ -332,7 +332,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 > [!WARNING]
 > 如果您正在考虑从早于0.15.0的版本升级到0.15.0或更高版本，请仔细阅读 [从contrib扩展的迁移](../development/orc-extensions.md#从contrib扩展迁移)。
 
-该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.orc.mapreduce.OrcInputFormat`。
+该解析器用于 [Hadoop批摄取](hadoop.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.orc.mapreduce.OrcInputFormat`。
 
 | 字段 | 类型 | 描述 | 是否必填 |
 |-|-|-|-|
@@ -554,7 +554,7 @@ Avro parseSpec可以包含使用"root"或"path"字段类型的 [flattenSpec](#fl
 > [!WARNING]
 > 需要添加 [druid-parquet-extensions](../development/parquet-extensions.md) 来使用Parquet Hadoop解析器
 
-该解析器用于 [Hadoop批摄取](hadoopbased.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetInputFormat`。
+该解析器用于 [Hadoop批摄取](hadoop.md)。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetInputFormat`。
 
 Parquet Hadoop 解析器支持自动字段发现，如果提供了一个带有 `parquet` `parquetSpec`的 `flattenSpec` 也支持展平。 Parquet嵌套 list 和 map [逻辑类型](https://github.com/apache/parquet-format/blob/master/LogicalTypes.md) 应与所有受支持类型的JSON path表达式一起正确操作。
 
@@ -680,7 +680,7 @@ Parquet Hadoop 解析器支持自动字段发现，如果提供了一个带有 `
 > [!WARNING]
 > 使用Parquet Avro Hadoop Parser需要同时加入 [druid-parquet-extensions](../development/parquet-extensions.md) 和 [druid-avro-extensions](../development/avro-extensions.md)
 
-该解析器用于 [Hadoop批摄取](hadoopbased.md), 该解析器首先将Parquet数据转换为Avro记录，然后再解析它们后摄入到Druid。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetAvroInputFormat`。
+该解析器用于 [Hadoop批摄取](hadoop.md), 该解析器首先将Parquet数据转换为Avro记录，然后再解析它们后摄入到Druid。在 `ioConfig` 中，`inputSpec` 中的 `inputFormat` 必须设置为 `org.apache.druid.data.input.parquet.DruidParquetAvroInputFormat`。
 
 Parquet Avro Hadoop 解析器支持自动字段发现，如果提供了一个带有 `avro` `parquetSpec`的 `flattenSpec` 也支持展平。 Parquet嵌套 list 和 map [逻辑类型](https://github.com/apache/parquet-format/blob/master/LogicalTypes.md) 应与所有受支持类型的JSON path表达式一起正确操作。该解析器将Hadoop作业属性 `parquet.avro.add-list-element-records` 设置为false（通常默认为true），以便将原始列表元素"展开"为多值维度。
 

@@ -293,7 +293,7 @@ http://<middlemanager-host>:<worker-port>/druid/worker/v1/chat/<task-id>/unparse
 
 #### `index_hadoop`
 
-参见 [基于Hadoop的摄取](hadoopbased.md)
+参见 [基于Hadoop的摄取](hadoop.md)
 
 #### `index_kafka`
 

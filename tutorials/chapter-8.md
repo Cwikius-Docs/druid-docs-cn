@@ -147,6 +147,6 @@ Coordinator将旧的输入段标记为未使用需要一段时间，因此您可
 ![](img-8/tutorial-compaction-08.png)
 
 ### 进一步阅读
-[任务文档](../DataIngestion/taskrefer.md)
+[任务文档](../ingestion/taskrefer.md)
 
 [段优化](../operations/segmentSizeOpt.md)

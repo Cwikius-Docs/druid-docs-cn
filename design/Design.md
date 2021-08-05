@@ -79,7 +79,7 @@ Druid数据被存储在"datasources"中，类似于传统RDBMS中的表。每一
 
 有关段文件格式的信息，请参见[段文件](segments.md)
 
-有关数据在Druid的建模，请参见[schema设计](../DataIngestion/schemadesign.md)
+有关数据在Druid的建模，请参见[schema设计](../ingestion/schemadesign.md)
 
 #### 索引和切换(Indexing and handoff)
 
