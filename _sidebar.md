@@ -31,9 +31,20 @@
   - [元数据存储](dependencies/metadata-storage.md)
   - [ZooKeeper](dependencies/zookeeper.md)
 
-- 摄取（Ingestion）
-  - [面试问题和经验](interview/index.md)
-  - [算法题](algorithm/index.md)
+- 载入（Ingestion）
+  - [载入数据](ingestion/index.md)
+  - [数据格式](ingestion/data-formats.md)
+  - [Schema 设计技巧](ingestion/schema-design.md)
+  - [数据管理](ingestion/data-management.md)
+  - 流（Stream）数据载入
+    - [Apache Kafka](development/extensions-core/kafka-ingestion.md)
+    - [Amazon Kinesis](development/extensions-core/kinesis-ingestion.md)
+    - [Tranquility](ingestion/tranquility.md)
+  - 批量数据载入
+    - [原生批量](ingestion/native-batch.md)
+    - [Hadoop 数据载入](ingestion/hadoop.md)
+  - [任务参考](ingestion/tasks.md)
+  - [FAQ 常见问题](ingestion/faq.md)
   
 - 查询（Querying）
   - [Druid SQL](querying/sql.md)
@@ -46,7 +57,6 @@
     - [Timeseries 查询](querying/timeseriesquery.md)
     - [TopN 查询](querying/topnquery.md)
     - [GroupBy 查询](querying/groupbyquery.md)
- 
   
 - 开发（Development）
   - [在 Druid 中进行开发](development/index.md)
