@@ -1,42 +1,14 @@
----
-id: tutorial-kafka
-title: "Tutorial: Load streaming data from Apache Kafka"
-sidebar_label: "Load from Apache Kafka"
----
+# Kafka 数据加载教程
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+本教程演示了如何使用Druid的Kafka索引服务将数据从Kafka流加载到Apache Druid中。
 
+假设你已经完成了 [快速开始](../tutorials/index.md) 页面中的内容或者下面页面中有关的内容，并且你的 Druid 实例已使用 `micro-quickstart` 配置在你的本地的计算机上运行了。
+到目前，你还不需要加载任何数据。
 
-## Getting started
+## 下载和启动 Kafka
 
-This tutorial demonstrates how to load data into Apache Druid from a Kafka stream, using Druid's Kafka indexing service.
-
-For this tutorial, we'll assume you've already downloaded Druid as described in
-the [quickstart](index.html) using the `micro-quickstart` single-machine configuration and have it
-running on your local machine. You don't need to have loaded any data yet.
-
-## Download and start Kafka
-
-[Apache Kafka](http://kafka.apache.org/) is a high throughput message bus that works well with
-Druid.  For this tutorial, we will use Kafka 2.1.0. To download Kafka, issue the following
-commands in your terminal:
+[Apache Kafka](http://kafka.apache.org/) 是一个高吞吐量消息总线，可与 Druid 很好地配合使用。
+在本指南中，我们将使用 Kafka 2.1.0 版本。下载 Kafka 后，在你的控制终端上运行下面的命令：
 
 ```bash
 curl -O https://archive.apache.org/dist/kafka/2.1.0/kafka_2.12-2.1.0.tgz
@@ -44,13 +16,13 @@ tar -xzf kafka_2.12-2.1.0.tgz
 cd kafka_2.12-2.1.0
 ```
 
-Start a Kafka broker by running the following command in a new terminal:
+如果你需要启动 Kafka broker，你需要通过控制台运行下面的命令：
 
 ```bash
 ./bin/kafka-server-start.sh config/server.properties
 ```
 
-Run this command to create a Kafka topic called *wikipedia*, to which we'll send data:
+使用下面的命令在 Kafka 中创建一个称为 *wikipedia* 的主题，这个主题就是你需要将消息数据发送到的主题：
 
 ```bash
 ./bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic wikipedia
@@ -278,14 +250,6 @@ rm -rf /tmp/kafka-logs
 For more information on loading data from Kafka streams, please see the [Druid Kafka indexing service documentation](../development/extensions-core/kafka-ingestion.md).
 
 
-
-
-## 教程：从Kafka中加载流式数据
-### 入门
-
-本教程演示了如何使用Druid的Kafka索引服务将数据从Kafka流加载到Apache Druid中。
-
-在本教程中，我们假设您已经按照快速入门中的说明下载了Druid并使用 `micro-quickstart`单机配置使其在本地计算机上运行。您不需要加载任何数据。
 
 ### 下载并启动Kafka
 
