@@ -228,120 +228,22 @@ curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia
 
 你也可以从 Druid 的控制台中查看当前的 supervisors 和任务。针对本地服务器的访问地址为： [http://localhost:8888/unified-console.html#tasks](http://localhost:8888/unified-console.html#tasks) 。
 
-## Querying your data
+## 查询你的数据
 
-After data is sent to the Kafka stream, it is immediately available for querying.
+当数据发送到 Kafka 后，Druid 应该能够马上查询到导入的数据的。
 
-Please follow the [query tutorial](../tutorials/tutorial-query.md) to run some example queries on the newly loaded data.
+请访问 [query tutorial](../tutorials/tutorial-query.md) 页面中的内容来了解如何针对新导入的数据运行一些查询。
 
-## Cleanup
+## 清理
+如果你希望其他的一些入门教程的话，你需要首先关闭 Druid 集群；删除 `var` 目录中的所有内容；再重新启动 Druid 集群。
+这是因为本教程中其他的导入数据方式也会写入相同的 "wikipedia" 数据源，如果你使用不同的数据源的话就不需要进行清理了。
 
-To go through any of the other ingestion tutorials, you will need to shut down the cluster and reset the cluster state by removing the contents of the `var` directory in the Druid home, as the other tutorials will write to the same "wikipedia" datasource.
-
-You should additionally clear out any Kafka state. Do so by shutting down the Kafka broker with CTRL-C before stopping ZooKeeper and the Druid services, and then deleting the Kafka log directory at `/tmp/kafka-logs`:
+同时你可能也希望清理掉 Kafka 中的数据。你可以通过 <kbd>CTRL-C</kbd> 来关闭 Kafka 的进程。在关闭 Kafka 进程之前，请不要关闭 ZooKeeper 和 Druid 服务。
+然后删除 Kafka 的 log 目录`/tmp/kafka-logs`:
 
 ```bash
 rm -rf /tmp/kafka-logs
 ```
 
-
-## Further reading
-
-For more information on loading data from Kafka streams, please see the [Druid Kafka indexing service documentation](../development/extensions-core/kafka-ingestion.md).
-
-
-
-
-
-#### 通过控制台提交supervisor
-
-在控制台中点击 `Submit supervisor` 打开提交supervisor对话框：
-
-![](img-2/tutorial-kafka-submit-supervisor-01.png)
-
-粘贴以下规范后点击 `Submit`
-
-```json
-{
-  "type": "kafka",
-  "spec" : {
-    "dataSchema": {
-      "dataSource": "wikipedia",
-      "timestampSpec": {
-        "column": "time",
-        "format": "auto"
-      },
-      "dimensionsSpec": {
-        "dimensions": [
-          "channel",
-          "cityName",
-          "comment",
-          "countryIsoCode",
-          "countryName",
-          "isAnonymous",
-          "isMinor",
-          "isNew",
-          "isRobot",
-          "isUnpatrolled",
-          "metroCode",
-          "namespace",
-          "page",
-          "regionIsoCode",
-          "regionName",
-          "user",
-          { "name": "added", "type": "long" },
-          { "name": "deleted", "type": "long" },
-          { "name": "delta", "type": "long" }
-        ]
-      },
-      "metricsSpec" : [],
-      "granularitySpec": {
-        "type": "uniform",
-        "segmentGranularity": "DAY",
-        "queryGranularity": "NONE",
-        "rollup": false
-      }
-    },
-    "tuningConfig": {
-      "type": "kafka",
-      "reportParseExceptions": false
-    },
-    "ioConfig": {
-      "topic": "wikipedia",
-      "inputFormat": {
-        "type": "json"
-      },
-      "replicas": 2,
-      "taskDuration": "PT10M",
-      "completionTimeout": "PT20M",
-      "consumerProperties": {
-        "bootstrap.servers": "localhost:9092"
-      }
-    }
-  }
-}
-```
-
-这将启动supervisor，该supervisor继而产生一些任务，这些任务将开始监听传入的数据。
-
-#### 直接提交supervisor
-
-为了直接启动服务，我们可以在Druid的根目录下运行以下命令来提交一个supervisor规范到Druid Overlord中
-
-```json
-curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia-kafka-supervisor.json http://localhost:8081/druid/indexer/v1/supervisor
-```
-如果supervisor被成功创建后，将会返回一个supervisor的ID，在本例中看到的是 `{"id":"wikipedia"}`
-
-更详细的信息可以查看[Druid Kafka索引服务文档](../ingestion/kafka.md)
-
-您可以在[Druid控制台]( http://localhost:8888/unified-console.html#tasks)中查看现有的supervisors和tasks
-
-### 数据查询
-数据被发送到Kafka流之后，立刻就可以被查询了。
-
-按照[查询教程](./chapter-4.md)的操作，对新加载的数据执行一些示例查询
-### 清理数据
-如果您希望阅读其他任何入门教程，则需要关闭集群并通过删除druid软件包下的`var`目录的内容来重置集群状态，因为其他教程将写入相同的"wikipedia"数据源。
-### 进一步阅读
-更多关于从Kafka流加载数据的信息，可以查看[Druid Kafka索引服务文档](../ingestion/kafka.md)
+## 延伸阅读
+有关更多如何从 Kafka 中载入流数据的方法，请参考 [Druid Kafka indexing service documentation](../development/extensions-core/kafka-ingestion.md) 页面中的内容。
