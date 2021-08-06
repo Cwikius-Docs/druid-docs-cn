@@ -214,19 +214,19 @@ Druid 要求所有数据必须有一个 timestamp 的主键字段（这个主键
 
 ### 直接提交一个 supervisor
 
-To start the service directly, we will need to submit a supervisor spec to the Druid overlord by running the following from the Druid package root:
+为了能够直接启动一个服务，我们需要提交一个 supervisor 配置参数到 Druid overlord 进程中，你可以直接通过 Druid 的包运行下面的命令：
 
 ```bash
 curl -XPOST -H'Content-Type: application/json' -d @quickstart/tutorial/wikipedia-kafka-supervisor.json http://localhost:8081/druid/indexer/v1/supervisor
 ```
 
 
-If the supervisor was successfully created, you will get a response containing the ID of the supervisor; in our case we should see `{"id":"wikipedia"}`.
+如果提交的 supervisor 被成功创建的话，在返回的结果中将会有一个创建的 supervisor ID；在我们当前的示例中，你应该可以看到返回的结果为 `{"id":"wikipedia"}`。
 
-For more details about what's going on here, check out the
-[Druid Kafka indexing service documentation](../development/extensions-core/kafka-ingestion.md).
+如果想了解更多有关 Kafka 的数据导入相关的信息，请参考 
+[Druid Kafka indexing service documentation](../development/extensions-core/kafka-ingestion.md) 页面中的内容。
 
-You can view the current supervisors and tasks in the Druid Console: [http://localhost:8888/unified-console.html#tasks](http://localhost:8888/unified-console.html#tasks).
+你也可以从 Druid 的控制台中查看当前的 supervisors 和任务。针对本地服务器的访问地址为： [http://localhost:8888/unified-console.html#tasks](http://localhost:8888/unified-console.html#tasks) 。
 
 ## Querying your data
 
