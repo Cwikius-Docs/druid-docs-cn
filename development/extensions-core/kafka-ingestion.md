@@ -12,22 +12,21 @@ supervisor 对索引任务的状态进行监控，以便于对任务进行扩展
 > 在使用 Druid 从 Kafka中导入数据之前，请确保你的 Kafka 版本为 0.11.x 或更高版本。
 > 如果你使用的是旧版本的 Kafka brokers，请参阅《 [Kafka升级指南](https://kafka.apache.org/documentation/#upgrade) 》中的内容先进行升级。
 
-## Tutorial
+## 教程
+针对使用 Apache Kafka 数据导入中的参考文档，请访问 [Loading from Apache Kafka](../../tutorials/tutorial-kafka.md) 页面中的教程。
 
-This page contains reference documentation for Apache Kafka-based ingestion.
-For a walk-through instead, check out the [Loading from Apache Kafka](../../tutorials/tutorial-kafka.md) tutorial.
+## 提交一个 Supervisor 规范
 
-## Submitting a Supervisor Spec
+Kafka 的所以服务需要 `druid-kafka-indexing-service` 扩展同时安装在 Overlord 和 MiddleManagers 服务器上。
+你可以通过提交一个 supervisor 规范到 Druid 中来完成数据源的设置。你可以采用 HTTP POST 的方法来进行提交，发送的地址为：
 
-The Kafka indexing service requires that the `druid-kafka-indexing-service` extension be loaded on both the Overlord and the
-MiddleManagers. A supervisor for a dataSource is started by submitting a supervisor spec via HTTP POST to
-`http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor`, for example:
+`http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor`，一个具体的提交示例如下：
 
 ```
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://localhost:8090/druid/indexer/v1/supervisor
 ```
 
-A sample supervisor spec is shown below:
+一个示例的 supervisor 规范如下：
 
 ```json
 {
@@ -91,9 +90,9 @@ A sample supervisor spec is shown below:
 }
 ```
 
-## Supervisor Configuration
+## Supervisor 配置
 
-|Field|Description|Required|
+|字段（Field）|描述（Description）|是否必须（Required）|
 |--------|-----------|---------|
 |`type`|The supervisor type, this should always be `kafka`.|yes|
 |`dataSchema`|The schema that will be used by the Kafka indexing task during ingestion. See [`dataSchema`](../../ingestion/index.md#dataschema) for details.|yes|
