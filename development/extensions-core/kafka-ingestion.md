@@ -94,10 +94,10 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 |字段（Field）|描述（Description）|是否必须（Required）|
 |--------|-----------|---------|
-|`type`|The supervisor type, this should always be `kafka`.|yes|
-|`dataSchema`|The schema that will be used by the Kafka indexing task during ingestion. See [`dataSchema`](../../ingestion/index.md#dataschema) for details.|yes|
-|`ioConfig`|A KafkaSupervisorIOConfig object for configuring Kafka connection and I/O-related settings for the supervisor and indexing task. See [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) below.|yes|
-|`tuningConfig`|A KafkaSupervisorTuningConfig object for configuring performance-related settings for the supervisor and indexing tasks. See [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) below.|no|
+|`type`| supervisor 的类型，总是 `kafka` 字符串。|是（yes）|
+|`dataSchema`|Kafka 索引服务在对数据进行导入的时候使用的数据 schema。请参考 [`dataSchema`](../../ingestion/index.md#dataschema) 页面来了解更多信息 |是（yes）|
+|`ioConfig`| 一个 KafkaSupervisorIOConfig 对象。在这个对象中我们对 supervisor 和 索引任务（indexing task）使用 Kafka 的连接参数进行定义；对 I/O-related 进行相关设置。请参考本页面下半部分  [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) 的内容。|是（yes）|
+|`tuningConfig`|一个 KafkaSupervisorTuningConfig 对象。在这个配置对象中，我们对 supervisor 和 索引任务（indexing task）的性能进行设置。请参考本页面下半部分 [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) 的内容。|否（no）|
 
 ### KafkaSupervisorIOConfig
 
