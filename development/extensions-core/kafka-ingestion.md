@@ -1,59 +1,32 @@
----
-id: kafka-ingestion
-title: "Apache Kafka ingestion"
-sidebar_label: "Apache Kafka"
----
+# Kafka 数据载入
+Kafka 索引服务（Kafka indexing service）将会在 Overlord 上启动并配置 *supervisors*，
+supervisors 通过管理 Kafka 索引任务的创建和销毁的生命周期以便于从 Kafka 中载入数据。
+这些索引任务使用Kafka自己的分区和偏移机制读取事件，因此能够保证只读取一次（exactly-once）。
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+supervisor 对索引任务的状态进行监控，以便于对任务进行扩展或切换，故障管理等操作。
 
+这个服务是由 `druid-kafka-indexing-service` 这个 druid 核心扩展（详情请见 [扩展列表](../../development/extensions.md）)提供的。
 
-The Kafka indexing service enables the configuration of *supervisors* on the Overlord, which facilitate ingestion from
-Kafka by managing the creation and lifetime of Kafka indexing tasks. These indexing tasks read events using Kafka's own
-partition and offset mechanism and are therefore able to provide guarantees of exactly-once ingestion.
-The supervisor oversees the state of the indexing tasks to coordinate handoffs,
-manage failures, and ensure that the scalability and replication requirements are maintained.
+> [!WARNING]
+> Kafka索引服务支持在 Kafka 0.11.x 中开始使用的事务主题。这些更改使 Druid 使用的 Kafka 消费者与旧的 Kafka brokers 不兼容。
+> 在使用 Druid 从 Kafka中导入数据之前，请确保你的 Kafka 版本为 0.11.x 或更高版本。
+> 如果你使用的是旧版本的 Kafka brokers，请参阅《 [Kafka升级指南](https://kafka.apache.org/documentation/#upgrade) 》中的内容先进行升级。
 
-This service is provided in the `druid-kafka-indexing-service` core Apache Druid extension (see
-[Including Extensions](../../development/extensions.md#loading-extensions)).
+## 教程
+针对使用 Apache Kafka 数据导入中的参考文档，请访问 [Loading from Apache Kafka](../../tutorials/tutorial-kafka.md) 页面中的教程。
 
-> The Kafka indexing service supports transactional topics which were introduced in Kafka 0.11.x. These changes make the
-> Kafka consumer that Druid uses incompatible with older brokers. Ensure that your Kafka brokers are version 0.11.x or
-> better before using this functionality. Refer [Kafka upgrade guide](https://kafka.apache.org/documentation/#upgrade)
-> if you are using older version of Kafka brokers.
+## 提交一个 Supervisor 规范
 
-## Tutorial
+Kafka 的所以服务需要 `druid-kafka-indexing-service` 扩展同时安装在 Overlord 和 MiddleManagers 服务器上。
+你可以通过提交一个 supervisor 规范到 Druid 中来完成数据源的设置。你可以采用 HTTP POST 的方法来进行提交，发送的地址为：
 
-This page contains reference documentation for Apache Kafka-based ingestion.
-For a walk-through instead, check out the [Loading from Apache Kafka](../../tutorials/tutorial-kafka.md) tutorial.
-
-## Submitting a Supervisor Spec
-
-The Kafka indexing service requires that the `druid-kafka-indexing-service` extension be loaded on both the Overlord and the
-MiddleManagers. A supervisor for a dataSource is started by submitting a supervisor spec via HTTP POST to
-`http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor`, for example:
+`http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor`，一个具体的提交示例如下：
 
 ```
 curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://localhost:8090/druid/indexer/v1/supervisor
 ```
 
-A sample supervisor spec is shown below:
+一个示例的 supervisor 规范如下：
 
 ```json
 {
@@ -117,52 +90,56 @@ A sample supervisor spec is shown below:
 }
 ```
 
-## Supervisor Configuration
+## Supervisor 配置
 
-|Field|Description|Required|
+|字段（Field）|描述（Description）|是否必须（Required）|
 |--------|-----------|---------|
-|`type`|The supervisor type, this should always be `kafka`.|yes|
-|`dataSchema`|The schema that will be used by the Kafka indexing task during ingestion. See [`dataSchema`](../../ingestion/index.md#dataschema) for details.|yes|
-|`ioConfig`|A KafkaSupervisorIOConfig object for configuring Kafka connection and I/O-related settings for the supervisor and indexing task. See [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) below.|yes|
-|`tuningConfig`|A KafkaSupervisorTuningConfig object for configuring performance-related settings for the supervisor and indexing tasks. See [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) below.|no|
+|`type`| supervisor 的类型，总是 `kafka` 字符串。|是（yes）|
+|`dataSchema`|Kafka 索引服务在对数据进行导入的时候使用的数据 schema。请参考 [`dataSchema`](../../ingestion/index.md#dataschema) 页面来了解更多信息 |是（yes）|
+|`ioConfig`| 一个 KafkaSupervisorIOConfig 对象。在这个对象中我们对 supervisor 和 索引任务（indexing task）使用 Kafka 的连接参数进行定义；对 I/O-related 进行相关设置。请参考本页面下半部分  [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) 的内容。|是（yes）|
+|`tuningConfig`|一个 KafkaSupervisorTuningConfig 对象。在这个配置对象中，我们对 supervisor 和 索引任务（indexing task）的性能进行设置。请参考本页面下半部分 [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) 的内容。|否（no）|
 
 ### KafkaSupervisorIOConfig
 
-|Field|Type|Description|Required|
+|字段（Field）|类型（Type）|描述（Description）|是否必须（Required）|
 |-----|----|-----------|--------|
-|`topic`|String|The Kafka topic to read from. This must be a specific topic as topic patterns are not supported.|yes|
-|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) to specify how to parse input data. See [the below section](#specifying-data-format) for details about specifying the input format.|yes|
-|`consumerProperties`|Map<String, Object>|A map of properties to be passed to the Kafka consumer. This must contain a property `bootstrap.servers` with a list of Kafka brokers in the form: `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...`. For SSL connections, the `keystore`, `truststore` and `key` passwords can be provided as a [Password Provider](../../operations/password-provider.md) or String password.|yes|
-|`pollTimeout`|Long|The length of time to wait for the Kafka consumer to poll records, in milliseconds|no (default == 100)|
-|`replicas`|Integer|The number of replica sets, where 1 means a single set of tasks (no replication). Replica tasks will always be assigned to different workers to provide resiliency against process failure.|no (default == 1)|
-|`taskCount`|Integer|The maximum number of *reading* tasks in a *replica set*. This means that the maximum number of reading tasks will be `taskCount * replicas` and the total number of tasks (*reading* + *publishing*) will be higher than this. See [Capacity Planning](#capacity-planning) below for more details. The number of reading tasks will be less than `taskCount` if `taskCount > {numKafkaPartitions}`.|no (default == 1)|
-|`taskDuration`|ISO8601 Period|The length of time before tasks stop reading and begin publishing their segment.|no (default == PT1H)|
-|`startDelay`|ISO8601 Period|The period to wait before the supervisor starts managing tasks.|no (default == PT5S)|
-|`period`|ISO8601 Period|How often the supervisor will execute its management logic. Note that the supervisor will also run in response to certain events (such as tasks succeeding, failing, and reaching their taskDuration) so this value specifies the maximum time between iterations.|no (default == PT30S)|
-|`useEarliestOffset`|Boolean|If a supervisor is managing a dataSource for the first time, it will obtain a set of starting offsets from Kafka. This flag determines whether it retrieves the earliest or latest offsets in Kafka. Under normal circumstances, subsequent tasks will start from where the previous segments ended so this flag will only be used on first run.|no (default == false)|
-|`completionTimeout`|ISO8601 Period|The length of time to wait before declaring a publishing task as failed and terminating it. If this is set too low, your tasks may never publish. The publishing clock for a task begins roughly after `taskDuration` elapses.|no (default == PT30M)|
-|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|Configure tasks to reject messages with timestamps earlier than this date time; for example if this is set to `2016-01-01T11:00Z` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps earlier than *2016-01-01T11:00Z* will be dropped. This may help prevent concurrency issues if your data stream has late messages and you have multiple pipelines that need to operate on the same segments (e.g. a realtime and a nightly batch ingestion pipeline).|no (default == none)|
-|`lateMessageRejectionPeriod`|ISO8601 Period|Configure tasks to reject messages with timestamps earlier than this period before the task was created; for example if this is set to `PT1H` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps earlier than *2016-01-01T11:00Z* will be dropped. This may help prevent concurrency issues if your data stream has late messages and you have multiple pipelines that need to operate on the same segments (e.g. a realtime and a nightly batch ingestion pipeline). Please note that only one of `lateMessageRejectionPeriod` or `lateMessageRejectionStartDateTime` can be specified.|no (default == none)|
-|`earlyMessageRejectionPeriod`|ISO8601 Period|Configure tasks to reject messages with timestamps later than this period after the task reached its taskDuration; for example if this is set to `PT1H`, the taskDuration is set to `PT1H` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps later than *2016-01-01T14:00Z* will be dropped. **Note:** Tasks sometimes run past their task duration, for example, in cases of supervisor failover. Setting earlyMessageRejectionPeriod too low may cause messages to be dropped unexpectedly whenever a task runs past its originally configured task duration.|no (default == none)|
+|`topic`|String|从 Kafka 中读取数据的 主题（topic）名。你必须要指定一个明确的 topic。例如 topic patterns 还不能被支持。|是（yes）|
+|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) 被指定如何来解析处理数据。请参考 [the below section](#specifying-data-format) 来了解更多如何指定 input format 的内容。|是（yes）|
+|`consumerProperties`|Map<String, Object>|传递给 Kafka 消费者的一组属性 map。这个必须包含有一个 `bootstrap.servers` 属性。这个属性的值为： `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...` 这样的服务器列表。针对使用 SSL 的链接： `keystore`， `truststore`，`key` 可以使用字符串密码，或者使用  [Password Provider](../../operations/password-provider.md) 来进行提供。|是（yes）|
+|`pollTimeout`|Long| Kafka 消费者拉取数据等待的时间。单位为：毫秒（milliseconds）The length of time to wait for the Kafka consumer to poll records, in |否（no）（默认值：100）|
+|`replicas`|Integer|副本的数量， 1 意味着一个单一任务（无副本）。副本任务将始终分配给不同的 workers，以提供针对流程故障的恢复能力。|否（no）（默认值：1）|
+|`taskCount`|Integer|在一个 *replica set* 集中最大 *reading* 的数量。这意味着读取任务的最大的数量将是 `taskCount * replicas`, 任务总数（*reading* + *publishing*）是大于这个数值的。请参考 [Capacity Planning](#capacity-planning) 中的内容。如果 `taskCount > {numKafkaPartitions}` 的话，总的 reading 任务数量将会小于 `taskCount` 。|否（no）（默认值：1）|
+|`taskDuration`|ISO8601 Period|任务停止读取数据并且将已经读取的数据发布为新段的时间周期|否（no）（默认值： PT1H）|
+|`startDelay`|ISO8601 Period|supervisor 开始管理任务之前的等待时间周期。|否（no）（默认值： PT1S）|
+|`period`|ISO8601 Period|supervisor 将要执行管理逻辑的时间周期间隔。请注意，supervisor 将会在一些特定的事件发生时进行执行（例如：任务成功终止，任务失败，任务达到了他们的 taskDuration）。因此这个值指定了在在 2 个事件之间进行执行的最大时间间隔周期。|否（no）（默认值： PT30S）|
+|`useEarliestOffset`|Boolean|如果 supervisor 是第一次对数据源进行管理，supervisor 将会从 Kafka 中获得一系列的数据偏移量。这个标记位用于在 Kafka 中确定最早（earliest）或者最晚（latest）的偏移量。在通常使用的情况下，后续的任务将会从前一个段结束的标记位开始继续执行，因此这个参数只在 supervisor 第一次启动的时候需要。|否（no）（默认值： false）|
+|`completionTimeout`|ISO8601 Period|声明发布任务为失败并终止它 之前等待的时间长度。如果设置得太低，则任务可能永远不会发布。任务的发布时刻大约在 `taskDuration` (任务持续)时间过后开始。|否（no）（默认值： PT30M）||
+|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|用来配置一个时间，当消息时间戳早于此日期时间的时候，消息被拒绝。例如我们将这个时间戳设置为 `2016-01-01T11:00Z` 然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么早于 *2016-01-01T11:00Z* 的消息将会被丢弃。这个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。|否（no）（默认值： none）|
+|`lateMessageRejectionPeriod`|ISO8601 Period|配置一个时间周期，当消息时间戳早于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H` 同时 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有早于 *2016-01-01T11:00Z* 的消息将会被丢弃。 个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。请注意 `lateMessageRejectionPeriod` 或者 `lateMessageRejectionStartDateTime` 2 个参数只能指定一个，不能同时赋值。|否（no）（默认值： none）|
+|`earlyMessageRejectionPeriod`|ISO8601 Period|用来配置一个时间周期，当消息时间戳晚于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H`，taskDuration 也被设置为 `PT1H`，然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有晚于 *2016-01-01T14:00Z* 的消息丢会被丢弃，这是因为任务的执行时间为 1 个小时，`earlyMessageRejectionPeriod` 参数的设置为 1 个小时，因此总计需要等候 2 个小时。 **注意：** 任务有时候的执行时间可能会超过任务 `taskDuration` 参数设定的值，例如，supervisor 被挂起的情况。如果设置 `earlyMessageRejectionPeriod` 参数过低的话，在任务的执行时间超过预期的话，将会有可能导致消息被意外丢弃。|否（no）（默认值： none）|
 
-#### Specifying data format
+#### 指定数据格式
 
-Kafka indexing service supports both [`inputFormat`](../../ingestion/data-formats.md#input-format) and [`parser`](../../ingestion/data-formats.md#parser) to specify the data format.
-The `inputFormat` is a new and recommended way to specify the data format for Kafka indexing service,
-but unfortunately, it doesn't support all data formats supported by the legacy `parser`.
-(They will be supported in the future.)
+Kafka 索引服务（indexing service）支持 [`inputFormat`](../../ingestion/data-formats.md#input-format) 和 [`parser`](../../ingestion/data-formats.md#parser) 来指定特定的数据格式。
 
-The supported `inputFormat`s include [`csv`](../../ingestion/data-formats.md#csv),
-[`delimited`](../../ingestion/data-formats.md#tsv-delimited), and [`json`](../../ingestion/data-formats.md#json).
-You can also read [`avro_stream`](../../ingestion/data-formats.md#avro-stream-parser),
+`inputFormat` 是一个较新的参数，针对使用的 Kafka 索引服务，我们建议你对这个数据格式参数字段进行设置。
+不幸的是，目前还不能支持所有在老的 `parser` 中能够支持的数据格式（Druid 将会在后续的版本中提供支持）。
+
+目前 `inputFormat` 能够支持的数据格式包括有：
+[`csv`](../../ingestion/data-formats.md#csv)，
+[`delimited`](../../ingestion/data-formats.md#tsv-delimited)，
+[`json`](../../ingestion/data-formats.md#json)。
+
+如果你使用 `parser` 的话，你也可以阅读：
+[`avro_stream`](../../ingestion/data-formats.md#avro-stream-parser),
 [`protobuf`](../../ingestion/data-formats.md#protobuf-parser),
-and [`thrift`](../extensions-contrib/thrift.md) formats using `parser`.
+[`thrift`](../extensions-contrib/thrift.md)  数据格式。
 
 <a name="tuningconfig"></a>
 
 ### KafkaSupervisorTuningConfig
 
-The tuningConfig is optional and default parameters will be used if no tuningConfig is specified.
+tuningConfig 的配置是可选的，如果你不在这里对这个参数进行配置的话，Druid 将会使用默认的配置来替代。
 
 | Field                             | Type           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Required                                                                                                     |
 |-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
@@ -419,96 +396,7 @@ Hadoop (see [here](https://github.com/apache/druid/pull/5102)).
 
 ## Apache Kafka 摄取数据
 
-Kafka索引服务支持在Overlord上配置*supervisors*，supervisors通过管理Kafka索引任务的创建和生存期来便于从Kafka摄取数据。这些索引任务使用Kafka自己的分区和偏移机制读取事件，因此能够保证只接收一次（**exactly-once**）。supervisor监视索引任务的状态，以便于协调切换、管理故障，并确保维护可伸缩性和复制要求。
 
-这个服务由 `druid-kafka-indexing-service` 这个druid核心扩展（详情请见 [扩展列表](../Development/extensions.md）所提供。
-
-> [!WARNING]
-> Kafka索引服务支持在Kafka 0.11.x中引入的事务主题。这些更改使Druid使用的Kafka消费者与旧的brokers不兼容。在使用此功能之前，请确保您的Kafka broker版本为0.11.x或更高版本。如果您使用的是旧版本的Kafka brokers，请参阅《[Kafka升级指南](https://kafka.apache.org/documentation/#upgrade)》。
-
-### 教程
-
-本页包含基于Apache Kafka的摄取的参考文档。同样，您可以查看 [Apache Kafka教程](../tutorials/chapter-2.md) 中的加载。
-
-### 提交一个supervisor规范
-
-Kafka索引服务需要同时在Overlord和MiddleManagers中加载 `druid-kafka-indexing-service` 扩展。 用于一个数据源的supervisor通过向 `http://<OVERLORD_IP>:<OVERLORD_PORT>/druid/indexer/v1/supervisor` 发送一个HTTP POST请求来启动，例如：
-
-```json
-curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http://localhost:8090/druid/indexer/v1/supervisor
-```
-
-一个示例supervisor规范如下：
-```json
-{
-  "type": "kafka",
-  "dataSchema": {
-    "dataSource": "metrics-kafka",
-    "timestampSpec": {
-      "column": "timestamp",
-      "format": "auto"
-    },
-    "dimensionsSpec": {
-      "dimensions": [],
-      "dimensionExclusions": [
-        "timestamp",
-        "value"
-      ]
-    },
-    "metricsSpec": [
-      {
-        "name": "count",
-        "type": "count"
-      },
-      {
-        "name": "value_sum",
-        "fieldName": "value",
-        "type": "doubleSum"
-      },
-      {
-        "name": "value_min",
-        "fieldName": "value",
-        "type": "doubleMin"
-      },
-      {
-        "name": "value_max",
-        "fieldName": "value",
-        "type": "doubleMax"
-      }
-    ],
-    "granularitySpec": {
-      "type": "uniform",
-      "segmentGranularity": "HOUR",
-      "queryGranularity": "NONE"
-    }
-  },
-  "tuningConfig": {
-    "type": "kafka",
-    "maxRowsPerSegment": 5000000
-  },
-  "ioConfig": {
-    "topic": "metrics",
-    "inputFormat": {
-      "type": "json"
-    },
-    "consumerProperties": {
-      "bootstrap.servers": "localhost:9092"
-    },
-    "taskCount": 1,
-    "replicas": 1,
-    "taskDuration": "PT1H"
-  }
-}
-```
-
-### supervisor配置
-
-| 字段 | 描述 | 是否必须 |
-|-|-|-|-|
-| `type` | supervisor类型， 总是 `kafka` | 是 |
-| `dataSchema` | Kafka索引服务在摄取时使用的schema。详情见 [dataSchema](ingestion.md#dataschema)  | 是 |
-| `ioConfig` | 用于配置supervisor和索引任务的KafkaSupervisorIOConfig，详情见以下 | 是 |
-| `tuningConfig` | 用于配置supervisor和索引任务的KafkaSupervisorTuningConfig，详情见以下 | 是 |
 
 #### KafkaSupervisorTuningConfig
 
