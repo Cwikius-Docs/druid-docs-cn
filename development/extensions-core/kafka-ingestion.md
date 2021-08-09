@@ -101,41 +101,45 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 ### KafkaSupervisorIOConfig
 
-|Field|Type|Description|Required|
+|字段（Field）|类型（Type）|描述（Description）|是否必须（Required）|
 |-----|----|-----------|--------|
-|`topic`|String|The Kafka topic to read from. This must be a specific topic as topic patterns are not supported.|yes|
-|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) to specify how to parse input data. See [the below section](#specifying-data-format) for details about specifying the input format.|yes|
-|`consumerProperties`|Map<String, Object>|A map of properties to be passed to the Kafka consumer. This must contain a property `bootstrap.servers` with a list of Kafka brokers in the form: `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...`. For SSL connections, the `keystore`, `truststore` and `key` passwords can be provided as a [Password Provider](../../operations/password-provider.md) or String password.|yes|
-|`pollTimeout`|Long|The length of time to wait for the Kafka consumer to poll records, in milliseconds|no (default == 100)|
-|`replicas`|Integer|The number of replica sets, where 1 means a single set of tasks (no replication). Replica tasks will always be assigned to different workers to provide resiliency against process failure.|no (default == 1)|
-|`taskCount`|Integer|The maximum number of *reading* tasks in a *replica set*. This means that the maximum number of reading tasks will be `taskCount * replicas` and the total number of tasks (*reading* + *publishing*) will be higher than this. See [Capacity Planning](#capacity-planning) below for more details. The number of reading tasks will be less than `taskCount` if `taskCount > {numKafkaPartitions}`.|no (default == 1)|
-|`taskDuration`|ISO8601 Period|The length of time before tasks stop reading and begin publishing their segment.|no (default == PT1H)|
-|`startDelay`|ISO8601 Period|The period to wait before the supervisor starts managing tasks.|no (default == PT5S)|
-|`period`|ISO8601 Period|How often the supervisor will execute its management logic. Note that the supervisor will also run in response to certain events (such as tasks succeeding, failing, and reaching their taskDuration) so this value specifies the maximum time between iterations.|no (default == PT30S)|
-|`useEarliestOffset`|Boolean|If a supervisor is managing a dataSource for the first time, it will obtain a set of starting offsets from Kafka. This flag determines whether it retrieves the earliest or latest offsets in Kafka. Under normal circumstances, subsequent tasks will start from where the previous segments ended so this flag will only be used on first run.|no (default == false)|
-|`completionTimeout`|ISO8601 Period|The length of time to wait before declaring a publishing task as failed and terminating it. If this is set too low, your tasks may never publish. The publishing clock for a task begins roughly after `taskDuration` elapses.|no (default == PT30M)|
-|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|Configure tasks to reject messages with timestamps earlier than this date time; for example if this is set to `2016-01-01T11:00Z` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps earlier than *2016-01-01T11:00Z* will be dropped. This may help prevent concurrency issues if your data stream has late messages and you have multiple pipelines that need to operate on the same segments (e.g. a realtime and a nightly batch ingestion pipeline).|no (default == none)|
-|`lateMessageRejectionPeriod`|ISO8601 Period|Configure tasks to reject messages with timestamps earlier than this period before the task was created; for example if this is set to `PT1H` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps earlier than *2016-01-01T11:00Z* will be dropped. This may help prevent concurrency issues if your data stream has late messages and you have multiple pipelines that need to operate on the same segments (e.g. a realtime and a nightly batch ingestion pipeline). Please note that only one of `lateMessageRejectionPeriod` or `lateMessageRejectionStartDateTime` can be specified.|no (default == none)|
-|`earlyMessageRejectionPeriod`|ISO8601 Period|Configure tasks to reject messages with timestamps later than this period after the task reached its taskDuration; for example if this is set to `PT1H`, the taskDuration is set to `PT1H` and the supervisor creates a task at *2016-01-01T12:00Z*, messages with timestamps later than *2016-01-01T14:00Z* will be dropped. **Note:** Tasks sometimes run past their task duration, for example, in cases of supervisor failover. Setting earlyMessageRejectionPeriod too low may cause messages to be dropped unexpectedly whenever a task runs past its originally configured task duration.|no (default == none)|
+|`topic`|String|从 Kafka 中读取数据的 主题（topic）名。你必须要指定一个明确的 topic。例如 topic patterns 还不能被支持。|是（yes）|
+|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) 被指定如何来解析处理数据。请参考 [the below section](#specifying-data-format) 来了解更多如何指定 input format 的内容。|是（yes）|
+|`consumerProperties`|Map<String, Object>|传递给 Kafka 消费者的一组属性 map。这个必须包含有一个 `bootstrap.servers` 属性。这个属性的值为： `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...` 这样的服务器列表。针对使用 SSL 的链接： `keystore`， `truststore`，`key` 可以使用字符串密码，或者使用  [Password Provider](../../operations/password-provider.md) 来进行提供。|是（yes）|
+|`pollTimeout`|Long| Kafka 消费者拉取数据等待的时间。单位为：毫秒（milliseconds）The length of time to wait for the Kafka consumer to poll records, in |否（no）（默认值：100）|
+|`replicas`|Integer|副本的数量， 1 意味着一个单一任务（无副本）。副本任务将始终分配给不同的 workers，以提供针对流程故障的恢复能力。|否（no）（默认值：1）|
+|`taskCount`|Integer|在一个 *replica set* 集中最大 *reading* 的数量。这意味着读取任务的最大的数量将是 `taskCount * replicas`, 任务总数（*reading* + *publishing*）是大于这个数值的。请参考 [Capacity Planning](#capacity-planning) 中的内容。如果 `taskCount > {numKafkaPartitions}` 的话，总的 reading 任务数量将会小于 `taskCount` 。|否（no）（默认值：1）|
+|`taskDuration`|ISO8601 Period|任务停止读取数据并且将已经读取的数据发布为新段的时间周期|否（no）（默认值： PT1H）|
+|`startDelay`|ISO8601 Period|supervisor 开始管理任务之前的等待时间周期。|否（no）（默认值： PT1S）|
+|`period`|ISO8601 Period|supervisor 将要执行管理逻辑的时间周期间隔。请注意，supervisor 将会在一些特定的事件发生时进行执行（例如：任务成功终止，任务失败，任务达到了他们的 taskDuration）。因此这个值指定了在在 2 个事件之间进行执行的最大时间间隔周期。|否（no）（默认值： PT30S）|
+|`useEarliestOffset`|Boolean|如果 supervisor 是第一次对数据源进行管理，supervisor 将会从 Kafka 中获得一系列的数据偏移量。这个标记位用于在 Kafka 中确定最早（earliest）或者最晚（latest）的偏移量。在通常使用的情况下，后续的任务将会从前一个段结束的标记位开始继续执行，因此这个参数只在 supervisor 第一次启动的时候需要。|否（no）（默认值： false）|
+|`completionTimeout`|ISO8601 Period|声明发布任务为失败并终止它 之前等待的时间长度。如果设置得太低，则任务可能永远不会发布。任务的发布时刻大约在 `taskDuration` (任务持续)时间过后开始。|否（no）（默认值： PT30M）||
+|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|用来配置一个时间，当消息时间戳早于此日期时间的时候，消息被拒绝。例如我们将这个时间戳设置为 `2016-01-01T11:00Z` 然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么早于 *2016-01-01T11:00Z* 的消息将会被丢弃。这个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。|否（no）（默认值： none）|
+|`lateMessageRejectionPeriod`|ISO8601 Period|配置一个时间周期，当消息时间戳早于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H` 同时 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有早于 *2016-01-01T11:00Z* 的消息将会被丢弃。 个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。请注意 `lateMessageRejectionPeriod` 或者 `lateMessageRejectionStartDateTime` 2 个参数只能指定一个，不能同时赋值。|否（no）（默认值： none）|
+|`earlyMessageRejectionPeriod`|ISO8601 Period|用来配置一个时间周期，当消息时间戳晚于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H`，taskDuration 也被设置为 `PT1H`，然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有晚于 *2016-01-01T14:00Z* 的消息丢会被丢弃，这是因为任务的执行时间为 1 个小时，`earlyMessageRejectionPeriod` 参数的设置为 1 个小时，因此总计需要等候 2 个小时。 **注意：** 任务有时候的执行时间可能会超过任务 `taskDuration` 参数设定的值，例如，supervisor 被挂起的情况。如果设置 `earlyMessageRejectionPeriod` 参数过低的话，在任务的执行时间超过预期的话，将会有可能导致消息被意外丢弃。|否（no）（默认值： none）|
 
-#### Specifying data format
+#### 指定数据格式
 
-Kafka indexing service supports both [`inputFormat`](../../ingestion/data-formats.md#input-format) and [`parser`](../../ingestion/data-formats.md#parser) to specify the data format.
-The `inputFormat` is a new and recommended way to specify the data format for Kafka indexing service,
-but unfortunately, it doesn't support all data formats supported by the legacy `parser`.
-(They will be supported in the future.)
+Kafka 索引服务（indexing service）支持 [`inputFormat`](../../ingestion/data-formats.md#input-format) 和 [`parser`](../../ingestion/data-formats.md#parser) 来指定特定的数据格式。
 
-The supported `inputFormat`s include [`csv`](../../ingestion/data-formats.md#csv),
-[`delimited`](../../ingestion/data-formats.md#tsv-delimited), and [`json`](../../ingestion/data-formats.md#json).
-You can also read [`avro_stream`](../../ingestion/data-formats.md#avro-stream-parser),
+`inputFormat` 是一个较新的参数，针对使用的 Kafka 索引服务，我们建议你对这个数据格式参数字段进行设置。
+不幸的是，目前还不能支持所有在老的 `parser` 中能够支持的数据格式（Druid 将会在后续的版本中提供支持）。
+
+目前 `inputFormat` 能够支持的数据格式包括有：
+[`csv`](../../ingestion/data-formats.md#csv)，
+[`delimited`](../../ingestion/data-formats.md#tsv-delimited)，
+[`json`](../../ingestion/data-formats.md#json)。
+
+如果你使用 `parser` 的话，你也可以阅读：
+[`avro_stream`](../../ingestion/data-formats.md#avro-stream-parser),
 [`protobuf`](../../ingestion/data-formats.md#protobuf-parser),
-and [`thrift`](../extensions-contrib/thrift.md) formats using `parser`.
+[`thrift`](../extensions-contrib/thrift.md)  数据格式。
 
 <a name="tuningconfig"></a>
 
 ### KafkaSupervisorTuningConfig
 
-The tuningConfig is optional and default parameters will be used if no tuningConfig is specified.
+tuningConfig 的配置是可选的，如果你不在这里对这个参数进行配置的话，Druid 将会使用默认的配置来替代。
 
 | Field                             | Type           | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Required                                                                                                     |
 |-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
