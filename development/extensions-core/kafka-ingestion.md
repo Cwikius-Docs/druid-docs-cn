@@ -94,29 +94,29 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 
 |字段（Field）|描述（Description）|是否必须（Required）|
 |--------|-----------|---------|
-|`type`| supervisor 的类型，总是 `kafka` 字符串。|是（yes）|
-|`dataSchema`|Kafka 索引服务在对数据进行导入的时候使用的数据 schema。请参考 [`dataSchema`](../../ingestion/index.md#dataschema) 页面来了解更多信息 |是（yes）|
-|`ioConfig`| 一个 KafkaSupervisorIOConfig 对象。在这个对象中我们对 supervisor 和 索引任务（indexing task）使用 Kafka 的连接参数进行定义；对 I/O-related 进行相关设置。请参考本页面下半部分  [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) 的内容。|是（yes）|
-|`tuningConfig`|一个 KafkaSupervisorTuningConfig 对象。在这个配置对象中，我们对 supervisor 和 索引任务（indexing task）的性能进行设置。请参考本页面下半部分 [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) 的内容。|否（no）|
+|`type`| supervisor 的类型，总是 `kafka` 字符串。|Y|
+|`dataSchema`|Kafka 索引服务在对数据进行导入的时候使用的数据 schema。请参考 [`dataSchema`](../../ingestion/index.md#dataschema) 页面来了解更多信息 |Y|
+|`ioConfig`| 一个 KafkaSupervisorIOConfig 对象。在这个对象中我们对 supervisor 和 索引任务（indexing task）使用 Kafka 的连接参数进行定义；对 I/O-related 进行相关设置。请参考本页面下半部分  [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) 的内容。|Y|
+|`tuningConfig`|一个 KafkaSupervisorTuningConfig 对象。在这个配置对象中，我们对 supervisor 和 索引任务（indexing task）的性能进行设置。请参考本页面下半部分 [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) 的内容。|N|
 
 ### KafkaSupervisorIOConfig
 
 |字段（Field）|类型（Type）|描述（Description）|是否必须（Required）|
 |-----|----|-----------|--------|
-|`topic`|String|从 Kafka 中读取数据的 主题（topic）名。你必须要指定一个明确的 topic。例如 topic patterns 还不能被支持。|是（yes）|
-|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) 被指定如何来解析处理数据。请参考 [the below section](#specifying-data-format) 来了解更多如何指定 input format 的内容。|是（yes）|
-|`consumerProperties`|Map<String, Object>|传递给 Kafka 消费者的一组属性 map。这个必须包含有一个 `bootstrap.servers` 属性。这个属性的值为： `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...` 这样的服务器列表。针对使用 SSL 的链接： `keystore`， `truststore`，`key` 可以使用字符串密码，或者使用  [Password Provider](../../operations/password-provider.md) 来进行提供。|是（yes）|
-|`pollTimeout`|Long| Kafka 消费者拉取数据等待的时间。单位为：毫秒（milliseconds）The length of time to wait for the Kafka consumer to poll records, in |否（no）（默认值：100）|
+|`topic`|String|从 Kafka 中读取数据的 主题（topic）名。你必须要指定一个明确的 topic。例如 topic patterns 还不能被支持。|Y|
+|`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) 被指定如何来解析处理数据。请参考 [the below section](#specifying-data-format) 来了解更多如何指定 input format 的内容。|Y|
+|`consumerProperties`|Map<String, Object>|传递给 Kafka 消费者的一组属性 map。这个必须包含有一个 `bootstrap.servers` 属性。这个属性的值为： `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...` 这样的服务器列表。针对使用 SSL 的链接： `keystore`， `truststore`，`key` 可以使用字符串密码，或者使用  [Password Provider](../../operations/password-provider.md) 来进行提供。|Y|
+|`pollTimeout`|Long| Kafka 消费者拉取数据等待的时间。单位为：毫秒（milliseconds）The length of time to wait for the Kafka consumer to poll records, in |N（默认=100））|
 |`replicas`|Integer|副本的数量， 1 意味着一个单一任务（无副本）。副本任务将始终分配给不同的 workers，以提供针对流程故障的恢复能力。|否（no）（默认值：1）|
-|`taskCount`|Integer|在一个 *replica set* 集中最大 *reading* 的数量。这意味着读取任务的最大的数量将是 `taskCount * replicas`, 任务总数（*reading* + *publishing*）是大于这个数值的。请参考 [Capacity Planning](#capacity-planning) 中的内容。如果 `taskCount > {numKafkaPartitions}` 的话，总的 reading 任务数量将会小于 `taskCount` 。|否（no）（默认值：1）|
-|`taskDuration`|ISO8601 Period|任务停止读取数据并且将已经读取的数据发布为新段的时间周期|否（no）（默认值： PT1H）|
-|`startDelay`|ISO8601 Period|supervisor 开始管理任务之前的等待时间周期。|否（no）（默认值： PT1S）|
-|`period`|ISO8601 Period|supervisor 将要执行管理逻辑的时间周期间隔。请注意，supervisor 将会在一些特定的事件发生时进行执行（例如：任务成功终止，任务失败，任务达到了他们的 taskDuration）。因此这个值指定了在在 2 个事件之间进行执行的最大时间间隔周期。|否（no）（默认值： PT30S）|
+|`taskCount`|Integer|在一个 *replica set* 集中最大 *reading* 的数量。这意味着读取任务的最大的数量将是 `taskCount * replicas`, 任务总数（*reading* + *publishing*）是大于这个数值的。请参考 [Capacity Planning](#capacity-planning) 中的内容。如果 `taskCount > {numKafkaPartitions}` 的话，总的 reading 任务数量将会小于 `taskCount` 。|N（默认=1））|
+|`taskDuration`|ISO8601 Period|任务停止读取数据并且将已经读取的数据发布为新段的时间周期|N（默认=PT1H）|
+|`startDelay`|ISO8601 Period|supervisor 开始管理任务之前的等待时间周期。|N（默认=PT1S）|
+|`period`|ISO8601 Period|supervisor 将要执行管理逻辑的时间周期间隔。请注意，supervisor 将会在一些特定的事件发生时进行执行（例如：任务成功终止，任务失败，任务达到了他们的 taskDuration）。因此这个值指定了在在 2 个事件之间进行执行的最大时间间隔周期。|N（默认=PT30S）|
 |`useEarliestOffset`|Boolean|如果 supervisor 是第一次对数据源进行管理，supervisor 将会从 Kafka 中获得一系列的数据偏移量。这个标记位用于在 Kafka 中确定最早（earliest）或者最晚（latest）的偏移量。在通常使用的情况下，后续的任务将会从前一个段结束的标记位开始继续执行，因此这个参数只在 supervisor 第一次启动的时候需要。|否（no）（默认值： false）|
-|`completionTimeout`|ISO8601 Period|声明发布任务为失败并终止它 之前等待的时间长度。如果设置得太低，则任务可能永远不会发布。任务的发布时刻大约在 `taskDuration` (任务持续)时间过后开始。|否（no）（默认值： PT30M）||
-|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|用来配置一个时间，当消息时间戳早于此日期时间的时候，消息被拒绝。例如我们将这个时间戳设置为 `2016-01-01T11:00Z` 然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么早于 *2016-01-01T11:00Z* 的消息将会被丢弃。这个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。|否（no）（默认值： none）|
-|`lateMessageRejectionPeriod`|ISO8601 Period|配置一个时间周期，当消息时间戳早于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H` 同时 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有早于 *2016-01-01T11:00Z* 的消息将会被丢弃。 个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。请注意 `lateMessageRejectionPeriod` 或者 `lateMessageRejectionStartDateTime` 2 个参数只能指定一个，不能同时赋值。|否（no）（默认值： none）|
-|`earlyMessageRejectionPeriod`|ISO8601 Period|用来配置一个时间周期，当消息时间戳晚于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H`，taskDuration 也被设置为 `PT1H`，然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有晚于 *2016-01-01T14:00Z* 的消息丢会被丢弃，这是因为任务的执行时间为 1 个小时，`earlyMessageRejectionPeriod` 参数的设置为 1 个小时，因此总计需要等候 2 个小时。 **注意：** 任务有时候的执行时间可能会超过任务 `taskDuration` 参数设定的值，例如，supervisor 被挂起的情况。如果设置 `earlyMessageRejectionPeriod` 参数过低的话，在任务的执行时间超过预期的话，将会有可能导致消息被意外丢弃。|否（no）（默认值： none）|
+|`completionTimeout`|ISO8601 Period|声明发布任务为失败并终止它 之前等待的时间长度。如果设置得太低，则任务可能永远不会发布。任务的发布时刻大约在 `taskDuration` (任务持续)时间过后开始。|N（默认=PT30M）|
+|`lateMessageRejectionStartDateTime`|ISO8601 DateTime|用来配置一个时间，当消息时间戳早于此日期时间的时候，消息被拒绝。例如我们将这个时间戳设置为 `2016-01-01T11:00Z` 然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么早于 *2016-01-01T11:00Z* 的消息将会被丢弃。这个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。|N（默认=none）|
+|`lateMessageRejectionPeriod`|ISO8601 Period|配置一个时间周期，当消息时间戳早于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H` 同时 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有早于 *2016-01-01T11:00Z* 的消息将会被丢弃。 个设置有助于帮助避免并发（concurrency）问题。例如，如果你的数据流有延迟消息，并且你有多个需要在同一段上操作的管道（例如实时和夜间批处理摄取管道）。请注意 `lateMessageRejectionPeriod` 或者 `lateMessageRejectionStartDateTime` 2 个参数只能指定一个，不能同时赋值。|N（默认=none）|
+|`earlyMessageRejectionPeriod`|ISO8601 Period|用来配置一个时间周期，当消息时间戳晚于此周期的时候，消息被拒绝。例如，如果这个参数被设置为 `PT1H`，taskDuration 也被设置为 `PT1H`，然后 supervisor 在 *2016-01-01T12:00Z* 创建了一个任务，那么所有晚于 *2016-01-01T14:00Z* 的消息丢会被丢弃，这是因为任务的执行时间为 1 个小时，`earlyMessageRejectionPeriod` 参数的设置为 1 个小时，因此总计需要等候 2 个小时。 **注意：** 任务有时候的执行时间可能会超过任务 `taskDuration` 参数设定的值，例如，supervisor 被挂起的情况。如果设置 `earlyMessageRejectionPeriod` 参数过低的话，在任务的执行时间超过预期的话，将会有可能导致消息被意外丢弃。|N（默认=none）|
 
 #### 指定数据格式
 
