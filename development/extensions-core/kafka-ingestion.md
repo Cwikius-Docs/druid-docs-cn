@@ -1,42 +1,16 @@
----
-id: kafka-ingestion
-title: "Apache Kafka ingestion"
-sidebar_label: "Apache Kafka"
----
+# Kafka 数据载入
+Kafka 索引服务（Kafka indexing service）将会在 Overlord 上启动并配置 *supervisors*，
+supervisors 通过管理 Kafka 索引任务的创建和销毁的生命周期以便于从 Kafka 中载入数据。
+这些索引任务使用Kafka自己的分区和偏移机制读取事件，因此能够保证只读取一次（exactly-once）。
 
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.
-  -->
+supervisor 对索引任务的状态进行监控，以便于对任务进行扩展或切换，故障管理等操作。
 
+这个服务是由 `druid-kafka-indexing-service` 这个 druid 核心扩展（详情请见 [扩展列表](../../development/extensions.md）)提供的。
 
-The Kafka indexing service enables the configuration of *supervisors* on the Overlord, which facilitate ingestion from
-Kafka by managing the creation and lifetime of Kafka indexing tasks. These indexing tasks read events using Kafka's own
-partition and offset mechanism and are therefore able to provide guarantees of exactly-once ingestion.
-The supervisor oversees the state of the indexing tasks to coordinate handoffs,
-manage failures, and ensure that the scalability and replication requirements are maintained.
-
-This service is provided in the `druid-kafka-indexing-service` core Apache Druid extension (see
-[Including Extensions](../../development/extensions.md#loading-extensions)).
-
-> The Kafka indexing service supports transactional topics which were introduced in Kafka 0.11.x. These changes make the
-> Kafka consumer that Druid uses incompatible with older brokers. Ensure that your Kafka brokers are version 0.11.x or
-> better before using this functionality. Refer [Kafka upgrade guide](https://kafka.apache.org/documentation/#upgrade)
-> if you are using older version of Kafka brokers.
+> [!WARNING]
+> Kafka索引服务支持在 Kafka 0.11.x 中开始使用的事务主题。这些更改使 Druid 使用的 Kafka 消费者与旧的 Kafka brokers 不兼容。
+> 在使用 Druid 从 Kafka中导入数据之前，请确保你的 Kafka 版本为 0.11.x 或更高版本。
+> 如果你使用的是旧版本的 Kafka brokers，请参阅《 [Kafka升级指南](https://kafka.apache.org/documentation/#upgrade) 》中的内容先进行升级。
 
 ## Tutorial
 
@@ -419,12 +393,6 @@ Hadoop (see [here](https://github.com/apache/druid/pull/5102)).
 
 ## Apache Kafka 摄取数据
 
-Kafka索引服务支持在Overlord上配置*supervisors*，supervisors通过管理Kafka索引任务的创建和生存期来便于从Kafka摄取数据。这些索引任务使用Kafka自己的分区和偏移机制读取事件，因此能够保证只接收一次（**exactly-once**）。supervisor监视索引任务的状态，以便于协调切换、管理故障，并确保维护可伸缩性和复制要求。
-
-这个服务由 `druid-kafka-indexing-service` 这个druid核心扩展（详情请见 [扩展列表](../Development/extensions.md）所提供。
-
-> [!WARNING]
-> Kafka索引服务支持在Kafka 0.11.x中引入的事务主题。这些更改使Druid使用的Kafka消费者与旧的brokers不兼容。在使用此功能之前，请确保您的Kafka broker版本为0.11.x或更高版本。如果您使用的是旧版本的Kafka brokers，请参阅《[Kafka升级指南](https://kafka.apache.org/documentation/#upgrade)》。
 
 ### 教程
 
