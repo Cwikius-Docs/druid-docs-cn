@@ -5,11 +5,10 @@ supervisors 通过管理 Kafka 索引任务的创建和销毁的生命周期以�
 
 supervisor 对索引任务的状态进行监控，以便于对任务进行扩展或切换，故障管理等操作。
 
-这个服务是由 `druid-kafka-indexing-service` 这个 druid 核心扩展（详情请见 [扩展列表](../../development/extensions.md）)提供的。
+这个服务是由 `druid-kafka-indexing-service` 这个 druid 核心扩展（详情请见 [扩展列表](../../development/extensions.md）提供的内容)。
 
-> [!WARNING]
-> Kafka索引服务支持在 Kafka 0.11.x 中开始使用的事务主题。这些更改使 Druid 使用的 Kafka 消费者与旧的 Kafka brokers 不兼容。
-> 在使用 Druid 从 Kafka中导入数据之前，请确保你的 Kafka 版本为 0.11.x 或更高版本。
+> Druid 的 Kafka 索引服务支持在 Kafka 0.11.x 中开始使用的事务主题。这些更改使 Druid 使用的 Kafka 消费者与旧的 Kafka brokers 不兼容。
+> 在使用 Druid 从 Kafka中 导入数据之前，请确保你的 Kafka 版本为 0.11.x 或更高版本。
 > 如果你使用的是旧版本的 Kafka brokers，请参阅《 [Kafka升级指南](https://kafka.apache.org/documentation/#upgrade) 》中的内容先进行升级。
 
 ## 教程
@@ -99,7 +98,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 |`ioConfig`| 一个 KafkaSupervisorIOConfig 对象。在这个对象中我们对 supervisor 和 索引任务（indexing task）使用 Kafka 的连接参数进行定义；对 I/O-related 进行相关设置。请参考本页面下半部分  [KafkaSupervisorIOConfig](#kafkasupervisorioconfig) 的内容。|Y|
 |`tuningConfig`|一个 KafkaSupervisorTuningConfig 对象。在这个配置对象中，我们对 supervisor 和 索引任务（indexing task）的性能进行设置。请参考本页面下半部分 [KafkaSupervisorTuningConfig](#kafkasupervisortuningconfig) 的内容。|N|
 
-### KafkaSupervisorIOConfig
+### Kafka Supervisor IOConfig
 
 |字段（Field）|类型（Type）|描述（Description）|是否必须（Required）|
 |-----|----|-----------|--------|
@@ -107,7 +106,7 @@ curl -X POST -H 'Content-Type: application/json' -d @supervisor-spec.json http:/
 |`inputFormat`|Object|[`inputFormat`](../../ingestion/data-formats.md#input-format) 被指定如何来解析处理数据。请参考 [the below section](#specifying-data-format) 来了解更多如何指定 input format 的内容。|Y|
 |`consumerProperties`|Map<String, Object>|传递给 Kafka 消费者的一组属性 map。这个必须包含有一个 `bootstrap.servers` 属性。这个属性的值为： `<BROKER_1>:<PORT_1>,<BROKER_2>:<PORT_2>,...` 这样的服务器列表。针对使用 SSL 的链接： `keystore`， `truststore`，`key` 可以使用字符串密码，或者使用  [Password Provider](../../operations/password-provider.md) 来进行提供。|Y|
 |`pollTimeout`|Long| Kafka 消费者拉取数据等待的时间。单位为：毫秒（milliseconds）The length of time to wait for the Kafka consumer to poll records, in |N（默认=100））|
-|`replicas`|Integer|副本的数量， 1 意味着一个单一任务（无副本）。副本任务将始终分配给不同的 workers，以提供针对流程故障的恢复能力。|否（no）（默认值：1）|
+|`replicas`|Integer|副本的数量， 1 意味着一个单一任务（无副本）。副本任务将始终分配给不同的 workers，以提供针对流程故障的恢复能力。|N（默认=1））|
 |`taskCount`|Integer|在一个 *replica set* 集中最大 *reading* 的数量。这意味着读取任务的最大的数量将是 `taskCount * replicas`, 任务总数（*reading* + *publishing*）是大于这个数值的。请参考 [Capacity Planning](#capacity-planning) 中的内容。如果 `taskCount > {numKafkaPartitions}` 的话，总的 reading 任务数量将会小于 `taskCount` 。|N（默认=1））|
 |`taskDuration`|ISO8601 Period|任务停止读取数据并且将已经读取的数据发布为新段的时间周期|N（默认=PT1H）|
 |`startDelay`|ISO8601 Period|supervisor 开始管理任务之前的等待时间周期。|N（默认=PT1S）|
