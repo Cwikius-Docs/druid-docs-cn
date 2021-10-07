@@ -29,7 +29,7 @@ Apache Druid支持多值字符串维度。当输入字段中包括一个数组�
 
 #### 过滤(Filtering)
 
-所有的查询类型，包括 [Filtered Aggregator](Aggregations.md#过滤聚合器)，都可以在多值维度上进行过滤。 在多值维度上进行使用Filter遵循以下规则：
+所有的查询类型，包括 [Filtered Aggregator](aggregations.md#过滤聚合器)，都可以在多值维度上进行过滤。 在多值维度上进行使用Filter遵循以下规则：
 
 * 当多值维度的任何一个值匹配到值过滤器（例如 "selector", "bound" 和 "in"），该行即被匹配上
 * 如果维度有重叠，则列比较过滤器会匹配该行

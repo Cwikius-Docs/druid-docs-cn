@@ -294,7 +294,7 @@ and in your `metricsSpec`, include:
 * 除了timestamp列之外，Druid数据源中的所有列都是dimensions或metrics。这遵循 [OLAP数据的标准命名约定](https://en.wikipedia.org/wiki/Online_analytical_processing#Overview_of_OLAP_systems)。
 * 典型的生产数据源有几十到几百列。
 * [dimension列](ingestion.md#维度) 按原样存储，因此可以在查询时对其进行筛选、分组或聚合。它们总是单个字符串、字符串数组、单个long、单个double或单个float。
-* [Metrics列](ingestion.md#指标) 是 [预聚合](../querying/Aggregations.md) 存储的，因此它们只能在查询时聚合（不能按筛选或分组）。它们通常存储为数字（整数或浮点数），但也可以存储为复杂对象，如[HyperLogLog草图或近似分位数草图](../querying/Aggregations.md)。即使禁用了rollup，也可以在接收时配置metrics，但在启用汇总时最有用。
+* [Metrics列](ingestion.md#指标) 是 [预聚合](../querying/aggregations.md) 存储的，因此它们只能在查询时聚合（不能按筛选或分组）。它们通常存储为数字（整数或浮点数），但也可以存储为复杂对象，如[HyperLogLog草图或近似分位数草图](../querying/aggregations.md)。即使禁用了rollup，也可以在接收时配置metrics，但在启用汇总时最有用。
 
 ### 与其他设计模式类比
 #### 关系模型
@@ -325,7 +325,7 @@ Druid数据源通常相当于关系数据库中的表。Druid的 [lookups特性]
 * Druid并不认为数据点是"时间序列"的一部分。相反，Druid对每一点分别进行摄取和聚合
 * 创建一个维度，该维度指示数据点所属系列的名称。这个维度通常被称为"metric"或"name"。不要将名为"metric"的维度与Druid Metrics的概念混淆。将它放在"dimensionsSpec"中维度列表的第一个位置，以获得最佳性能（这有助于提高局部性；有关详细信息，请参阅下面的 [分区和排序](ingestion.md#分区)）
 * 为附着到数据点的属性创建其他维度。在时序数据库系统中，这些通常称为"标签"
-* 创建与您希望能够查询的聚合类型相对应的 [Druid Metrics](ingestion.md#指标)。通常这包括"sum"、"min"和"max"（在long、float或double中的一种）。如果你想计算百分位数或分位数，可以使用Druid的 [近似聚合器](../querying/Aggregations.md)
+* 创建与您希望能够查询的聚合类型相对应的 [Druid Metrics](ingestion.md#指标)。通常这包括"sum"、"min"和"max"（在long、float或double中的一种）。如果你想计算百分位数或分位数，可以使用Druid的 [近似聚合器](../querying/aggregations.md)
 * 考虑启用 [rollup](ingestion.md#rollup)，这将允许Druid潜在地将多个点合并到Druid数据源中的一行中。如果希望以不同于原始发出的时间粒度存储数据，则这可能非常有用。如果要在同一个数据源中组合时序和非时序数据，它也很有用
 * 如果您提前不知道要摄取哪些列，请使用空的维度列表来触发 [维度列的自动检测](#无schema的维度列)
 
@@ -358,7 +358,7 @@ Druid可以在接收数据时将其汇总，以最小化需要存储的原始数
 
 草图(sketches)减少了查询时的内存占用，因为它们限制了需要在服务器之间洗牌的数据量。例如，在分位数计算中，Druid不需要将所有数据点发送到中心位置，以便对它们进行排序和计算分位数，而只需要发送点的草图。这可以将数据传输需要减少到仅千字节。
 
-有关Druid中可用的草图的详细信息，请参阅 [近似聚合器页面](../querying/Aggregations.md)。
+有关Druid中可用的草图的详细信息，请参阅 [近似聚合器页面](../querying/aggregations.md)。
 
 如果你更喜欢 [视频](https://www.youtube.com/watch?v=Hpd3f_MLdXo)，那就看一看吧！，一个讨论Druid Sketches的会议。
 

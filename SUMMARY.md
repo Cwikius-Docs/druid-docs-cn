@@ -88,7 +88,7 @@
     * [过滤](querying/filters.md)
     * [粒度](querying/granularity.md)
     * [维度](querying/dimensionspec.md)
-    * [聚合](querying/Aggregations.md)
+    * [聚合](querying/aggregations.md)
     * [后聚合](querying/postaggregation.md)
     * [表达式](querying/expression.md)
     * [Having(GroupBy)](querying/having.md)

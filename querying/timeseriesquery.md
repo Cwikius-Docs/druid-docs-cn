@@ -1,24 +1,11 @@
-<!-- toc -->
+## Timeseries 查询
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block; text-align:center;"
-     data-ad-layout="in-article"
-     data-ad-format="fluid"
-     data-ad-client="ca-pub-8828078415045620"
-     data-ad-slot="7586680510"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+> 
+> Apache Druid支持两种查询语言： [Druid SQL](sql.md) 和 [原生查询](querying.md)。该文档描述了原生查询中的一种查询方式。 对于Druid SQL中使用的该种类型的信息，可以参考 [SQL文档](sql.md#query-types)。
 
-## Timeseries查询
+该类型的查询将会得到一个时间序列的查询结果，返回的是一个 JSON 对象数组，数组中的每一个对象表示被Timeseries查询所查的值。
 
-> [!WARNING]
-> Apache Druid支持两种查询语言： [Druid SQL](druidsql.md) 和 [原生查询](makeNativeQueries.md)。该文档描述了原生查询中的一种查询方式。 对于Druid SQL中使用的该种类型的信息，可以参考 [SQL文档](druidsql.md)。
-
-该类型的查询将会得到一个时间序列的查询结果，返回的是一个JSON对象数组，数组中的每一个对象表示被Timeseries查询所查的值。
-
-一个Timeseries查询的实例如下：
+一个 Timeseries 查询的实例如下：
 
 ```json
 {
@@ -66,12 +53,16 @@
 | `intervals` | ISO-8601格式的JSON对象，定义了要查询的时间范围 | 是 |
 | `granularity` | 定义了查询结果的粒度，参见 [Granularity](granularity.md) | 是 |
 | `filter` | 参见 [Filters](filters.md) | 否 |
-| `aggregations` | 参见 [聚合](Aggregations.md)| 否 |
+| `aggregations` | 参见 [聚合](aggregations.md)| 否 |
 | `postAggregations` | 参见[Post Aggregations](postaggregation.md) | 否 |
 | `limit` | 限制返回结果数量的整数值，默认是unlimited | 否 |
 | `context` | 可以被用来修改查询行为，包括 [Grand Total](#grand-total共计) 和 [Zero-filling](#zero-filling0填充)。详情可以看 [上下文参数](query-context.md)部分中的所有参数类型 | 否 |
 
-为了将所有数据集中起来，上面的查询将从"sample_datasource"表返回2个数据点，在 2012-01-01 和 2012-01-03 期间每天一个。每个数据点将是sample_fieldName1的longSum、sample_fieldName2的doubleSum以及sample_fieldName1除以sample_fieldName2的double结果。输出如下：
+为了将所有数据集中起来，上面的查询将从 "sample_datasource" 表返回2个数据点，在 2012-01-01 和 2012-01-03 期间每天一个。
+
+每个数据点将是 sample_fieldName1 的 longSum、sample_fieldName2 的 doubleSum 以及 sample_fieldName1 除以sample_fieldName2 的 double结果。
+
+输出如下：
 
 ```json
 [
@@ -86,9 +77,9 @@
 ]
 ```
 
-### Grand Total(共计)
+### Grand Total(统计)
 
-Druid可以在时间序列查询的结果集中增加一个额外的"总计"行，通过在上下文中增加 `"grandTotal":true`来启用该功能，例如：
+Druid 可以在时间序列查询的结果集中增加一个额外的 "总计"行，通过在上下文中增加 `"grandTotal":true` 来启用该功能，例如：
 
 ```json
 {
@@ -106,11 +97,13 @@ Druid可以在时间序列查询的结果集中增加一个额外的"总计"行�
 }
 ```
 
-总计行将显示为结果数组中的最后一行，并且没有时间戳。即使查询以"降序"模式运行，它也将是最后一行。总计行中的后聚合将基于总计聚合计算。
+总计行将显示为结果数组中的最后一行，并且没有时间戳。即使查询以"降序"模式运行，它也将是最后一行。
+
+总计行中的后聚合将基于总计聚合计算。
 
 ### Zero-filling(0填充)
 
-Timeseries查询通常用零填充空的内部时间。例如，如果对间隔2012-01-01/2012-01-04发出"Day"粒度时间序列查询，并且2012-01-02不存在数据，则将收到：
+Timeseries 查询通常用零填充空的内部时间。例如，如果对间隔2012-01-01/2012-01-04发出"Day"粒度时间序列查询，并且2012-01-02不存在数据，则将收到：
 
 ```json
 [

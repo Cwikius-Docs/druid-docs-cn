@@ -1088,7 +1088,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 
 ##### `metricsSpec`
 
-`metricsSpec` 位于 `dataSchema` -> `metricsSpec` 中，是一个在摄入阶段要应用的 [聚合器](../querying/Aggregations.md) 列表。 在启用了 [rollup](#rollup) 时是很有用的，因为它将配置如何在摄入阶段进行聚合。
+`metricsSpec` 位于 `dataSchema` -> `metricsSpec` 中，是一个在摄入阶段要应用的 [聚合器](../querying/aggregations.md) 列表。 在启用了 [rollup](#rollup) 时是很有用的，因为它将配置如何在摄入阶段进行聚合。
 
 一个 `metricsSpec` 实例如下：
 ```json
@@ -1099,7 +1099,7 @@ Druid以两种可能的方式来解释 `dimensionsSpec` : *normal* 和 *schemale
 ]
 ```
 > [!WARNING]
-> 通常，当 [rollup](#rollup) 被禁用时，应该有一个空的 `metricsSpec`（因为没有rollup，Druid不会在摄取时进行任何的聚合，所以没有理由包含摄取时聚合器）。但是，在某些情况下，定义Metrics仍然是有意义的：例如，如果要创建一个复杂的列作为 [近似聚合](../querying/Aggregations.md#近似聚合) 的预计算部分，则只能通过在 `metricsSpec` 中定义度量来实现
+> 通常，当 [rollup](#rollup) 被禁用时，应该有一个空的 `metricsSpec`（因为没有rollup，Druid不会在摄取时进行任何的聚合，所以没有理由包含摄取时聚合器）。但是，在某些情况下，定义Metrics仍然是有意义的：例如，如果要创建一个复杂的列作为 [近似聚合](../querying/aggregations.md#近似聚合) 的预计算部分，则只能通过在 `metricsSpec` 中定义度量来实现
 
 ##### `granularitySpec`
 
