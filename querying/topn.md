@@ -91,7 +91,7 @@ TopN的查询对象如下所示：
 | intervals | ISO-8601格式的时间间隔，定义了查询的时间范围 | 是 |
 | granularity | 定义查询粒度， 参见 [Granularities](granularity.md) | 是 |
 | filter | 参见 [Filters](filters.md) | 否 |
-| aggregations | 参见[Aggregations](Aggregations.md) | 对于数值类型的metricSpec， aggregations或者postAggregations必须指定，否则非必须 |
+| aggregations | 参见[Aggregations](aggregations.md) | 对于数值类型的metricSpec， aggregations或者postAggregations必须指定，否则非必须 |
 | postAggregations | 参见[postAggregations](postaggregation.md) | 对于数值类型的metricSpec， aggregations或者postAggregations必须指定，否则非必须 |
 | dimension | 一个string或者json对象，用来定义topN查询的维度列，详情参见[DimensionSpec](dimensionspec.md) | 是 |
 | threshold | 在topN中定义N的一个整型数字，例如：在top列表中返回多少个结果 | 是 |

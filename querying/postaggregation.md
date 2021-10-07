@@ -50,9 +50,9 @@ postAggregation : {
 
 ### 字段访问后聚合器(Field accessor post-aggregators)
 
-该后聚合器返回由指定的 [聚合器](Aggregations.md) 输出的值。
+该后聚合器返回由指定的 [聚合器](aggregations.md) 输出的值。
 
-`fieldName` 引用在查询时 [聚合部分](Aggregations.md) 给定的聚合器的输出名。 对于复杂的聚合器，如 "cardinality" 和 "hyperUnique", 后聚合器的 `type` 决定了后聚合器将返回什么。 使用 `"fieldAccess" type` 将返回原始的聚合对象，或者使用 `"finalizingFieldAccess" type` 返回最终确定的值，例如估计的基数。
+`fieldName` 引用在查询时 [聚合部分](aggregations.md) 给定的聚合器的输出名。 对于复杂的聚合器，如 "cardinality" 和 "hyperUnique", 后聚合器的 `type` 决定了后聚合器将返回什么。 使用 `"fieldAccess" type` 将返回原始的聚合对象，或者使用 `"finalizingFieldAccess" type` 返回最终确定的值，例如估计的基数。
 
 ```json
 { "type" : "fieldAccess", "name": <output_name>, "fieldName" : <aggregator_name> }

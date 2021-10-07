@@ -172,7 +172,7 @@ Druid的原生类型系统允许字符串可能有多个值。这些 [多值维�
 | `ANY_VALUE(expr)` | 返回 `expr` 的任何值，包括null。`expr`必须是数字, 此聚合器可以通过返回第一个遇到的值（包括空值）来简化和优化性能 |
 | `ANY_VALUE(expr, maxBytesPerString)` | 与 `ANY_VALUE(expr)` 类似，但是面向string。`maxBytesPerString` 参数确定每个字符串要分配多少聚合空间, 超过此限制的字符串将被截断。这个参数应该设置得尽可能低，因为高值会导致内存浪费。|
 
-对于近似聚合函数，请查看 [近似聚合文档](Aggregations.md#近似聚合)
+对于近似聚合函数，请查看 [近似聚合文档](aggregations.md#近似聚合)
 
 ### 扩展函数
 #### 数值函数

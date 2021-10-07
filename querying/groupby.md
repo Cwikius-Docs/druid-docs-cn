@@ -76,7 +76,7 @@ GroupBy查询对象的示例如下所示:
 | having | 参见[Having](having.md) | 否 |
 | granularity | 定义查询粒度，参见 [Granularities](granularity.md) | 是 |
 | filter | 参见[Filters](filters.md) | 否 |
-| aggregations | 参见[Aggregations](Aggregations.md) | 否 |
+| aggregations | 参见[Aggregations](aggregations.md) | 否 |
 | postAggregations | 参见[Post Aggregations](postaggregation.md) | 否 |
 | intervals | ISO-8601格式的时间间隔，定义了查询的时间范围 | 是 |
 | subtotalsSpec | 一个JSON数组，返回顶级维度子集分组的附加结果集。稍后将更详细地[描述它](#关于subtotalSpec)。| 否 |
