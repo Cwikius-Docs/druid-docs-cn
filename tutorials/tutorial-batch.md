@@ -12,8 +12,8 @@
 
 ## 加载一个规范（使用控制台）
 
-The Druid package includes the following sample native batch ingestion task spec at `quickstart/tutorial/wikipedia-index.json`, shown here for convenience,
-which has been configured to read the `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` input file:
+在 Druid 的安装包中包含了一个原生批量导入（native batch ingestion）任务的规范，这个规范位于 `quickstart/tutorial/wikipedia-index.json` 文件中。
+为了方便我们将这个任务规范在这里展示出来，这个任务规范配置从 `quickstart/tutorial/wikiticker-2015-09-12-sampled.json.gz` 读取输入文件。
 
 ```json
 {
@@ -78,17 +78,17 @@ which has been configured to read the `quickstart/tutorial/wikiticker-2015-09-12
 }
 ```
 
-This spec creates a datasource named "wikipedia".
+这个任务规范完成载入后将会创建一个名为 "wikipedia" 的数据源
 
-From the Ingestion view, click the ellipses next to Tasks and choose `Submit JSON task`.
+在 Ingestion 视图中，单击 Tasks 任务后面的 ... 号，然后选择 `Submit JSON task`。
 
 ![Tasks view add task](../assets/tutorial-batch-submit-task-01.png "Tasks view add task")
 
-This brings up the spec submission dialog where you can paste the spec above.
+这个将会显示一个配置提交窗口，你可以在这个窗口中将上面的规范张贴进来。
 
 ![Query view](../assets/tutorial-batch-submit-task-02.png "Query view")
 
-Once the spec is submitted, wait a few moments for the data to load, after which you can query it.
+当上面的规范被提交后，请等待一些时间来让数据被载入，当完成数据载入后你就可以对载入的数据进行查询了。
 
 
 ## Loading data with a spec (via command line)
